@@ -141,7 +141,8 @@ flowchart LR
 - [x] T5.4 `/jobs`, `/jobs/[id]` termasuk **Generate criteria** (memanggil `/api/criteria/compile` P4).
 - [x] T5.5 `/agents`, `/agents/[id]`, `/patterns/[id]` (FR-B6, FR-B8).
 - [x] T5.6 `/methodology` (FR-I5). Bonus read-only dari kontrak: `/protected`, `/jury`.
-- [ ] Sisa: cek visual mobile, pakai `CriteriaDocSchema` dari shared setelah P4 commit, grafik insights (belum ada data seri).
+- [x] Cek visual mobile (390px) dan pakai `CriteriaDocSchema` dari shared (freeze #3).
+- [ ] Grafik insights (butuh endpoint data seri dari API) — dipindah ke P7 bila sempat.
 
 **Gate G5:** semua halaman read-only berjalan dengan data nyata pada mode SNAPSHOT; loading/empty/error state ada.
 
