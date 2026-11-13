@@ -40,7 +40,7 @@ export function CriteriaPanel({ marketJobId, initial }: { marketJobId: string; i
       setEditing(false);
       setPhase({ s: "idle" });
     } catch {
-      setPhase({ s: "error", title: "The Juri API could not be reached.", detail: "Check your connection, then retry." });
+      setPhase({ s: "error", title: "The Assay API could not be reached.", detail: "Check your connection, then retry." });
     }
   }
 
@@ -105,7 +105,7 @@ export function CriteriaPanel({ marketJobId, initial }: { marketJobId: string; i
       )}
       {!doc && phase.s === "idle" && (
         <p className="mt-3 max-w-[62ch] text-muted">
-          No criteria yet. Generate them from the job description: Juri drafts checks a jury can verify from the
+          No criteria yet. Generate them from the job description: Assay drafts checks a jury can verify from the
           deliverable alone, and lists anything it cannot check.
         </p>
       )}

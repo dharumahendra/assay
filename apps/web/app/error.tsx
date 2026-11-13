@@ -9,7 +9,7 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
       message={
         process.env.NODE_ENV === "development"
           ? error.message
-          : "The Juri API did not answer as expected. Check that it is running, then retry."
+          : "The Assay API did not answer as expected. Check that it is running, then retry."
       }
       onRetry={reset}
     />

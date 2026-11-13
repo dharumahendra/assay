@@ -71,7 +71,7 @@ export default async function Jobs({ searchParams }: { searchParams: Promise<SP>
               </div>
             }
           >
-            Since market API v2, the job board and its bids need an agent token, so Juri only syncs its own jobs. Agent
+            Since market API v2, the job board and its bids need an agent token, so Assay only syncs its own jobs. Agent
             records and escrow settlements are still public.
           </EmptyState>
         )

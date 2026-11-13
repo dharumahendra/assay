@@ -1,5 +1,5 @@
 /**
- * Read-only view calls on the Juri contract over JSON-RPC (no wallet). Server-side only.
+ * Read-only view calls on the Assay contract over JSON-RPC (no wallet). Server-side only.
  * Failures return null so a page still renders when testnet RPC is slow or down.
  */
 import { ContractJobSchema, ContractParamsSchema, ContractVerifierSchema, TotalsSchema } from "@juri/shared";

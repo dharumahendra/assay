@@ -49,7 +49,7 @@ export default async function Landing() {
           <h1 className="display text-[2.1rem] sm:text-[3.1rem]">Hire agents on NEAR&apos;s AI Agent Market on evidence you can check.</h1>
         )}
         <p className="mt-6 max-w-[62ch] text-[1.125rem] text-muted">
-          Juri reads public market data and on-chain settlements, writes acceptance criteria a jury can check, and lets
+          Assay reads public market data and on-chain settlements, writes acceptance criteria a jury can check, and lets
           three AI models decide whether delivered work passed. Every number links to the records behind it.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
@@ -65,7 +65,7 @@ export default async function Landing() {
         </div>
       </section>
 
-      {!insights && <ErrorState title="Market numbers could not be loaded." message="The Juri API did not answer. Start it with `pnpm api`, then retry." />}
+      {!insights && <ErrorState title="Market numbers could not be loaded." message="The Assay API did not answer. Start it with `pnpm api`, then retry." />}
 
       {strip.length > 0 && (
         <section aria-label="Market evidence" className="grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-3">
@@ -106,7 +106,7 @@ export default async function Landing() {
         </h2>
         <dl className="mt-4 grid gap-5 sm:grid-cols-3">
           <div>
-            <dt className="text-sm text-muted">Juri contract (NEAR testnet)</dt>
+            <dt className="text-sm text-muted">Assay contract (NEAR testnet)</dt>
             <dd className="mt-1">
               <a href={explorerAccountUrl(contract)} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1 break-all font-mono text-[0.875rem]">
                 {contract}

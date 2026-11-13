@@ -1,74 +1,48 @@
 @import "tailwindcss";
 
 /*
- * Juri design tokens.
- * Idea: every number on the page is a piece of evidence. Evidence carries a yellow
- * marker tag (like a numbered evidence tent) that opens the records behind it.
- * Everything else stays quiet: cool paper, ink, one teal for actions.
+ * Assay design tokens (docs/design/tokens.md, from Assay.pen).
+ * Light paper with a fading pink grid, ink type, one blue for actions,
+ * flat color blocks (lime, salmon, sky, sage, peach) and navy bands.
+ * The existing token names (paper, act, marker, …) are kept so every page picks the theme up.
  */
 :root {
-  --paper: #f3f5f7;
+  --paper: #eef0f4; /* bg */
   --surface: #ffffff;
-  --ink: #17212d;
-  --muted: #586373;
-  --rule: #d6dce3;
-  --act: #0a6b63;
+  --surface-2: #f6f7fa;
+  --ink: #0d0f14;
+  --muted: #4a4f5c; /* ink-2 */
+  --faint: #8a8f9c; /* ink-3 */
+  --rule: #d9dce3;
+  --act: #1d3bff; /* blue */
   --act-ink: #ffffff;
-  --marker: #f2c230;
-  --marker-ink: #17212d;
-  --warn: #8a5a00;
-  --warn-bg: #fff4d6;
-  --bad: #9b2c2c;
-  --bad-bg: #fde8e8;
-  --good: #0a6b63;
-  --good-bg: #e2f3f0;
+  --marker: #c8f24a; /* lime: evidence markers */
+  --marker-ink: #0d0f14;
+  --warn: #8a4b00;
+  --warn-bg: #fbe7c8;
+  --bad: #b3361a;
+  --bad-bg: #fde3d9;
+  --good: #3b6b00;
+  --good-bg: #ecf8c9;
+  --navy: #12151f;
+  --navy-2: #1c2030;
+  --lime: #c8f24a;
+  --salmon: #f98f68;
+  --sky: #bde5f7;
+  --sage: #a9c3a9;
+  --peach: #f2bc75;
+  --steel: #9fc3d6;
+  --grid: #e8a0a8;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #10161d;
-    --surface: #17202a;
-    --ink: #e6ebf0;
-    --muted: #9aa6b4;
-    --rule: #2b3846;
-    --act: #4fc1b3;
-    --act-ink: #0d1a1e;
-    --marker: #e9bc2e;
-    --marker-ink: #17212d;
-    --warn: #f0c46a;
-    --warn-bg: #3a2e12;
-    --bad: #f19a9a;
-    --bad-bg: #3a1c1f;
-    --good: #4fc1b3;
-    --good-bg: #133430;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #10161d;
-  --surface: #17202a;
-  --ink: #e6ebf0;
-  --muted: #9aa6b4;
-  --rule: #2b3846;
-  --act: #4fc1b3;
-  --act-ink: #0d1a1e;
-  --marker: #e9bc2e;
-  --marker-ink: #17212d;
-  --warn: #f0c46a;
-  --warn-bg: #3a2e12;
-  --bad: #f19a9a;
-  --bad-bg: #3a1c1f;
-  --good: #4fc1b3;
-  --good-bg: #133430;
-  color-scheme: dark;
 }
 
 @theme inline {
   --color-paper: var(--paper);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
   --color-rule: var(--rule);
   --color-act: var(--act);
   --color-act-ink: var(--act-ink);
@@ -80,8 +54,18 @@
   --color-bad-bg: var(--bad-bg);
   --color-good: var(--good);
   --color-good-bg: var(--good-bg);
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
+  --color-lime: var(--lime);
+  --color-salmon: var(--salmon);
+  --color-sky: var(--sky);
+  --color-sage: var(--sage);
+  --color-peach: var(--peach);
+  --color-steel: var(--steel);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-face), ui-monospace, monospace;
+  --font-hand: var(--font-caveat), cursive;
 }
 
 /* Base rules live in layers so Tailwind utilities (layer "utilities") can override them. */
@@ -91,12 +75,33 @@
     color: var(--ink);
   }
   body {
-    background: var(--paper);
     color: var(--ink);
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    background: var(--paper);
+    position: relative;
+    isolation: isolate;
+  }
+  /* grid texture: 1px pink lines every 48px, fading out from the top-left corner */
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1100px;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 48px 48px;
+    -webkit-mask-image: radial-gradient(140% 100% at 0 0, #000 0%, rgb(0 0 0 / 0.31) 35%, transparent 70%);
+    mask-image: radial-gradient(140% 100% at 0 0, #000 0%, rgb(0 0 0 / 0.31) 35%, transparent 70%);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
   a {
     color: inherit;
@@ -113,47 +118,57 @@
 }
 
 @layer components {
+  /* Display type: Inter Tight, tight tracking (the one loud typographic move). */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+  }
+  .wide {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  .hand {
+    font-family: var(--font-hand);
+    font-weight: 600;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .link {
+    color: var(--act);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
 
-/* Wide cut of Archivo for display type: the one loud typographic move. */
-.display {
-  font-stretch: 125%;
-  font-weight: 750;
-  letter-spacing: -0.015em;
-  line-height: 1.08;
-}
-.wide {
-  font-stretch: 112%;
-}
-.num {
-  font-variant-numeric: tabular-nums;
+  .skeleton {
+    background: linear-gradient(90deg, var(--rule) 0%, var(--surface) 50%, var(--rule) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+    border-radius: 4px;
+  }
+
+  /* Drawer slide-in: the one motion that answers an action. */
+  .drawer-in {
+    animation: drawer-in 180ms ease-out;
+  }
 }
 
-.link {
-  color: var(--act);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-.link:hover {
-  text-decoration-thickness: 2px;
-}
-}
-
-.skeleton {
-  background: linear-gradient(90deg, var(--rule) 0%, var(--surface) 50%, var(--rule) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
-  border-radius: 4px;
-}
 @keyframes shimmer {
   to {
     background-position: -200% 0;
   }
-}
-
-/* Drawer slide-in: the one motion that answers an action. */
-.drawer-in {
-  animation: drawer-in 180ms ease-out;
 }
 @keyframes drawer-in {
   from {

@@ -78,7 +78,7 @@ export default async function AgentProfile({ params }: { params: Promise<{ id: s
         ) : (
           <p className="mt-3 max-w-[66ch] text-muted">
             {trust
-              ? "Insufficient data: fewer than 3 bids seen, no paid on-chain settlement and no delivered job. Juri shows no score rather than a low one."
+              ? "Insufficient data: fewer than 3 bids seen, no paid on-chain settlement and no delivered job. Assay shows no score rather than a low one."
               : "The trust engine has not scored this agent yet."}
           </p>
         )}
@@ -116,7 +116,7 @@ export default async function AgentProfile({ params }: { params: Promise<{ id: s
 
         <section aria-labelledby="juri-h">
           <h2 id="juri-h" className="text-[1.3rem] font-semibold">
-            Juri jobs
+            Assay jobs
           </h2>
           {a.juri_stats ? (
             <dl className="mt-3 grid grid-cols-2 gap-4">
@@ -126,7 +126,7 @@ export default async function AgentProfile({ params }: { params: Promise<{ id: s
               <Stat label="Earned" value={`${formatNear(a.juri_stats.worker_earned, 2)} NEAR`} />
             </dl>
           ) : (
-            <p className="mt-3 text-muted">No protected job on the Juri contract involves this agent yet.</p>
+            <p className="mt-3 text-muted">No protected job on the Assay contract involves this agent yet.</p>
           )}
           <h3 className="mt-6 font-semibold">Linked bidding patterns</h3>
           {a.patterns.length ? (

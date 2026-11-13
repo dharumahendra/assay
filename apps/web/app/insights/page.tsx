@@ -75,7 +75,7 @@ export default async function Insights({ searchParams }: { searchParams: Promise
         {patterns.data.length === 0 ? (
           <div className="mt-3">
             <EmptyState title="No linked bidding patterns in this dataset">
-              Patterns need bid data. Since market API v2, bids are visible only to the job creator, so Juri only sees
+              Patterns need bid data. Since market API v2, bids are visible only to the job creator, so Assay only sees
               bids on its own jobs.
             </EmptyState>
           </div>

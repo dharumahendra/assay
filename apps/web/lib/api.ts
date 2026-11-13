@@ -1,5 +1,5 @@
 /**
- * Typed client for the Juri read API (freeze #1, packages/shared/src/api.ts). Server-side only:
+ * Typed client for the Assay read API (freeze #1, packages/shared/src/api.ts). Server-side only:
  * pages are server components that call these and pass plain data down. Browser code uses
  * relative /api/* URLs (proxied by next.config rewrites) and `import type` only.
  */
@@ -46,7 +46,7 @@ async function get<S extends z.ZodTypeAny>(path: string, schema: S, opts: { notF
   try {
     res = await fetch(`${API_URL}${path}`, { cache: "no-store" });
   } catch {
-    throw new ApiFailure(0, "unreachable", `The Juri API at ${API_URL} is not reachable. Start it with \`pnpm api\`.`);
+    throw new ApiFailure(0, "unreachable", `The Assay API at ${API_URL} is not reachable. Start it with \`pnpm api\`.`);
   }
   if (res.status === 404 && opts.notFoundIs404) notFound();
   if (!res.ok) {
@@ -86,6 +86,6 @@ export async function attempt<T>(p: Promise<T>): Promise<{ ok: true; data: T } |
 
 export function failureText(e: ApiFailure): string {
   if (e.code === "rpc_error") return "NEAR testnet RPC did not answer. Retry in a moment.";
-  if (e.code === "no_contract") return "The API has no Juri contract configured (JURI_CONTRACT_ID).";
+  if (e.code === "no_contract") return "The API has no Assay contract configured (JURI_CONTRACT_ID).";
   return e.message;
 }

@@ -40,7 +40,7 @@ export default async function Methodology() {
         <header>
           <h1 className="display text-[2rem] sm:text-[2.5rem]">Methodology & data sources</h1>
           <p className="mt-3 text-muted">
-            How Juri turns public data into the numbers, scores and patterns on this site, and what they cannot tell you.
+            How Assay turns public data into the numbers, scores and patterns on this site, and what they cannot tell you.
           </p>
         </header>
 
@@ -56,7 +56,7 @@ export default async function Methodology() {
               by a heuristic and labelled as such.
             </li>
             <li>
-              <b>Juri contract</b> on NEAR testnet (<code>{meta?.contract_id ?? CONTRACT_ID}</code>): protected jobs,
+              <b>Assay contract</b> on NEAR testnet (<code>{meta?.contract_id ?? CONTRACT_ID}</code>): protected jobs,
               jury votes and payouts.
             </li>
           </ul>
@@ -143,7 +143,7 @@ export default async function Methodology() {
           </ol>
           <p>
             Verifier keys can only call <code>commit_vote</code>, <code>reveal_vote</code> and <code>withdraw</code> on the
-            Juri contract: they cannot move funds or call anything else.
+            Assay contract: they cannot move funds or call anything else.
           </p>
           <SourceLink path="contracts/juri/src/jury.rs" />
         </Section>
@@ -152,9 +152,9 @@ export default async function Methodology() {
           <ul className="list-disc space-y-1.5 pl-5">
             <li>One operator runs all verifiers today; the models differ, the operator does not.</li>
             <li>Jury selection uses NEAR&apos;s block random seed, which a validator could influence.</li>
-            <li>Transfer kinds and patterns are heuristics. Since market API v2, bids are private, so patterns only cover Juri&apos;s own jobs.</li>
+            <li>Transfer kinds and patterns are heuristics. Since market API v2, bids are private, so patterns only cover Assay&apos;s own jobs.</li>
             <li>Most market agents expose no NEAR account, so their on-chain record cannot be matched.</li>
-            <li>The Juri contract runs on testnet. Nothing here is financial advice.</li>
+            <li>The Assay contract runs on testnet. Nothing here is financial advice.</li>
           </ul>
         </Section>
 

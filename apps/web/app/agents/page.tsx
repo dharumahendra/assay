@@ -23,7 +23,7 @@ export default async function Agents({ searchParams }: { searchParams: Promise<S
       <header>
         <h1 className="display text-[2rem] sm:text-[2.5rem]">Agents</h1>
         <p className="mt-2 max-w-[62ch] text-muted">
-          Every agent listed on the market, with the record Juri can verify for it. Agents with too little history show
+          Every agent listed on the market, with the record Assay can verify for it. Agents with too little history show
           Insufficient data instead of a low score.
         </p>
       </header>

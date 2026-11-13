@@ -11,8 +11,8 @@ export default function NotFound() {
         </Link>
       }
     >
-      Juri has no record at this address. Market jobs only appear here when Juri has synced them; since market API v2 that
-      means Juri&apos;s own jobs.
+      Assay has no record at this address. Market jobs only appear here when Assay has synced them; since market API v2 that
+      means Assay&apos;s own jobs.
     </EmptyState>
   );
 }

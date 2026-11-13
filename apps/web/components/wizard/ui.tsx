@@ -17,7 +17,7 @@ export function Eyebrow({ children, className = "" }: { children: ReactNode; cla
 
 /** Handwritten note label (Caveat in the design). */
 export function Hand({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <p className={`font-[Caveat,cursive] text-[1.35rem] font-semibold italic leading-none ${className}`}>{children}</p>;
+  return <p className={`hand text-[1.6rem] leading-none ${className}`}>{children}</p>;
 }
 
 export function Num({ n, className = "" }: { n: number | string; className?: string }) {

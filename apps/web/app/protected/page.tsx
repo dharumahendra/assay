@@ -25,7 +25,7 @@ export default async function ProtectedJobs() {
         <div>
           <h1 className="display text-[2rem] sm:text-[2.5rem]">Protected Jobs</h1>
           <p className="mt-2 max-w-[62ch] text-muted">
-            Jobs funded on the Juri contract{" "}
+            Jobs funded on the Assay contract{" "}
             <a href={explorerAccountUrl(CONTRACT_ID)} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1 font-mono text-[0.875rem]">
               {CONTRACT_ID} <External size={12} />
             </a>
@@ -38,7 +38,7 @@ export default async function ProtectedJobs() {
       </header>
 
       {jobs === null ? (
-        <ErrorState title="The Juri contract could not be read." message={res.ok ? undefined : failureText(res.error)} />
+        <ErrorState title="The Assay contract could not be read." message={res.ok ? undefined : failureText(res.error)} />
       ) : jobs.length === 0 ? (
         <EmptyState title="No protected jobs yet" action={<Link href="/protected/new" className="link">Create protected job</Link>} />
       ) : (

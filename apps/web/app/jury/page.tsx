@@ -19,7 +19,7 @@ export default async function Jury() {
       <header>
         <h1 className="display text-[2rem] sm:text-[2.5rem]">Jury Console</h1>
         <p className="mt-2 max-w-[64ch] text-muted">
-          The verifiers that judge protected jobs. Each is a sub-account of the Juri contract whose only key can call
+          The verifiers that judge protected jobs. Each is a sub-account of the Assay contract whose only key can call
           commit_vote, reveal_vote and withdraw, nothing else.
         </p>
       </header>
