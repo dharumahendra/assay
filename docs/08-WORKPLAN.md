@@ -150,12 +150,12 @@ flowchart LR
 
 ### P6 — Frontend transaksional (FE + integrasi SC) · L
 
-- [ ] T6.1 Wallet connect/disconnect, deteksi peran (FR-I1, FR-I4).
-- [ ] T6.2 Wizard `/protected/new` 4 langkah (FR-C4, FR-D1).
+- [~] T6.1 Wallet connect/disconnect, deteksi peran (FR-I1, FR-I4). NEAR Wallet Selector (Meteor, MyNearWallet, Intear); modal teruji, tanda tangan belum diuji dengan wallet asli; dipasang di layout oleh pemilik shell.
+- [~] T6.2 Wizard `/protected/new` 4 langkah (FR-C4, FR-D1). Langkah 1–4 teruji di browser (compile live, hash di browser = hash blob); `create_job` belum ditandatangani dengan wallet asli.
 - [ ] T6.3 `/protected/[jobId]`: timeline, panel juri live, modal submit, drawer evidence/attestation, Verify hash (FR-I2, FR-I3, NFR-VERIF-2).
-- [ ] T6.4 `/protected`, `/account` dengan Withdraw.
+- [~] T6.4 `/protected`, `/account` dengan Withdraw. `/account`: claimable + Withdraw, get_agent_stats, job per peran, Cancel/Reclaim; Withdraw belum ditandatangani dengan wallet asli.
 - [ ] T6.5 `/jury` tab Verifiers dan Parameters; Treasury (SHOULD).
-- [ ] T6.6 Pemetaan kode error kontrak → pesan ramah.
+- [x] T6.6 Pemetaan kode error kontrak → pesan ramah (`apps/web/lib/wallet/errors.ts`, E01–E23 + penolakan wallet, saldo, gas, RPC; `components/tx-modal.tsx`).
 
 **Gate G6:** UF2–UF5 berhasil lewat UI di testnet, termasuk skenario injection (W10).
 
