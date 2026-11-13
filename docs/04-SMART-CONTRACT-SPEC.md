@@ -431,6 +431,8 @@ Skrip `scripts/demo-lifecycle.ts` menjalankan seluruh alur memakai `near-api-js`
 
 ## 13. Addendum implementasi P3 (freeze #2, 2026-11-13)
 
+**Status:** diterima owner sebagai freeze #2 (2026-11-13). Parameter demo di bawah dipertahankan; gas verifier 30 Tgas adalah batas tetap untuk jury runner (commit/reveal memakai <10 Tgas, jadi seed 0,1 NEAR cukup untuk ±10 vote per verifier sebelum perlu top-up).
+
 Sumber kebenaran antarmuka: `contracts/juri/abi/juri.abi.json` dan `packages/shared/src/contract.ts` (test `contract.test.ts` memastikan keduanya sinkron). Perbedaan terhadap §2–§9:
 
 - **Timestamp** di `Job`/`Verifier`/`SnapshotRoot` diserialisasi sebagai `U64` (string JSON, nanodetik), bukan number.

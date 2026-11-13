@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+/*
+ * Juri design tokens.
+ * Idea: every number on the page is a piece of evidence. Evidence carries a yellow
+ * marker tag (like a numbered evidence tent) that opens the records behind it.
+ * Everything else stays quiet: cool paper, ink, one teal for actions.
+ */
+:root {
+  --paper: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #17212d;
+  --muted: #586373;
+  --rule: #d6dce3;
+  --act: #0a6b63;
+  --act-ink: #ffffff;
+  --marker: #f2c230;
+  --marker-ink: #17212d;
+  --warn: #8a5a00;
+  --warn-bg: #fff4d6;
+  --bad: #9b2c2c;
+  --bad-bg: #fde8e8;
+  --good: #0a6b63;
+  --good-bg: #e2f3f0;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10161d;
+    --surface: #17202a;
+    --ink: #e6ebf0;
+    --muted: #9aa6b4;
+    --rule: #2b3846;
+    --act: #4fc1b3;
+    --act-ink: #0d1a1e;
+    --marker: #e9bc2e;
+    --marker-ink: #17212d;
+    --warn: #f0c46a;
+    --warn-bg: #3a2e12;
+    --bad: #f19a9a;
+    --bad-bg: #3a1c1f;
+    --good: #4fc1b3;
+    --good-bg: #133430;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10161d;
+  --surface: #17202a;
+  --ink: #e6ebf0;
+  --muted: #9aa6b4;
+  --rule: #2b3846;
+  --act: #4fc1b3;
+  --act-ink: #0d1a1e;
+  --marker: #e9bc2e;
+  --marker-ink: #17212d;
+  --warn: #f0c46a;
+  --warn-bg: #3a2e12;
+  --bad: #f19a9a;
+  --bad-bg: #3a1c1f;
+  --good: #4fc1b3;
+  --good-bg: #133430;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-act: var(--act);
+  --color-act-ink: var(--act-ink);
+  --color-marker: var(--marker);
+  --color-marker-ink: var(--marker-ink);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-bad: var(--bad);
+  --color-bad-bg: var(--bad-bg);
+  --color-good: var(--good);
+  --color-good-bg: var(--good-bg);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, monospace;
+}
+
+/* Base rules live in layers so Tailwind utilities (layer "utilities") can override them. */
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: inherit;
+  }
+  th:not(:last-child),
+  td:not(:last-child) {
+    padding-right: 0.75rem;
+  }
+  :focus-visible {
+    outline: 2px solid var(--act);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+
+/* Wide cut of Archivo for display type: the one loud typographic move. */
+.display {
+  font-stretch: 125%;
+  font-weight: 750;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+}
+.wide {
+  font-stretch: 112%;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.link {
+  color: var(--act);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.link:hover {
+  text-decoration-thickness: 2px;
+}
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--rule) 0%, var(--surface) 50%, var(--rule) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 4px;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Drawer slide-in: the one motion that answers an action. */
+.drawer-in {
+  animation: drawer-in 180ms ease-out;
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .drawer-in {
+    animation: none;
+  }
+}

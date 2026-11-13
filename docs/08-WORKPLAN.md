@@ -135,12 +135,13 @@ flowchart LR
 
 ### P5 — Frontend read-only (FE) · M
 
-- [ ] T5.1 Scaffold Next.js dari template `create-near-app` terbaru (wallet sudah tersedia), Tailwind, layout, navbar dengan badge mode (FR-A6).
-- [ ] T5.2 Klien API bertipe dari `packages/shared`.
-- [ ] T5.3 Halaman `/`, `/insights` + Source drawer (FR-A5).
-- [ ] T5.4 `/jobs`, `/jobs/[id]` termasuk **Generate criteria**.
-- [ ] T5.5 `/agents/[id]`, `/patterns/[id]` (FR-B6, FR-B8).
-- [ ] T5.6 `/methodology` (FR-I5).
+- [~] T5.1 Scaffold Next.js 15 + Tailwind v4 manual (create-near-app diblokir di sesi ini; wallet ditambahkan di P6), layout, navbar dengan badge mode (FR-A6).
+- [x] T5.2 Klien API bertipe dari `packages/shared` (`apps/web/lib/api.ts`).
+- [x] T5.3 Halaman `/`, `/insights` + Source drawer (FR-A5).
+- [x] T5.4 `/jobs`, `/jobs/[id]` termasuk **Generate criteria** (memanggil `/api/criteria/compile` P4).
+- [x] T5.5 `/agents`, `/agents/[id]`, `/patterns/[id]` (FR-B6, FR-B8).
+- [x] T5.6 `/methodology` (FR-I5). Bonus read-only dari kontrak: `/protected`, `/jury`.
+- [ ] Sisa: cek visual mobile, pakai `CriteriaDocSchema` dari shared setelah P4 commit, grafik insights (belum ada data seri).
 
 **Gate G5:** semua halaman read-only berjalan dengan data nyata pada mode SNAPSHOT; loading/empty/error state ada.
 
