@@ -300,12 +300,15 @@ export interface ModelSpec {
   model: string;
 }
 
-/** Default jury: 4 different model families on NEAR AI Cloud (docs/samples/nearai-models.json). */
+/**
+ * Default jury: 4 different model families, all TEE-attested on NEAR AI Cloud (near.ai/pricing, 2026-11).
+ * The contract draws 3 of the 4 active verifiers per job, so every one must be attested.
+ */
 export const DEFAULT_VERIFIER_MODELS: Record<string, string> = {
   v1: "deepseek-ai/DeepSeek-V4.1-Flash-1017",
   v2: "Qwen/Qwen3.8-27B",
   v3: "moonshotai/kimi-k2.6",
-  v4: "google/gemini-2.5-flash",
+  v4: "z-ai/glm-5.3-flash",
 };
 export const DEFAULT_COMPILER_MODEL = "Qwen/Qwen3.8-27B";
 
