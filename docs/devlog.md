@@ -33,6 +33,19 @@
 - Blocker: pemetaan agent → akun NEAR (V2) dan bid privat (V1) membuat Trust Score bergantung pada data market, bukan settlement on-chain; perlu keputusan owner (lihat ringkasan sesi).
 - Cara menjalankan: `pnpm --filter @juri/workers trust` lalu `pnpm --filter @juri/api start` → `http://localhost:8787/api/health`
 
+## 2026-11-13 — Integrasi P0/P1 ↔ P2
+- Selesai:
+  - `services/workers/src/pipeline.ts`: `derive()` = metrics + trust engine; `loadSnapshot()` = import + derive. `sync` sekarang otomatis menjalankan derive (05 §1: trust setelah setiap sync).
+  - CLI baru: `trust`, `derive`, `load:snapshot` (root: `pnpm trust | derive | load:snapshot | api`).
+  - API (`services/api/src/index.ts`): pada `MODE=snapshot` dengan DB kosong, otomatis memuat snapshot terbaru lalu derive, jadi clone baru langsung jalan tanpa jaringan/key.
+  - `.env` repo dimuat otomatis (`src/load-env.ts`, tanpa override env shell) di CLI, trust-engine, dan API, sehingga config P0 (akun testnet, `JURI_CONTRACT_ID`, key) sampai ke worker + API.
+  - Source drawer: `by_token` (M2) jadi satu record per token (dengan simbol + desimal); M6 memakai bentuk `endpoint` + record tx sukses terakhir yang bisa diklik.
+  - Test integrasi `services/api/src/integration.test.ts`: snapshot nyata → derive → read API (M1–M6, records, agents, trust; leg `internal` tidak pernah dihitung sebagai bayaran).
+- Uji e2e: API di port 8799 dengan DB kosong → snapshot dimuat otomatis (691 agent, 7 baris metrik), `/api/health` ok, `/api/insights` M1–M6 nilai nyata, `/api/agents` skor ts-0.2 (maks 70, semua unmapped).
+- Antarmuka berubah: M6 `sources_json` = `{endpoint, fetched_at, last_success_tx}`; perintah `metrics` tidak lagi menjalankan trust (pakai `derive`).
+- Blocker: 0 agent ter-mapping ke akun NEAR (market tidak memuat akun, leg escrow tanpa memo job) → Trust Score tanpa komponen on-chain. Perlu keputusan owner. `.env` belum ada: salin dari `.env.example` agar `contract_id` muncul di `/api/meta`.
+- Cara menjalankan: `pnpm load:snapshot && pnpm api` (offline) atau `pnpm sync && pnpm api` (live).
+
 ## 2026-11-13 — P3 smart contract selesai, G3 lulus
 - Selesai: T3.1–T3.7 kontrak `contracts/juri` (near-sdk 5.30), T3.8 unit test 60/60 (51 kontrak + 9 tally; integration near-workspaces belum), T3.9 deploy `juri.juri-assay-jdir.testnet` + v1–v4 (masing-masing hanya 1 FCAK) + FCAK keeper, T3.10 ABI `contracts/juri/abi/juri.abi.json` + `packages/shared/src/contract.ts` + vektor commitment bersama TS/Rust (**freeze #2**, shared test 21/21), T3.11 `scripts/demo-lifecycle.ts`.
 - Bukti G3 (testnet):

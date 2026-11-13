@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { TRANSFER_KINDS as SHARED_KINDS } from "@juri/shared";
 import { describe, expect, it } from "vitest";
 import { classifyLegs } from "./classify.js";
+import { loadRepoEnv } from "./env.js";
 import { openDb, schema } from "./db/index.js";
 import { legsOf, reclassify, storeTxn, type EscrowTx } from "./index-escrow.js";
 import { computeMetrics } from "./metrics.js";
@@ -59,6 +60,18 @@ describe("legsOf", () => {
       ["native_transfer", "escrow.ai.near", "usdc.near", "native:near", "7"],
     ]);
   });
+});
+
+it("loadRepoEnv fills missing vars but never overrides existing ones", () => {
+  const dir = mkdtempSync(join(tmpdir(), "juri-env-"));
+  const f = join(dir, ".env");
+  writeFileSync(f, "JURI_TEST_A=from-file\nJURI_TEST_B=from-file\n");
+  process.env.JURI_TEST_B = "from-shell";
+  expect(loadRepoEnv(f)).toBe(true);
+  expect([process.env.JURI_TEST_A, process.env.JURI_TEST_B]).toEqual(["from-file", "from-shell"]);
+  expect(loadRepoEnv(join(dir, "missing.env"))).toBe(false);
+  delete process.env.JURI_TEST_A;
+  delete process.env.JURI_TEST_B;
 });
 
 it("db TRANSFER_KINDS matches @juri/shared", () => {

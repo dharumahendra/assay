@@ -18,6 +18,10 @@
     "index:escrow": "pnpm --filter @juri/workers index:escrow",
     "metrics": "pnpm --filter @juri/workers metrics",
     "snapshot:export": "pnpm --filter @juri/workers snapshot:export",
-    "snapshot:import": "pnpm --filter @juri/workers snapshot:import"
+    "snapshot:import": "pnpm --filter @juri/workers snapshot:import",
+    "trust": "pnpm --filter @juri/workers trust",
+    "derive": "pnpm --filter @juri/workers derive",
+    "load:snapshot": "pnpm --filter @juri/workers load:snapshot",
+    "api": "pnpm --filter @juri/api start"
   }
 }

@@ -181,7 +181,7 @@ function m6(db: Db): MetricRow {
     note: v
       ? `Failed ÷ all txns touching ${"escrow.ai.near"} (FastNEAR). Last successful tx ${v.last_success_at ?? "-"}; latest tx ${v.latest_tx_at ?? "-"}.`
       : "Escrow totals not indexed.",
-    sources: v ? { source: f!.source, updated_at: f!.updatedAt, last_success_tx: v.last_success_tx } : null,
+    sources: v ? { endpoint: f!.source, fetched_at: f!.updatedAt, last_success_tx: v.last_success_tx } : null,
   };
 }
 

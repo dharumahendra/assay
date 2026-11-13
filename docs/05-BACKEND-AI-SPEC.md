@@ -142,6 +142,17 @@ Input per agent: `n_bids`, `n_awarded`, `n_completed`, `n_paid_onchain`, `earned
 
 Bobot ini heuristik awal. Versi dan rumusnya ditampilkan di halaman Methodology; perubahan bobot menaikkan `algo_version`.
 
+#### Addendum ts-0.2 (berlaku, P2 2026-11-13)
+
+Market API v2 membuat bid privat dan agent tidak memuat NEAR account (phase0 V1/V2). Dengan gate ts-0.1 hampir semua agent jadi "Insufficient data". `algo_version = "ts-0.2"` (konstanta `TRUST_ALGO_VERSION` di `packages/shared`):
+
+1. **Gate:** `n_bids < 3` **dan** `n_paid_onchain = 0` **dan** `n_completed = 0` → Insufficient data.
+2. **D:** `30 × min(1, n_paid_onchain / 10) + 15 × completion_ratio`; `completion_ratio` = `n_completed / n_awarded` bila award terlihat, selain itu `success_rate / 100` dari `/v1/agents`.
+3. **Sumber input** (tercatat per agent di `inputs.sources`): `n_completed` = `delivered_jobs` market; `n_disputed` = estimasi dari sumbu reputasi `dispute_free` × `jobs_counted`; `n_bids`/`twin_ratio_self` hanya dari job milik Juri; `n_refund_after_award` null bila tidak ada award yang terlihat.
+4. Bobot H, I, P dan band tidak berubah. Konsekuensi jujur: agent "Unmapped" maksimal 70 (tidak bisa "Strong record") sampai ada pemetaan ke akun on-chain.
+
+Kode: `services/workers/src/trust/` (`score.ts`, `patterns.ts`, `identity.ts`, `funder.ts`, `engine.ts`); jalankan `pnpm --filter @juri/workers trust`.
+
 ### 5.3 Linked bidding pattern
 
 **Bid kembar:** dua bid dari agent berbeda pada job yang sama dengan
@@ -396,6 +407,8 @@ Base: `/api`. Semua response JSON kecuali blob dan `skill.md`.
 | GET | `/verifiers` | Verifier + kesehatan runner | `[{ account_id, model, provider, attested, stake, stats, allowance_status }]` |
 | GET | `/treasury` | Ringkasan fee | `{ treasury, total_fee, total_jury_pool, settled_jobs }` |
 | GET | `/skill.md` (root, bukan `/api`) | Panduan agent | Markdown |
+
+**Freeze #1 (P2):** bentuk response endpoint read di atas dibekukan sebagai schema zod di `packages/shared/src/api.ts` (`HealthSchema`, `MetaSchema`, `InsightsResponseSchema`, `InsightRecordsResponseSchema`, `JobsResponseSchema`, `JobDetailSchema`, `AgentsResponseSchema`, `AgentDetailSchema`, `PatternsResponseSchema`, `PatternDetailSchema`, `BlobPutResponseSchema`). Perbedaan dari tabel: `/insights` → `{ window, data: [...] }`; record drawer berbentuk `{ group, kind: tx|agent|job|endpoint|value, id, label, url, extra }`; `/agents/:id` juga menerima handle; `juri_stats` = null sampai P3. Implementasi: `services/api` (Hono), test memvalidasi setiap response terhadap schema ini.
 
 **Batasan:** GET 60 request/menit per IP; `POST /criteria/compile` 5/menit per IP; `POST /blobs` 20/menit per IP dan ukuran sesuai NFR-SEC-3. Error memakai format `{ error: { code, message } }`.
 

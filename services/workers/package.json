@@ -14,6 +14,9 @@
     "metrics": "tsx src/cli.ts metrics",
     "snapshot:export": "tsx src/cli.ts snapshot:export",
     "snapshot:import": "tsx src/cli.ts snapshot:import",
+    "trust": "tsx src/trust-engine.ts",
+    "derive": "tsx src/cli.ts derive",
+    "load:snapshot": "tsx src/cli.ts load:snapshot"
   },
   "dependencies": {
     "@juri/shared": "workspace:*",

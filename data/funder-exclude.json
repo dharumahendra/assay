@@ -1,0 +1,15 @@
+{
+  "note": "Funders that must not create a shared_funder edge: exchanges, relayers, faucets, system and market accounts (05 §5.3). Extend as new ones are identified; each entry should be checkable on nearblocks.io.",
+  "accounts": [
+    "near",
+    "system",
+    "relay.aurora",
+    "intents.near",
+    "escrow.ai.near",
+    "treasury.ai.near",
+    "wrap.near",
+    "faucet.near",
+    "testnet",
+    "faucet.testnet"
+  ]
+}
