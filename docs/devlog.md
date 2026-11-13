@@ -67,3 +67,21 @@
 - Antarmuka: FE memakai freeze #1 (`api.ts`) dan freeze #3 (`CriteriaDocSchema` dari P4) di server; komponen client hanya `import type` dari `@juri/shared` (barrel memuat `node:crypto`). Browser memanggil `/api/*` lewat rewrite Next ke `API_URL`.
 - Belum / menyimpang: scaffold manual (create-near-app diblokir izin sesi) — wallet di P6. `/jobs` kosong karena bid/job privat sejak market API v2 (dijelaskan di empty state), jadi `/jobs/[id]` dan `/patterns/[id]` belum diuji dengan data. Grafik insights belum (API tidak punya data seri). Compile criteria saat ini 503 `no_llm` (ditampilkan sebagai pesan + Retry).
 - Cara menjalankan: `pnpm api` (MODE=snapshot) lalu `pnpm --filter @juri/web build && pnpm --filter @juri/web start` → http://localhost:3000 (env opsional: `API_URL`, `JURI_CONTRACT_ID`, `NEAR_RPC_URL`).
+
+## 2026-11-13 — P4 Spec Compiler + jury runner (BE/AI), G4 belum lulus (butuh kunci LLM)
+- Selesai:
+  - T4.1 `packages/jury` (`@juri/jury`): provider `nearai` / `openai_compat` (fetch, retry 2× + backoff, fallback tanpa `response_format`), `recorded` (cek sha256 respons + hash prompt), `RecordingProvider`, plus juri offline `rules:v1` (tanpa LLM, tidak attested, kriteria LLM → UNSURE).
+  - T4.2 compiler (prompt 05 §6.3, temp 0,2, 1500 token, 1× retry dengan error lalu 422) + `POST /api/criteria/compile` (5/menit; 503 `no_llm` bila tanpa kunci). Schema `CriteriaDoc` v1 + `Evidence` = **freeze #3** di `packages/shared/src/criteria.ts`.
+  - T4.3 aturan deterministik (min/max_words, contains_sections, regex, contains_links, url_reachable, format_is) + SSRF guard (skema/port, IP privat/metadata, allowlist, redirect dicek ulang, batas ukuran).
+  - T4.4 pre-scan injection (instruksi ke juri, zero-width, HTML tersembunyi, komentar HTML berperintah, base64/hex/Morse yang ter-decode jadi teks).
+  - T4.5 judge (prompt 05 §7.3, delimiter nonce) + override deterministik + output invalid → UNSURE + hash mismatch → semua FAIL.
+  - T4.6 runner `services/workers/src/jury-runner.ts` (`pnpm jury`): start_judging → judge paralel → blob evidence → commit → reveal → finalize; idempoten via `runner_state` (kunci `job#restart`) + status on-chain; salt disimpan sebelum commit.
+  - T4.7 (sebagian) attestation: nonce 05 §7.5, simpan report sebagai blob, verifikasi signature ecdsa (personal_sign) / ed25519. Endpoint NEAR AI belum pernah dipanggil live.
+  - T4.8 (sebagian) eval set 24 kasus (`eval/`, label kita sendiri) + harness `pnpm eval --rules|--recorded|--live`. Baseline tanpa model: `eval/report-rules-baseline.md` (akurasi outcome 67%, injection false-PASS 0%, deteksi injection 100%, 0 false flag pada V1–V4; semua miss = kriteria LLM MUST yang UNSURE). `eval/report.md` (LLM) belum ada.
+- Bukti testnet (runner otomatis, juri `rules:v1`, kriteria deterministik + C0):
+  - Job #4 honest → Settled/Released `1,1,1,1`: start `BeCqt6KcNmdMBu4BDnMyeCwFNRZNM9465Chk7uiP27Tq`, finalize `9mT89AffpJUEYEFfePAVLs3d9J8MKEJNgxmErBJSCqYQ`.
+  - Job #3 → Settled/Refunded `1,0,1,1`: deliverable 77 kata < aturan 80 (kesalahan fixture kita; aturan bekerja benar). Finalize `DqTWm1xm7PSgRQAw8jDT18uwhhqo3KLh8xrrA3VFbKVC`.
+- Test: jury 21/21, workers 30/30, api 24/24.
+- Antarmuka berubah: blob store pindah ke `services/workers/src/blobs.ts` (API me-re-export); freeze #3 `criteria.ts`; deposit `create_job` harus > storage + `min_amount` (0,1 NEAR) → pakai 0,15.
+- Blocker (aksi owner): `NEARAI_API_KEY` + kredit atau `FALLBACK_LLM_*` untuk G4 (3 model), `pnpm eval --live`, `eval/report.md`, attestation live, dan compile endpoint.
+- Cara menjalankan: `pnpm jury:demo [-- --scenario injector]` lalu `pnpm jury`; `pnpm eval`; `pnpm --filter @juri/workers withdraw <akun>`.

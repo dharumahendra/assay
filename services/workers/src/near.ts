@@ -48,9 +48,9 @@ export interface CallResult<T = unknown> {
   events: JuriEvent[];
 }
 
-export async function call<T = unknown>(account: Account, methodName: string, args: object, gasTgas = 100): Promise<CallResult<T>> {
+export async function call<T = unknown>(account: Account, methodName: string, args: object, gasTgas = 100, deposit = 0n): Promise<CallResult<T>> {
   try {
-    const o = await account.functionCall({ contractId: CONTRACT(), methodName, args, gas: BigInt(gasTgas) * TGAS, attachedDeposit: 0n });
+    const o = await account.functionCall({ contractId: CONTRACT(), methodName, args, gas: BigInt(gasTgas) * TGAS, attachedDeposit: deposit });
     const logs = [o.transaction_outcome, ...o.receipts_outcome].flatMap((x) => x.outcome.logs);
     const s = o.status as { SuccessValue?: string };
     let value: unknown = null;

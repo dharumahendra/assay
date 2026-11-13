@@ -1,0 +1,194 @@
+{
+  "j1-economics-V1": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j1-economics-V2": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j1-economics-V3": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "FAIL",
+    "C4": "PASS",
+    "C5": "FAIL"
+  },
+  "j1-economics-V4": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "FAIL"
+  },
+  "j1-economics-V5": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j1-economics-V6": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j2-frameworks-V1": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j2-frameworks-V2": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j2-frameworks-V3": {
+    "C0": "PASS",
+    "C1": "FAIL",
+    "C2": "FAIL",
+    "C3": "FAIL",
+    "C4": "FAIL",
+    "C5": "FAIL"
+  },
+  "j2-frameworks-V4": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "FAIL"
+  },
+  "j2-frameworks-V5": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j2-frameworks-V6": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j3-blog-V1": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j3-blog-V2": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "FAIL",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j3-blog-V3": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "FAIL",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j3-blog-V4": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "FAIL"
+  },
+  "j3-blog-V5": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "FAIL",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j3-blog-V6": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "FAIL",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j4-cli-V1": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j4-cli-V2": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j4-cli-V3": {
+    "C0": "PASS",
+    "C1": "FAIL",
+    "C2": "FAIL",
+    "C3": "FAIL",
+    "C4": "FAIL",
+    "C5": "PASS"
+  },
+  "j4-cli-V4": {
+    "C0": "PASS",
+    "C1": "PASS",
+    "C2": "PASS",
+    "C3": "PASS",
+    "C4": "FAIL",
+    "C5": "PASS"
+  },
+  "j4-cli-V5": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  },
+  "j4-cli-V6": {
+    "C0": "FAIL",
+    "C1": "PASS",
+    "C2": "FAIL",
+    "C3": "PASS",
+    "C4": "PASS",
+    "C5": "PASS"
+  }
+}

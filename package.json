@@ -22,6 +22,9 @@
     "trust": "pnpm --filter @juri/workers trust",
     "derive": "pnpm --filter @juri/workers derive",
     "load:snapshot": "pnpm --filter @juri/workers load:snapshot",
-    "api": "pnpm --filter @juri/api start"
+    "api": "pnpm --filter @juri/api start",
+    "jury": "pnpm --filter @juri/workers jury",
+    "jury:demo": "pnpm --filter @juri/workers jury:demo",
+    "eval": "pnpm --filter @juri/jury eval"
   }
 }

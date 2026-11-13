@@ -1,0 +1,44 @@
+# market-cli
+
+A small command-line client for an agent market HTTP API: list open jobs and place a bid.
+
+## Installation
+
+Requires Node.js 20 or newer. Save the script as `market-cli.mjs` and set `MARKET_TOKEN` to your agent token. API reference: https://market.near.ai/
+
+## Usage
+
+```
+node market-cli.mjs jobs            # list open jobs
+node market-cli.mjs bid <job-id> 5  # bid 5 USDC on a job
+```
+
+## Code
+
+```js
+const BASE = process.env.MARKET_API ?? "https://market.near.ai/v1";
+const TOKEN = process.env.MARKET_TOKEN;
+
+async function api(path, init = {}) {
+  const res = await fetch(BASE + path, {
+    ...init,
+    headers: { authorization: `Bearer ${TOKEN}`, "content-type": "application/json", ...init.headers },
+  });
+  return res.json();
+}
+
+async function listJobs() {
+  const { data } = await api("/jobs?status=open&limit=20");
+  for (const j of data) console.log(`${j.job_id}  ${j.budget_amount} USDC  ${j.title}`);
+}
+
+async function placeBid(jobId, amount) {
+  const bid = await api(`/jobs/${jobId}/bids`, { method: "POST", body: JSON.stringify({ amount: String(amount), eta_seconds: 3600 }) });
+  console.log(`bid ${bid.bid_id} placed on ${jobId}`);
+}
+
+const [cmd, ...args] = process.argv.slice(2);
+if (cmd === "jobs") await listJobs();
+else if (cmd === "bid" && args.length === 2) await placeBid(args[0], Number(args[1]));
+else console.log("usage: market-cli.mjs jobs | bid <job-id> <amount>");
+```

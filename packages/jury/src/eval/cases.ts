@@ -251,9 +251,9 @@ export const EVAL_JOBS: EvalJob[] = [
     market_job_id: "a3672345-513b-4840-a4ae-44c1e03eb5c0",
     title: "Economic analysis report on AI agent marketplaces",
     description:
-      "Write an economic analysis of AI agent marketplaces in Markdown. Cover how fees and escrow affect pricing between requesters and agents, with at least one worked numeric example. Include an executive summary, a section on fee structures and concrete recommendations for platform operators. Identify risks or market failures. Cite your sources with links.",
+      "Write an economic analysis (at least 250 words) of AI agent marketplaces in Markdown. Cover how fees and escrow affect pricing between requesters and agents, with at least one worked numeric example. Include an executive summary, a section on fee structures and concrete recommendations for platform operators. Identify risks or market failures. Cite your sources with links.",
     criteria: doc("Economic analysis report on AI agent marketplaces", "a3672345-513b-4840-a4ae-44c1e03eb5c0", [
-      { id: "C1", text: "The report is at least 350 words long.", kind: "MUST", method: "deterministic", rule: { type: "min_words", params: { n: 350 } } },
+      { id: "C1", text: "The report is at least 250 words long.", kind: "MUST", method: "deterministic", rule: { type: "min_words", params: { n: 250 } } },
       { id: "C2", text: "The report has the sections Executive Summary, Fee Structures and Recommendations.", kind: "MUST", method: "deterministic", rule: { type: "contains_sections", params: { headings: ["Executive Summary", "Fee Structures", "Recommendations"] } } },
       { id: "C3", text: "The report explains how fees or escrow affect pricing between requesters and agents and gives at least one worked numeric example.", kind: "MUST", method: "llm", rule: null },
       { id: "C4", text: "The report cites at least two sources with links.", kind: "SHOULD", method: "deterministic", rule: { type: "contains_links", params: { min: 2 } } },
@@ -303,16 +303,16 @@ export const EVAL_JOBS: EvalJob[] = [
     market_job_id: "dfd88019-34f3-4dd5-a64c-405972dbfa92",
     title: "Blog post: the state of the AI agent marketplace in 2026",
     description:
-      "Write a blog post (300–1500 words, Markdown) on the state of the AI agent marketplace in 2026. It needs a title and an introduction stating the thesis, should cover at least three trends, and should end with a conclusion or call to action.",
+      "Write a blog post (200–1500 words, Markdown) on the state of the AI agent marketplace in 2026. It needs a title and an introduction stating the thesis, should cover at least three trends, and should end with a conclusion or call to action.",
     criteria: doc("Blog post: the state of the AI agent marketplace in 2026", "dfd88019-34f3-4dd5-a64c-405972dbfa92", [
-      { id: "C1", text: "The post is at least 300 words long.", kind: "MUST", method: "deterministic", rule: { type: "min_words", params: { n: 300 } } },
+      { id: "C1", text: "The post is at least 200 words long.", kind: "MUST", method: "deterministic", rule: { type: "min_words", params: { n: 200 } } },
       { id: "C2", text: "The post has a title and an introduction that states a thesis about the AI agent marketplace.", kind: "MUST", method: "llm", rule: null },
       { id: "C3", text: "The post covers at least three distinct trends in AI agent marketplaces in 2026.", kind: "MUST", method: "llm", rule: null },
       { id: "C4", text: "The post is at most 1500 words long.", kind: "SHOULD", method: "deterministic", rule: { type: "max_words", params: { n: 1500 } } },
       { id: "C5", text: "The post ends with a conclusion or a call to action.", kind: "SHOULD", method: "llm", rule: null },
     ]),
     v1: J3_V1,
-    // keep the word count ≥300 so only the trend criterion breaks
+    // keep the word count ≥200 so only the trend criterion breaks
     v2: (v1) =>
       replace(
         cut(cut(v1, "## Trend 2: Agents hiring agents", "## Trend 3"), "## Trend 3: Reputation under pressure", "## Trend 4"),

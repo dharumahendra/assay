@@ -100,6 +100,7 @@ describe("prescan", () => {
   it("clean report is not flagged", () => {
     expect(prescan(goodText)).toEqual({ flagged: false, hits: [] });
     expect(prescan("Tx hash 7f3a" + "b".repeat(60) + " and an evaluation framework comparison.").flagged).toBe(false);
+    expect(prescan("Third, dispute deadlock: without a neutral judge, refunds depend on the escrow.").flagged).toBe(false);
   });
 
   it("flags plain and obfuscated injections", () => {

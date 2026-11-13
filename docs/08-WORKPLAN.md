@@ -118,14 +118,14 @@ flowchart LR
 
 ### P4 — Spec Compiler + jury runner (BE/AI) · L
 
-- [ ] T4.1 Abstraksi provider: `nearai`, `openai_compat`, `recorded` (05 §7.6).
-- [ ] T4.2 Prompt compiler + schema + endpoint `/criteria/compile` + kriteria C0 (FR-C1–C3, FR-C5).
-- [ ] T4.3 Mesin aturan deterministik + SSRF guard (FR-C2, NFR-SEC-4).
-- [ ] T4.4 Pre-scan injection (FR-E5).
-- [ ] T4.5 Prompt judge + evidence schema + override deterministik (FR-E3, FR-E4, FR-E9).
-- [ ] T4.6 Loop runner + `runner_state` + commit/reveal/finalize via kunci verifier dan keeper (NFR-REL-2).
-- [ ] T4.7 Attestation capture + cek signature (FR-E8, SHOULD).
-- [ ] T4.8 Eval set v1 ≥20 kasus (09 §2); jalankan; rekam output ke `eval/recorded/`; buat `eval/report.md` v1.
+- [x] T4.1 Abstraksi provider: `nearai`, `openai_compat`, `recorded` (05 §7.6).
+- [x] T4.2 Prompt compiler + schema + endpoint `/criteria/compile` + kriteria C0 (FR-C1–C3, FR-C5).
+- [x] T4.3 Mesin aturan deterministik + SSRF guard (FR-C2, NFR-SEC-4).
+- [x] T4.4 Pre-scan injection (FR-E5).
+- [x] T4.5 Prompt judge + evidence schema + override deterministik (FR-E3, FR-E4, FR-E9).
+- [x] T4.6 Loop runner + `runner_state` + commit/reveal/finalize via kunci verifier dan keeper (NFR-REL-2).
+- [~] T4.7 Attestation capture + cek signature (FR-E8, SHOULD).
+- [~] T4.8 Eval set v1 ≥20 kasus (09 §2); jalankan; rekam output ke `eval/recorded/`; buat `eval/report.md` v1.
 
 **Gate G4:** satu Protected Job di testnet dinilai otomatis oleh 3 model berbeda sampai `Settled`; eval v1 terbit.
 

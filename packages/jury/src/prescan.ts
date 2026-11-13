@@ -13,7 +13,8 @@ const INSTRUCTION_PATTERNS: RegExp[] = [
   /\bas\s+an?\s+(ai|llm|language\s+model|evaluator|judge|verifier|grader|reviewer)\b/i,
   /\b(mark|rate|approve|grade|score|judge|evaluate)\b[^.\n]{0,30}\b(pass(ed|ing)?|approved?|accept(ed)?|full\s+marks|10\s*\/\s*10|perfect)\b/i,
   /\bsystem\s+prompt\b/i,
-  /\b(evaluators?|judges?|verifiers?|graders?|ai\s+(reviewers?|systems?|models?)|llms?)\s*[:,]\s*\S/i,
+  // addressing the jury at the start of a line/sentence ("Evaluator: …", "Dear judges, …"), not "a neutral judge, refunds…"
+  /(?:^|[\n.!?>]\s*|\bdear\s+|\bhey\s+|\bto\s+the\s+)(?:ai\s+)?(evaluators?|judges?|verifiers?|graders?|reviewers?|ai\s+(reviewers?|systems?|models?)|llms?)\s*[:,]\s*\S/im,
   /\b(note|message|instructions?)\s+(to|for)\s+(the\s+)?(ai|llm|evaluators?|judges?|verifiers?|graders?|reviewers?)\b/i,
   /\byou\s+(must|should|will)\s+(now\s+)?(output|respond|answer|return|say)\b/i,
 ];

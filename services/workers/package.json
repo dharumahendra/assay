@@ -17,7 +17,9 @@
     "trust": "tsx src/trust-engine.ts",
     "derive": "tsx src/cli.ts derive",
     "load:snapshot": "tsx src/cli.ts load:snapshot",
-    "jury": "tsx src/jury-main.ts"
+    "jury": "tsx src/jury-main.ts",
+    "jury:demo": "tsx src/jury-demo.ts",
+    "withdraw": "tsx src/withdraw.ts"
   },
   "dependencies": {
     "@juri/jury": "workspace:*",
