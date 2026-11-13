@@ -32,3 +32,18 @@
 - Antarmuka berubah: algo `ts-0.1` → `ts-0.2` (docs/05 §5.2 addendum, ya); bentuk response read API dibekukan (docs/05 §8 Freeze #1, ya). File P1 yang disentuh: hanya baris export di `packages/shared/src/index.ts` dan script `trust` di `services/workers/package.json`.
 - Blocker: pemetaan agent → akun NEAR (V2) dan bid privat (V1) membuat Trust Score bergantung pada data market, bukan settlement on-chain; perlu keputusan owner (lihat ringkasan sesi).
 - Cara menjalankan: `pnpm --filter @juri/workers trust` lalu `pnpm --filter @juri/api start` → `http://localhost:8787/api/health`
+
+## 2026-11-13 — P3 smart contract selesai, G3 lulus
+- Selesai: T3.1–T3.7 kontrak `contracts/juri` (near-sdk 5.30), T3.8 unit test 60/60 (51 kontrak + 9 tally; integration near-workspaces belum), T3.9 deploy `juri.juri-assay-jdir.testnet` + v1–v4 (masing-masing hanya 1 FCAK) + FCAK keeper, T3.10 ABI `contracts/juri/abi/juri.abi.json` + `packages/shared/src/contract.ts` + vektor commitment bersama TS/Rust (**freeze #2**, shared test 21/21), T3.11 `scripts/demo-lifecycle.ts`.
+- Bukti G3 (testnet):
+  - Deploy tx `BXFGu7qUTar9ktM4gCNAC8MBwMhtAmEooZiuPtnGhpAj`, init tx `BRs5J7bUaJj4nMCyHSQp8ah6J5AF2VbVpJ2tCddQeykv`. wasm 296.895 byte, sha256 `344ea38c3142a92cc002d7de20b6edcc43794c512f23115350e4cfd7d8da4da9`.
+  - Job #1 honest → Settled/Released, finalize tx `G8Gr5Th7GHxvAaNB2rtf3ZHaRhgXX11HLtRSatZ3h6bT`; withdraw worker + verifier sukses.
+  - Job #2 injector → Settled/Refunded, `injection_flagged=true`, finalize tx `kTkZfuSgp3Yw7u7rnRtwpiCtt2phEs9n8xPkAqWd8pC`; withdraw requester tx `FQ6WHhPhJQL9m9AdVwjzT5uaR4VxnC2kq3SwJnSYAEyK`.
+  - FCAK verifier ditolak runtime (2 run): `set_params`/`create_job` ("method name … isn't allowed by the access key"), transfer NEAR (butuh full access), receiver lain `wrap.testnet` ("Wrong AccessKey").
+- Temuan: seed verifier 0,1 NEAR tidak cukup untuk prepaid 100 Tgas → verifier memakai 30 Tgas. `rpc.testnet.near.org` -429 → default RPC FastNEAR (`.env.example` diperbarui).
+- Antarmuka berubah: lihat docs/04 §13 (U64 timestamp, Commit/Settlement, E21–E23, `new(params?)`, id mulai 1, view baru, param demo). Package baru `scripts/` (`@juri/scripts`, near-api-js 5.1.1). `.gitignore` + `contracts/*/res/`.
+- Blocker: saldo testnet tipis (root ≈0,28 NEAR, demo-requester ≈0,2 NEAR) — top up via faucet sebelum demo P6.
+- Cara menjalankan:
+  - Build: `docker run --rm -v "$PWD:/repo" -v juri-cargo-registry:/usr/local/cargo/registry -v juri-juri-target:/repo/contracts/juri/target -w /repo/contracts/juri juri-near-build cargo near build non-reproducible-wasm` (output `res/juri.wasm`, ABI di `abi/`)
+  - Test: `... juri-near-build cargo test` (mount sama)
+  - Testnet: `pnpm --filter @juri/scripts deploy && pnpm --filter @juri/scripts register-verifiers && pnpm --filter @juri/scripts demo:lifecycle -- --scenario honest|injector`

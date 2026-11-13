@@ -100,17 +100,17 @@ flowchart LR
 
 ### P3 — Smart contract (SC) · L
 
-- [ ] T3.1 Tipe dan state (04 §2).
-- [ ] T3.2 `create_job`, `cancel_job`, `submit_deliverable`, `reclaim_expired` + storage accounting (FR-D1–D4).
-- [ ] T3.3 `register_verifier` dengan sub-account + FCAK + callback (FR-E1).
-- [ ] T3.4 `start_judging` + pemilihan juri (FR-D5, FR-E2).
-- [ ] T3.5 `commit_vote`, `reveal_vote` + format commitment (FR-E6, FR-E7).
-- [ ] T3.6 `finalize` (tally, fee split, statistik) + `restart_jury` (FR-D6, FR-E10, FR-E11, FR-G1).
-- [ ] T3.7 `withdraw` + callback, `set_params`, `withdraw_treasury`, view, event, kode error (FR-D7, FR-D10, FR-G2, FR-G3, FR-F1).
-- [ ] T3.8 Unit test (04 §11) + integration test near-workspaces.
-- [ ] T3.9 Deploy testnet; daftarkan v1–v4; buat FCAK keeper.
-- [ ] T3.10 Ekspor ABI ke repo; util commitment TS + vektor uji bersama (**freeze #2**).
-- [ ] T3.11 `scripts/demo-lifecycle.ts` dengan vote manual (tanpa LLM).
+- [x] T3.1 Tipe dan state (04 §2).
+- [x] T3.2 `create_job`, `cancel_job`, `submit_deliverable`, `reclaim_expired` + storage accounting (FR-D1–D4).
+- [x] T3.3 `register_verifier` dengan sub-account + FCAK + callback (FR-E1).
+- [x] T3.4 `start_judging` + pemilihan juri (FR-D5, FR-E2).
+- [x] T3.5 `commit_vote`, `reveal_vote` + format commitment (FR-E6, FR-E7).
+- [x] T3.6 `finalize` (tally, fee split, statistik) + `restart_jury` (FR-D6, FR-E10, FR-E11, FR-G1).
+- [x] T3.7 `withdraw` + callback, `set_params`, `withdraw_treasury`, view, event, kode error (FR-D7, FR-D10, FR-G2, FR-G3, FR-F1).
+- [~] T3.8 Unit test (04 §11) ✅ 60 test; integration test near-workspaces belum (diganti bukti lifecycle testnet T3.11).
+- [x] T3.9 Deploy testnet; daftarkan v1–v4; buat FCAK keeper.
+- [x] T3.10 Ekspor ABI ke repo; util commitment TS + vektor uji bersama (**freeze #2**).
+- [x] T3.11 `scripts/demo-lifecycle.ts` dengan vote manual (tanpa LLM).
 
 **Gate G3:** skrip lifecycle selesai di testnet; FCAK verifier terbukti ditolak saat memanggil method lain; semua test hijau.
 

@@ -21,3 +21,6 @@ data/blobs/
 
 # Archives
 *.zip
+
+# Built contract wasm (rebuild with cargo near build; sha256 recorded in docs/devlog.md)
+contracts/*/res/

@@ -1,0 +1,25 @@
+{
+  "note": "Shared commitment test vectors (04 §5). Checked by packages/shared (Vitest) and contracts/juri (cargo test). Never edit one side only.",
+  "vectors": [
+    {
+      "job_id": 7,
+      "verifier_id": "v2.juri.alice.testnet",
+      "verdicts": [1, 1, 0, 2],
+      "injection_flag": false,
+      "evidence_hash": "ee8250fb76e094b34b471f13a73dbbe51d1ae142e9df59d7c0d31ec20f0a0a8e",
+      "salt_hex": "63479ad69a090b258277ec8fba6f99419a2ffb248981510657c944ccd1148e97",
+      "preimage": "7|v2.juri.alice.testnet|1,1,0,2|0|ee8250fb76e094b34b471f13a73dbbe51d1ae142e9df59d7c0d31ec20f0a0a8e|63479ad69a090b258277ec8fba6f99419a2ffb248981510657c944ccd1148e97",
+      "commitment": "4465ac5d58d1b8c6b8ea3500c9e3dc4f8947adafc7ca973f6887e9f0c09becec"
+    },
+    {
+      "job_id": 1,
+      "verifier_id": "v1.juri.juri-assay-jdir.testnet",
+      "verdicts": [1, 0, 1],
+      "injection_flag": true,
+      "evidence_hash": "ee8250fb76e094b34b471f13a73dbbe51d1ae142e9df59d7c0d31ec20f0a0a8e",
+      "salt_hex": "63479ad69a090b258277ec8fba6f99419a2ffb248981510657c944ccd1148e97",
+      "preimage": "1|v1.juri.juri-assay-jdir.testnet|1,0,1|1|ee8250fb76e094b34b471f13a73dbbe51d1ae142e9df59d7c0d31ec20f0a0a8e|63479ad69a090b258277ec8fba6f99419a2ffb248981510657c944ccd1148e97",
+      "commitment": "0311302d7ee1f987e360a973fa6fbbfa7d4c602cc067bf3055d974c94f876f95"
+    }
+  ]
+}

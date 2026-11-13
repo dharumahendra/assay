@@ -426,3 +426,22 @@ near contract call-function as-transaction juri.<you>.testnet create_job \
 ```
 
 Skrip `scripts/demo-lifecycle.ts` menjalankan seluruh alur memakai `near-api-js` agar bisa dipakai di CI dan oleh screening AI.
+
+---
+
+## 13. Addendum implementasi P3 (freeze #2, 2026-11-13)
+
+Sumber kebenaran antarmuka: `contracts/juri/abi/juri.abi.json` dan `packages/shared/src/contract.ts` (test `contract.test.ts` memastikan keduanya sinkron). Perbedaan terhadap §2–§9:
+
+- **Timestamp** di `Job`/`Verifier`/`SnapshotRoot` diserialisasi sebagai `U64` (string JSON, nanodetik), bukan number.
+- **Commit** disimpan sebagai `Vec<Commit { verifier, commitment }>`; reveal sebagai `Vec<Reveal>`.
+- **Settlement** tersimpan di job setelah `finalize`: `{ fee, jury_pool, net, to_worker, to_requester, to_treasury, shares: [{ verifier, agree, amount }] }`.
+- **Kode error tambahan:** `E21 AlreadyRevealed`, `E22 JobNotFound`, `E23 VerifierNotFound`.
+- **`new(owner_id, params: Option<Params>)`**: tanpa `params` memakai default §2; `set_params` memvalidasi lewat `Params::is_valid`.
+- **ID job mulai dari 1** (0 tidak pernah dipakai).
+- **View tambahan:** `get_jobs(from_index, limit)`, `get_jobs_by_account`, `get_job_count`, `get_verifiers`, `get_claimable`, `get_treasury`, `get_totals`, `get_agent_stats`, `get_snapshots`, `get_owner`.
+- **`create_job`**: biaya storage dihitung dari selisih `storage_usage` (setelah flush koleksi) dan dipotong dari deposit; `amount = deposit − storage_cost ≥ min_amount`.
+- **Parameter demo testnet** (`scripts/deploy.ts`): `verifier_stake` 0,05 NEAR, seed verifier 0,1 NEAR, `min_amount` 0,1 NEAR, window commit/reveal 180 s. Nilai produksi tetap default §2.
+- **Gas verifier:** key verifier membayar gas dari saldo seed; prepaid 100 Tgas (≈0,1 NEAR) menghabiskan seed sehingga panggilan verifier memakai **30 Tgas**. Jury runner P4 wajib memakai batas yang sama atau menaikkan seed.
+- **RPC testnet:** `rpc.testnet.near.org` mengembalikan -429 (deprecated); default `https://test.rpc.fastnear.com`.
+- Belum: `ft_on_transfer` (wNEAR, SHOULD) dan integration test near-workspaces (§11 butir integrasi dibuktikan lewat lifecycle testnet, lihat devlog).
