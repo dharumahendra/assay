@@ -1,0 +1,16 @@
+{
+  "name": "juri",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Trust layer for NEAR's AI Agent Market: checkable criteria, an AI jury, settlement-based reputation.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test"
+  }
+}

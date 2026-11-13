@@ -1,0 +1,23 @@
+[package]
+name = "spike-fcak"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Phase 0 spike (V7): a contract that creates a sub-account whose only key is a Function Call Access Key."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk = "5"
+
+[dev-dependencies]
+near-sdk = { version = "5", features = ["unit-testing"] }
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true

@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.next/
+coverage/
+*.log
+
+# Rust
+target/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+near-credentials/
+
+# Local data (snapshots ARE committed; db and blobs are not)
+data/*.db
+data/*.db-*
+data/blobs/
+
+# Archives
+*.zip
