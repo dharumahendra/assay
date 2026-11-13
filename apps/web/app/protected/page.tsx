@@ -4,7 +4,8 @@ import Link from "next/link";
 import { External } from "@/components/icons";
 import { EmptyState, ErrorState } from "@/components/states";
 import { dateTime, middle } from "@/lib/format";
-import { CONTRACT_ID, contractJobs, explorerAccountUrl, nsToIso } from "@/lib/near";
+import { api, attempt, failureText } from "@/lib/api";
+import { CONTRACT_ID, explorerAccountUrl, nsToIso } from "@/lib/near";
 
 export const metadata: Metadata = { title: "Protected Jobs" };
 
@@ -16,7 +17,8 @@ function uiStatus(j: ContractJob): string {
 }
 
 export default async function ProtectedJobs() {
-  const jobs = await contractJobs();
+  const res = await attempt(api.protectedJobs({ limit: 50 }));
+  const jobs = res.ok ? res.data.data : null;
   return (
     <div className="space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -36,7 +38,7 @@ export default async function ProtectedJobs() {
       </header>
 
       {jobs === null ? (
-        <ErrorState title="The Juri contract could not be read." message="NEAR testnet RPC did not answer. Retry in a moment." />
+        <ErrorState title="The Juri contract could not be read." message={res.ok ? undefined : failureText(res.error)} />
       ) : jobs.length === 0 ? (
         <EmptyState title="No protected jobs yet" action={<Link href="/protected/new" className="link">Create protected job</Link>} />
       ) : (

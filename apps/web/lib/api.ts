@@ -14,6 +14,9 @@ import {
   MetaSchema,
   PatternDetailSchema,
   PatternsResponseSchema,
+  ProtectedListResponseSchema,
+  TreasuryResponseSchema,
+  VerifiersResponseSchema,
   type MetricWindow,
 } from "@juri/shared";
 import { notFound } from "next/navigation";
@@ -65,4 +68,24 @@ export const api = {
   agent: (id: string) => get(`/api/agents/${encodeURIComponent(id)}`, AgentDetailSchema, { notFoundIs404: true }),
   patterns: () => get("/api/patterns", PatternsResponseSchema),
   pattern: (id: string) => get(`/api/patterns/${encodeURIComponent(id)}`, PatternDetailSchema, { notFoundIs404: true }),
+  // Contract-backed reads (testnet RPC behind a short cache): 502 rpc_error / 503 no_contract are expected states.
+  protectedJobs: (p: { limit?: number; cursor?: string; account?: string; role?: "requester" | "worker" } = {}) =>
+    get(`/api/protected${qs(p)}`, ProtectedListResponseSchema),
+  verifiers: () => get("/api/verifiers", VerifiersResponseSchema),
+  treasury: () => get("/api/treasury", TreasuryResponseSchema),
 };
+
+/** For contract-backed reads: resolve to the data, or to the failure so the page can show an error state. */
+export async function attempt<T>(p: Promise<T>): Promise<{ ok: true; data: T } | { ok: false; error: ApiFailure }> {
+  try {
+    return { ok: true, data: await p };
+  } catch (e) {
+    return { ok: false, error: e instanceof ApiFailure ? e : new ApiFailure(0, "unknown", String(e)) };
+  }
+}
+
+export function failureText(e: ApiFailure): string {
+  if (e.code === "rpc_error") return "NEAR testnet RPC did not answer. Retry in a moment.";
+  if (e.code === "no_contract") return "The API has no Juri contract configured (JURI_CONTRACT_ID).";
+  return e.message;
+}

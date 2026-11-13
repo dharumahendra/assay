@@ -2,15 +2,18 @@ import { formatNear } from "@juri/shared";
 import type { Metadata } from "next";
 import { External } from "@/components/icons";
 import { ErrorState } from "@/components/states";
-import { count } from "@/lib/format";
-import { contractParams, contractTotals, contractTreasury, contractVerifiers, explorerAccountUrl } from "@/lib/near";
+import { api, attempt, failureText } from "@/lib/api";
+import { count, dateTime } from "@/lib/format";
+import { explorerAccountUrl } from "@/lib/near";
 
 export const metadata: Metadata = { title: "Jury Console" };
 
-const [provider, model] = [(l: string) => l.split(":")[0] ?? l, (l: string) => l.split(":").slice(1).join(":") || l];
+const pill = "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.8125rem] whitespace-nowrap";
 
 export default async function Jury() {
-  const [verifiers, params, totals, treasury] = await Promise.all([contractVerifiers(), contractParams(), contractTotals(), contractTreasury()]);
+  const [verifiers, treasury] = await Promise.all([attempt(api.verifiers()), attempt(api.treasury())]);
+  const t = treasury.ok ? treasury.data : null;
+  const params = t?.params ?? null;
   return (
     <div className="space-y-10">
       <header>
@@ -25,37 +28,65 @@ export default async function Jury() {
         <h2 id="v-h" className="mb-3 text-[1.3rem] font-semibold">
           Verifiers
         </h2>
-        {verifiers === null ? (
-          <ErrorState title="The verifier list could not be read." message="NEAR testnet RPC did not answer. Retry in a moment." />
+        {!verifiers.ok ? (
+          <ErrorState title="The verifier list could not be read." message={failureText(verifiers.error)} />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px] text-left">
+            <table className="w-full min-w-[920px] text-left">
               <thead className="text-sm text-muted">
                 <tr className="border-b border-rule">
                   <th className="py-2 font-medium">Verifier</th>
                   <th className="py-2 font-medium">Model</th>
-                  <th className="py-2 font-medium">Provider</th>
-                  <th className="py-2 text-right font-medium">Stake</th>
+                  <th className="py-2 font-medium">Attestation</th>
                   <th className="py-2 text-right font-medium">Votes</th>
                   <th className="py-2 text-right font-medium">With majority</th>
                   <th className="py-2 text-right font-medium">Missed reveals</th>
                   <th className="py-2 text-right font-medium">Earned</th>
-                  <th className="py-2 font-medium">Status</th>
+                  <th className="py-2 font-medium">Gas balance</th>
                   <th className="py-2" />
                 </tr>
               </thead>
               <tbody>
-                {verifiers.map((v) => (
-                  <tr key={v.account_id} className="border-b border-rule">
-                    <td className="py-3 pr-3 font-mono text-[0.8125rem]">{v.account_id}</td>
-                    <td className="py-3 pr-3">{model(v.model_label)}</td>
-                    <td className="py-3 pr-3 text-muted">{provider(v.model_label)}</td>
-                    <td className="num py-3 pr-3 text-right">{formatNear(v.stake, 2)}</td>
-                    <td className="num py-3 pr-3 text-right">{count(v.votes)}</td>
-                    <td className="num py-3 pr-3 text-right">{v.votes ? `${Math.round((v.majority_agreements / v.votes) * 100)}%` : "–"}</td>
-                    <td className="num py-3 pr-3 text-right">{count(v.missed_reveals)}</td>
-                    <td className="num py-3 pr-3 text-right">{formatNear(v.earned, 4)}</td>
-                    <td className="py-3 pr-3">{v.active ? "Active" : "Inactive"}</td>
+                {verifiers.data.data.map((v) => (
+                  <tr key={v.account_id} className="border-b border-rule align-top">
+                    <td className="py-3">
+                      <span className="font-mono text-[0.8125rem]">{v.account_id}</span>
+                      <span className="block text-sm text-muted">
+                        {v.active ? "Active" : "Inactive"} · stake {formatNear(v.stake, 2)} NEAR
+                      </span>
+                    </td>
+                    <td className="py-3">
+                      <span className="font-medium">{v.model}</span>
+                      <span className="block text-sm text-muted">
+                        {`${v.provider ?? "provider unknown"}, ${v.last_judged_at ? `last judged ${dateTime(v.last_judged_at)}` : "has not judged yet"}`}
+                      </span>
+                      {v.registered_label !== v.model && (
+                        <span className="block text-xs text-muted">Registered on chain as {v.registered_label}</span>
+                      )}
+                    </td>
+                    <td className="py-3">
+                      {v.attested ? (
+                        <span className={`${pill} border-good/40 bg-good-bg text-good`}>
+                          <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8">
+                            <path d="M8 1.5 2.5 4v4c0 3.2 2.4 5.6 5.5 6.5 3.1-.9 5.5-3.3 5.5-6.5V4Z" />
+                            <path d="m5.6 8.2 1.7 1.6 3.2-3.3" />
+                          </svg>
+                          TEE attested
+                        </span>
+                      ) : (
+                        <span className={`${pill} border-rule text-muted`}>Not attested</span>
+                      )}
+                    </td>
+                    <td className="num py-3 text-right">{count(v.stats.votes)}</td>
+                    <td className="num py-3 text-right">
+                      {v.stats.votes ? `${Math.round((v.stats.majority_agreements / v.stats.votes) * 100)}%` : "–"}
+                    </td>
+                    <td className="num py-3 text-right">{count(v.stats.missed_reveals)}</td>
+                    <td className="num py-3 text-right">{formatNear(v.stats.earned, 4)}</td>
+                    <td className="py-3">
+                      <span className="num">{v.balance ? `${formatNear(v.balance, 3)} NEAR` : "–"}</span>
+                      {v.allowance_status === "low" && <span className="block text-sm text-warn">Low: top up before the next vote</span>}
+                    </td>
                     <td className="py-3 text-right whitespace-nowrap">
                       <a href={explorerAccountUrl(v.account_id)} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1 text-sm">
                         View access keys <External size={12} />
@@ -74,12 +105,16 @@ export default async function Jury() {
           <h2 id="t-h" className="text-[1.2rem] font-semibold">
             Treasury
           </h2>
-          <dl className="mt-3 grid grid-cols-2 gap-4">
-            <Stat label="Treasury balance" value={treasury ? `${formatNear(treasury, 4)} NEAR` : "–"} />
-            <Stat label="Jobs settled" value={totals ? count(totals.settled_jobs) : "–"} />
-            <Stat label="Total fees" value={totals ? `${formatNear(totals.total_fee, 4)} NEAR` : "–"} />
-            <Stat label="Paid to verifiers" value={totals ? `${formatNear(totals.total_jury_pool, 4)} NEAR` : "–"} />
-          </dl>
+          {t ? (
+            <dl className="mt-3 grid grid-cols-2 gap-4">
+              <Stat label="Treasury balance" value={`${formatNear(t.treasury, 4)} NEAR`} />
+              <Stat label="Jobs settled" value={count(t.settled_jobs)} />
+              <Stat label="Total fees" value={`${formatNear(t.total_fee, 4)} NEAR`} />
+              <Stat label="Paid to verifiers" value={`${formatNear(t.total_jury_pool, 4)} NEAR`} />
+            </dl>
+          ) : (
+            <p className="mt-3 text-muted">{treasury.ok ? "" : failureText(treasury.error)}</p>
+          )}
         </section>
         <section aria-labelledby="p-h" className="rounded-lg border border-rule bg-surface p-5">
           <h2 id="p-h" className="text-[1.2rem] font-semibold">
