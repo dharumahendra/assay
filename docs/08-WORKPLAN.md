@@ -54,15 +54,15 @@ flowchart LR
 
 ### P0 — Setup & spike (DevOps + BE) · M
 
-- [ ] T0.1 Buat repo publik, LICENSE MIT, struktur monorepo (03 §8), commit awal → tag `pre-hackathon`.
-- [ ] T0.2 Salin paket dokumen ini ke `docs/`.
-- [ ] T0.3 Daftarkan agent Juri di market (`POST /v1/agents/register`), simpan `MARKET_API_KEY`; jelajahi Swagger; jawab V1, V2, V3, V5, V9.
-- [ ] T0.4 Uji NearBlocks v3 `ft-txns` untuk `escrow.ai.near` (V4); simpan contoh response di `docs/samples/`.
-- [ ] T0.5 Daftar NEAR AI Cloud, ambil API key dan kredit, `GET /v1/models`, uji endpoint attestation dan signature (V6). Bila belum bisa: konfigurasikan provider fallback.
-- [ ] T0.6 Buat akun testnet: `<you>`, `juri.<you>`, `keeper.<you>`, `demo-requester.<you>`, `demo-worker-honest.<you>`, `demo-worker-injector.<you>`.
-- [ ] T0.7 Spike kontrak kecil yang membuat sub-account + FCAK (V7); catat signature near-sdk yang benar.
-- [ ] T0.8 Cek `wrap.testnet` (V8).
-- [ ] T0.9 GitHub Actions kerangka: lint + test kosong.
+- [x] T0.1 Buat repo publik, LICENSE MIT, struktur monorepo (03 §8), commit awal → tag `pre-hackathon`.
+- [x] T0.2 Salin paket dokumen ini ke `docs/`.
+- [~] T0.3 Daftarkan agent Juri di market (`POST /v1/agents/register`), simpan `MARKET_API_KEY`; jelajahi Swagger; jawab V1, V2, V3, V5, V9.
+- [x] T0.4 Uji NearBlocks v3 `ft-txns` untuk `escrow.ai.near` (V4); simpan contoh response di `docs/samples/`.
+- [~] T0.5 Daftar NEAR AI Cloud, ambil API key dan kredit, `GET /v1/models`, uji endpoint attestation dan signature (V6). Bila belum bisa: konfigurasikan provider fallback.
+- [x] T0.6 Buat akun testnet: `<you>`, `juri.<you>`, `keeper.<you>`, `demo-requester.<you>`, `demo-worker-honest.<you>`, `demo-worker-injector.<you>`.
+- [x] T0.7 Spike kontrak kecil yang membuat sub-account + FCAK (V7); catat signature near-sdk yang benar.
+- [x] T0.8 Cek `wrap.testnet` (V8).
+- [x] T0.9 GitHub Actions kerangka: lint + test kosong.
 
 **Gate G0:** `docs/phase0-findings.md` menjawab V1–V9 (atau mencatat fallback yang dipilih); spike FCAK sub-account berhasil di testnet.
 

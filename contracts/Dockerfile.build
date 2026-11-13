@@ -1,0 +1,25 @@
+# Build + deploy image for NEAR contracts (Windows hosts without MSVC, and CI).
+#   docker build -t juri-near-build -f contracts/Dockerfile.build contracts
+#   docker run --rm -v "$PWD/contracts/<crate>:/w" -w /w juri-near-build cargo near build non-reproducible-wasm
+#   near CLI keys: mount the host's ~/.near-credentials at /root/.near-credentials
+FROM rust:1-slim
+ARG CARGO_NEAR_VERSION=0.23.0
+ARG NEAR_CLI_VERSION=0.31.1
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl xz-utils ca-certificates pkg-config libssl-dev libudev-dev \
+ && rm -rf /var/lib/apt/lists/* \
+ && rustup target add wasm32-unknown-unknown \
+ && rustup component add rust-src \
+ && cd /tmp \
+ && base=https://github.com/near \
+ && curl -fsSLO $base/cargo-near/releases/download/cargo-near-v${CARGO_NEAR_VERSION}/cargo-near-x86_64-unknown-linux-gnu.tar.gz \
+ && curl -fsSLO $base/cargo-near/releases/download/cargo-near-v${CARGO_NEAR_VERSION}/cargo-near-x86_64-unknown-linux-gnu.tar.gz.sha256 \
+ && curl -fsSLO $base/near-cli-rs/releases/download/v${NEAR_CLI_VERSION}/near-cli-rs-x86_64-unknown-linux-gnu.tar.gz \
+ && curl -fsSLO $base/near-cli-rs/releases/download/v${NEAR_CLI_VERSION}/near-cli-rs-x86_64-unknown-linux-gnu.tar.gz.sha256 \
+ && sha256sum -c cargo-near-x86_64-unknown-linux-gnu.tar.gz.sha256 \
+ && sha256sum -c near-cli-rs-x86_64-unknown-linux-gnu.tar.gz.sha256 \
+ && tar xzf cargo-near-x86_64-unknown-linux-gnu.tar.gz \
+ && tar xzf near-cli-rs-x86_64-unknown-linux-gnu.tar.gz \
+ && find /tmp -type f \( -name cargo-near -o -name near \) -exec mv {} /usr/local/cargo/bin/ \; \
+ && rm -rf /tmp/* \
+ && cargo near --version && near --version

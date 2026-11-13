@@ -1,0 +1,155 @@
+﻿{
+    "cursor":  "5544724618",
+    "txns":  [
+                 {
+                     "id":  "5544724796",
+                     "signer_account_id":  "escrow.ai.near",
+                     "receiver_account_id":  "intents.near",
+                     "transaction_hash":  "2FPg5B37XEmo1n565LPst7fq82LpWCxcEFonbZw3tSwm",
+                     "included_in_block_hash":  "2QuMhL7uFX54w5BUyDW717puyyUv5b5TcHfVTG6YQgAD",
+                     "block_timestamp":  "1794569439941442011",
+                     "receipt_conversion_tokens_burnt":  "33934001704000000000",
+                     "block":  {
+                                   "block_height":  224357348
+                               },
+                     "actions":  [
+                                     {
+                                         "action":  "FUNCTION_CALL",
+                                         "method":  "execute_intents",
+                                         "deposit":  0,
+                                         "fee":  330045624414100000000,
+                                         "args":  "{\"signed\": [{\"payload\": {\"nonce\": \"E+2FU8uqGt8VzzdoaZ80f4oTEnUNvS6aJL7vfAbtZtc=\", \"message\": \"{\\\\\\\\\\\\\\\"deadline\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2026-11-13T11:32:39.562173Z\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"intents\\\\\\\\\\\\\\\":[{\\\\\\\\\\\\\\\"intent\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"transfer\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"receiver_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"tokens\\\\\\\\\\\\\\\":{\\\\\\\\\\\\\\\"nep141:wrap.near\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"1142660000000000000000000000\\\\\\\\\\\\\\\"}}],\\\\\\\\\\\\\\\"signer_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8\\\\\\\\\\\\\\\"}\", \"recipient\": \"intents.near\"}, \"standard\": \"nep413\", \"signature\": \"ed25519:3LqehuJSzTTys1chEuRCXCxM65VSQ54ufsKEJCT4aGsTeoTfEoDa6TRKj2K8bND5hDemMSANXv4P1fALN2q5vR7B\", \"public_key\": \"ed25519:7FU8axGtFor8u5YQGVu9U5HwyGXZHHkzqsymnaSPEaZV\"}]}"
+                                     }
+                                 ],
+                     "actions_agg":  {
+                                         "deposit":  0
+                                     },
+                     "outcomes":  {
+                                      "status":  false
+                                  },
+                     "outcomes_agg":  {
+                                          "transaction_fee":  363979626118100000000
+                                      }
+                 },
+                 {
+                     "id":  "5544724756",
+                     "signer_account_id":  "escrow.ai.near",
+                     "receiver_account_id":  "intents.near",
+                     "transaction_hash":  "HGN8YBwvRXxuGmLCfRoaf3rS7QneVfDBrdxuU54CcVFY",
+                     "included_in_block_hash":  "8g7hqnj1KLLok9TDZUbqwWbVbXUBFeTk7skPEVFmvrqT",
+                     "block_timestamp":  "1794569435961513628",
+                     "receipt_conversion_tokens_burnt":  "33929233332500000000",
+                     "block":  {
+                                   "block_height":  224357341
+                               },
+                     "actions":  [
+                                     {
+                                         "action":  "FUNCTION_CALL",
+                                         "method":  "execute_intents",
+                                         "deposit":  0,
+                                         "fee":  330014758890900000000,
+                                         "args":  "{\"signed\": [{\"payload\": {\"nonce\": \"W7LEsY00fw1R+Tm1cXQ9uQ86TXARL5/jFLSADEihFzY=\", \"message\": \"{\\\\\\\\\\\\\\\"deadline\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2026-11-13T11:32:35.324062Z\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"intents\\\\\\\\\\\\\\\":[{\\\\\\\\\\\\\\\"intent\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"transfer\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"receiver_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"tokens\\\\\\\\\\\\\\\":{\\\\\\\\\\\\\\\"nep141:wrap.near\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"1144760000000000000000000000\\\\\\\\\\\\\\\"}}],\\\\\\\\\\\\\\\"signer_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8\\\\\\\\\\\\\\\"}\", \"recipient\": \"intents.near\"}, \"standard\": \"nep413\", \"signature\": \"ed25519:UnHbmh1x3UFD3KnwMfYmzGRJuDqe7Uyb2v9wJFupmJ6mMVSR21kuRGjZ4D4MaQRfwSA9VxGmW4vNVpohvzf4L3n\", \"public_key\": \"ed25519:7FU8axGtFor8u5YQGVu9U5HwyGXZHHkzqsymnaSPEaZV\"}]}"
+                                     }
+                                 ],
+                     "actions_agg":  {
+                                         "deposit":  0
+                                     },
+                     "outcomes":  {
+                                      "status":  false
+                                  },
+                     "outcomes_agg":  {
+                                          "transaction_fee":  363943992223400000000
+                                      }
+                 },
+                 {
+                     "id":  "5544724711",
+                     "signer_account_id":  "escrow.ai.near",
+                     "receiver_account_id":  "intents.near",
+                     "transaction_hash":  "9SsaDRonxqYY7ubrahCd5dmqvBgRMEegbBPAtq4QJhfw",
+                     "included_in_block_hash":  "3WdvowAK3GTtSAZx2N6f3pPS3zDJbogXfXrVhjonfCoe",
+                     "block_timestamp":  "1794569431713640025",
+                     "receipt_conversion_tokens_burnt":  "33934001704000000000",
+                     "block":  {
+                                   "block_height":  224357334
+                               },
+                     "actions":  [
+                                     {
+                                         "action":  "FUNCTION_CALL",
+                                         "method":  "execute_intents",
+                                         "deposit":  0,
+                                         "fee":  330050807776900000000,
+                                         "args":  "{\"signed\": [{\"payload\": {\"nonce\": \"S1qRfn0Sf7qQIt7qvjqftxI5QPBONEHGPq95WbFRLFI=\", \"message\": \"{\\\\\\\\\\\\\\\"deadline\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2026-11-13T11:32:30.904085Z\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"intents\\\\\\\\\\\\\\\":[{\\\\\\\\\\\\\\\"intent\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"transfer\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"receiver_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"tokens\\\\\\\\\\\\\\\":{\\\\\\\\\\\\\\\"nep141:wrap.near\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"1144760000000000000000000000\\\\\\\\\\\\\\\"}}],\\\\\\\\\\\\\\\"signer_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8\\\\\\\\\\\\\\\"}\", \"recipient\": \"intents.near\"}, \"standard\": \"nep413\", \"signature\": \"ed25519:4FeJ1vhL72nLpBXbuWaikSMhddKZQHjukqXPnxWjZx1Cf3efcpBMd5pCsL6HmXn9kd6B2HSL7KoSxPE28WKQvA1K\", \"public_key\": \"ed25519:7FU8axGtFor8u5YQGVu9U5HwyGXZHHkzqsymnaSPEaZV\"}]}"
+                                     }
+                                 ],
+                     "actions_agg":  {
+                                         "deposit":  0
+                                     },
+                     "outcomes":  {
+                                      "status":  false
+                                  },
+                     "outcomes_agg":  {
+                                          "transaction_fee":  363984809480900000000
+                                      }
+                 },
+                 {
+                     "id":  "5544724664",
+                     "signer_account_id":  "escrow.ai.near",
+                     "receiver_account_id":  "intents.near",
+                     "transaction_hash":  "HsKoiFi1mw1ghQmnrgnSiW7cz4Ed8rwF5NHVCahxAoQK",
+                     "included_in_block_hash":  "FT5tjdsjurkorATWu6epW9pPcruqvCtaUjasgiEkULVP",
+                     "block_timestamp":  "1794569427403528486",
+                     "receipt_conversion_tokens_burnt":  "33681278014500000000",
+                     "block":  {
+                                   "block_height":  224357326
+                               },
+                     "actions":  [
+                                     {
+                                         "action":  "FUNCTION_CALL",
+                                         "method":  "execute_intents",
+                                         "deposit":  0,
+                                         "fee":  360516925704200000000,
+                                         "args":  "{\"signed\": [{\"payload\": {\"nonce\": \"/a7od/FcIzXvQVFddFIpkcJy0g5ra3pVPGaeC1/KmwE=\", \"message\": \"{\\\\\\\\\\\\\\\"deadline\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2026-11-13T11:32:26.624807Z\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"intents\\\\\\\\\\\\\\\":[{\\\\\\\\\\\\\\\"intent\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"transfer\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"receiver_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"escrow.ai.near\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"tokens\\\\\\\\\\\\\\\":{\\\\\\\\\\\\\\\"nep141:wrap.near\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"1000000000000000000000000\\\\\\\\\\\\\\\"}}],\\\\\\\\\\\\\\\"signer_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"6830cc6c62b9f9334d8a5b18ef7729549bf625344c4bf933eb0a31fbed58fc65\\\\\\\\\\\\\\\"}\", \"recipient\": \"intents.near\"}, \"standard\": \"nep413\", \"signature\": \"ed25519:48Lj46aNAErbRRsfzi7RtpbEt3wMrmGJbrCQD92FYLWZWxHT6og7aGuJGoc25Z8Z92FAVqRZgo3yuxFsqYmLhc7B\", \"public_key\": \"ed25519:81iZNu3bApGmuLHf4nxwch25q5viiMcs8S6BNtb6sar8\"}]}"
+                                     }
+                                 ],
+                     "actions_agg":  {
+                                         "deposit":  0
+                                     },
+                     "outcomes":  {
+                                      "status":  false
+                                  },
+                     "outcomes_agg":  {
+                                          "transaction_fee":  394198203718700000000
+                                      }
+                 },
+                 {
+                     "id":  "5544724618",
+                     "signer_account_id":  "escrow.ai.near",
+                     "receiver_account_id":  "intents.near",
+                     "transaction_hash":  "CmCKfdt68ZeFMkdwrwQo78Rjc6BHpEiqkjenp8GcAFnb",
+                     "included_in_block_hash":  "BzcfVq6GGz5nGzqbE7zHM9KsvqJL9La9k9X4R7dSTtuU",
+                     "block_timestamp":  "1794569421521744299",
+                     "receipt_conversion_tokens_burnt":  "33986453790500000000",
+                     "block":  {
+                                   "block_height":  224357316
+                               },
+                     "actions":  [
+                                     {
+                                         "action":  "FUNCTION_CALL",
+                                         "method":  "execute_intents",
+                                         "deposit":  0,
+                                         "fee":  313217957325100000000,
+                                         "args":  "{\"signed\": [{\"payload\": {\"nonce\": \"GyVT2NXc3T3/EtxX6NQOxVUEjmnDGr1/SfruB/jFMao=\", \"message\": \"{\\\\\\\\\\\\\\\"deadline\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"2026-11-13T11:32:20.717211Z\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"intents\\\\\\\\\\\\\\\":[{\\\\\\\\\\\\\\\"intent\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"transfer\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"receiver_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"0x980E5F15E788Cb653C77781099Fb739d7A1aEEd0\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"tokens\\\\\\\\\\\\\\\":{\\\\\\\\\\\\\\\"nep141:17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"399980\\\\\\\\\\\\\\\"}}],\\\\\\\\\\\\\\\"signer_id\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\"640fe25db01169c70ef4c6de5d146a3a5b9ff95d968fb91bb518a254c28e5bc0\\\\\\\\\\\\\\\"}\", \"recipient\": \"intents.near\"}, \"standard\": \"nep413\", \"signature\": \"ed25519:49Atkmfncuwg7iyuXSRWMbZDxAgX9PYmoqTn6FrvvuQRQHHCfAPNfMoAP4Fkc72rJKRzLJDX4doj8MQeDQjEqhYM\", \"public_key\": \"ed25519:7jbpSMGTRc7nMVDwgjL52Qc4GAYjPnkgE93cMAGacnw9\"}]}"
+                                     }
+                                 ],
+                     "actions_agg":  {
+                                         "deposit":  0
+                                     },
+                     "outcomes":  {
+                                      "status":  false
+                                  },
+                     "outcomes_agg":  {
+                                          "transaction_fee":  347204411115600000000
+                                      }
+                 }
+             ]
+}

@@ -1,0 +1,17 @@
+﻿{
+    "tx":  "2FPg5B37XEmo1n565LPst7fq82LpWCxcEFonbZw3tSwm",
+    "status":  "{\"Failure\":{\"ActionError\":{\"index\":0,\"kind\":\"@{FunctionCallError=}\"}}}",
+    "decoded_messages":  {
+                             "deadline":  "2026-11-13T11:32:39.562173Z",
+                             "intents":  [
+                                             {
+                                                 "intent":  "transfer",
+                                                 "receiver_id":  "5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8",
+                                                 "tokens":  {
+                                                                "nep141:wrap.near":  "1142660000000000000000000000"
+                                                            }
+                                             }
+                                         ],
+                             "signer_id":  "5cdaee04aeec7abf076fd197411ffab6b08cf7aaefba14b57f6fc5fbececc3c8"
+                         }
+}
