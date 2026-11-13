@@ -40,6 +40,37 @@ Checked 2026-11-13. Raw responses are in `docs/samples/`.
 | Market agent token (T0.3) | Not created: needs the owner to sign up in the web app (only blocks V5, which has a fallback) |
 | NEAR AI Cloud key (T0.5) | Not created: needs the owner's account + credits |
 
+## Escrow flows (P1, indexed 2026-11-13)
+
+Source: FastNEAR tx API (`tx.main.fastnear.com/v0/account`, `is_success:true`, `desc:false`) + `/v0/transactions`. NearBlocks cannot filter on status and the free tier (~6 req/min) is too slow for this account.
+
+| Fact | Value |
+|---|---|
+| Txns touching `escrow.ai.near` | 1,993,811 |
+| Successful | 9,653 (0.5%) — first 2026-02-02, **last 2026-10-29 03:22** (`HPnA2yCS…`) |
+| Successful per month | Feb 1,400 · Mar 3,187 · Apr 2,269 · May 2,577 · Jun 125 · Jul 53 · Aug 33 · Sep 1 · Oct 8 |
+| Now | escrow re-tries the same $1.00 payout (0.975 to `51500a5a…` + 0.025 fee) every ~20 s since ≥2026-11-13 10:51 and fails with `insufficient balance or overflow`; its USDC balance in intents.near is 0.023001. A wNEAR self-transfer loop by `5cdaee…` fails with `invalid intent` |
+| Tokens | mostly wNEAR (2026-02..05), then USDC; some native NEAR |
+| Fee | 2% leg to `5cdaee…` (early), later 2.5% to `treasury.ai.near` |
+| Operator wallet (inferred) | `5cdaee04…c3c8`: 4,534 of 4,721 deposits, receives the 2% fee legs and most outflows → classified `internal`, excluded from M2 and rewards |
+
+Classifier (`services/workers/src/classify.ts`, `kind_method=heuristic`): deposit · reward · refund (exact amount of an outstanding deposit) · fee (fee account, or ≤3% leg of a multi-leg payout) · internal (operator wallet) · relay. Cross-checked 3 legs against archival RPC `dip4` transfer events: all match.
+
+## Metrics (adapted M1–M5, + M6)
+
+Jobs and bids are private since API v2, so job-level M1/M3/M4/M5 from 05 §4 are not computable. Replacements, all with `sources_json`:
+
+| ID | Definition | Value 2026-11-13 |
+|---|---|---|
+| M1 | Delivered ÷ all jobs (`/v1/platform/stats`) | 64.1% (760/1185) |
+| M2 | Refund legs ÷ deposit legs, excl. operator wallet (+ value ratio per token) | 23.5% (44/187); 30d n/a (no successful settlements) |
+| M3 | Share of delivered jobs by top-10 agents | 39.7% (235/592) |
+| M4 | Listed agents with 0 delivered jobs | 79.5% (549/691) |
+| M5 | Rated agents with `dispute_free` < 100 | 0% (0/23) |
+| M6 | Failed ÷ all escrow txns | 99.5% |
+
+Note: the public agent list returns 691 agents vs `live_agents` 816 in platform stats; delivered-jobs sum over listed agents (592) < platform `delivered_jobs` (760).
+
 ## Decisions for P1
 
 1. **Data source for Market Insight / Trust Score.** **Chosen: (a)** on-chain (decode `escrow.ai.near` intents) + public agent reputation API at low volume. (Other options were (b) `aat_` token for our own jobs, (c) re-scope.)

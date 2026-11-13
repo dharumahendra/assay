@@ -4,3 +4,5 @@
 # Shell scripts and Dockerfiles run inside Linux containers
 *.sh text eol=lf
 Dockerfile* text eol=lf
+# Snapshots are single-line canonical JSON
+data/snapshots/*.json -diff

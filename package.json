@@ -11,6 +11,13 @@
   "scripts": {
     "lint": "pnpm -r --if-present lint",
     "typecheck": "pnpm -r --if-present typecheck",
-    "test": "pnpm -r --if-present test"
+    "test": "pnpm -r --if-present test",
+    "migrate": "pnpm --filter @juri/workers migrate",
+    "sync": "pnpm --filter @juri/workers sync",
+    "sync:market": "pnpm --filter @juri/workers sync:market",
+    "index:escrow": "pnpm --filter @juri/workers index:escrow",
+    "metrics": "pnpm --filter @juri/workers metrics",
+    "snapshot:export": "pnpm --filter @juri/workers snapshot:export",
+    "snapshot:import": "pnpm --filter @juri/workers snapshot:import"
   }
 }

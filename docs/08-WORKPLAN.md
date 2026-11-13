@@ -70,13 +70,13 @@ flowchart LR
 
 ### P1 — Data layer (BE) · L
 
-- [ ] T1.1 `packages/shared`: tipe dasar + schema zod untuk Job, Bid, Agent, Transfer.
-- [ ] T1.2 Skema SQLite (Drizzle) + migrasi untuk tabel di 05 §2.
-- [ ] T1.3 `sync-market`: pagination, backoff, idempoten, `sync_state` (FR-A1).
-- [ ] T1.4 `index-escrow`: cursor NearBlocks, klasifikasi `kind` + `kind_method` (FR-A2).
-- [ ] T1.5 `snapshot:export` / `snapshot:import` + sha256 (FR-A4).
-- [ ] T1.6 Hitung M1–M5 + `sources_json` (FR-A3).
-- [ ] T1.7 Uji manual: cocokkan 3 job dan 3 tx dengan halaman aslinya; catat di `docs/devlog.md`.
+- [x] T1.1 `packages/shared`: tipe dasar + schema zod untuk Job, Bid, Agent, Transfer.
+- [x] T1.2 Skema SQLite (Drizzle) + migrasi untuk tabel di 05 §2.
+- [x] T1.3 `sync-market`: pagination, backoff, idempoten, `sync_state` (FR-A1).
+- [x] T1.4 `index-escrow`: cursor NearBlocks, klasifikasi `kind` + `kind_method` (FR-A2).
+- [x] T1.5 `snapshot:export` / `snapshot:import` + sha256 (FR-A4).
+- [x] T1.6 Hitung M1–M5 + `sources_json` (FR-A3).
+- [x] T1.7 Uji manual: cocokkan 3 job dan 3 tx dengan halaman aslinya; catat di `docs/devlog.md`.
 
 **Gate G1:** `pnpm sync && pnpm metrics` mencetak angka nyata; snapshot pertama ter-commit; uji manual cocok.
 
@@ -84,13 +84,13 @@ flowchart LR
 
 ### P2 — Trust engine + read API (BE) · M
 
-- [ ] T2.1 Pemetaan identitas (FR-B1).
-- [ ] T2.2 Deteksi bid kembar + cluster (FR-B4) + unit test dengan fixture.
-- [ ] T2.3 Trust Score ts-0.1 + gate Insufficient data (FR-B2, FR-B3) + unit test.
-- [ ] T2.4 Shared funder (FR-B5, SHOULD).
-- [ ] T2.5 API: `/health`, `/meta`, `/insights`, `/insights/:id/records`, `/jobs`, `/jobs/:id`, `/agents`, `/agents/:id`, `/patterns`, `/patterns/:id`, `/blobs` (FR-H1).
-- [ ] T2.6 Bekukan tipe response di `packages/shared` (**freeze #1**).
-- [ ] T2.7 Mulai `eval/patterns-review.md`: review manual top-10 cluster.
+- [x] T2.1 Pemetaan identitas (FR-B1).
+- [x] T2.2 Deteksi bid kembar + cluster (FR-B4) + unit test dengan fixture.
+- [x] T2.3 Trust Score ~~ts-0.1~~ **ts-0.2** + gate Insufficient data (FR-B2, FR-B3) + unit test.
+- [~] T2.4 Shared funder (FR-B5, SHOULD) — logika + test selesai; fetcher NearBlocks belum diuji live (0 akun terpetakan).
+- [x] T2.5 API: `/health`, `/meta`, `/insights`, `/insights/:id/records`, `/jobs`, `/jobs/:id`, `/agents`, `/agents/:id`, `/patterns`, `/patterns/:id`, `/blobs` (FR-H1).
+- [x] T2.6 Bekukan tipe response di `packages/shared` (**freeze #1**).
+- [~] T2.7 Mulai `eval/patterns-review.md`: review manual top-10 cluster — file dibuat; belum ada cluster (bid privat).
 
 **Gate G2:** semua endpoint read mengembalikan data nyata; test scoring dan pattern hijau.
 
