@@ -31,7 +31,22 @@ import {
 } from "@juri/shared";
 import type { Db } from "@juri/workers/src/db/index.js";
 import { CompileError, compileCriteria, ProviderError, type JudgeProvider } from "@juri/jury";
-import { CompileRequestSchema, criteriaHash } from "@juri/shared";
+import {
+  CompileRequestSchema,
+  CriteriaDocSchema,
+  criteriaHash,
+  EvidenceSchema,
+  type ContractJob,
+  type CriteriaDoc,
+  type DeliverableMeta,
+  type Evidence,
+  type JurorView,
+  type ProtectedDetail,
+  type ProtectedListResponse,
+  type TreasuryResponse,
+  type VerifiersResponse,
+} from "@juri/shared";
+import { RpcError, type ContractReader } from "./contract.js";
 import { randomUUID } from "node:crypto";
 import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
@@ -41,9 +56,9 @@ import { rateLimit } from "./ratelimit.js";
 import { flattenSources } from "./records.js";
 
 /**
- * Read API (05 §8, FR-H1): health, meta, insights, jobs, agents, patterns, blobs, and (P4) criteria/compile.
- * /protected* /verifiers /treasury are added later.
- * Reads the SQLite file the workers write; only /criteria/compile calls out (to the configured LLM).
+ * Read API (05 §8, FR-H1): health, meta, insights, jobs, agents, patterns, blobs, criteria/compile (P4),
+ * and protected / verifiers / treasury (contract views joined with the jury runner's blobs and state).
+ * Reads the SQLite file the workers write; calls out only to the configured LLM (compile) and NEAR RPC (views).
  */
 export interface AppConfig {
   db: Db;
@@ -57,6 +72,10 @@ export interface AppConfig {
   rateLimits?: { get: number; blobs: number; compile?: number };
   /** Spec Compiler provider (P4); null → POST /criteria/compile answers 503 no_llm. */
   compiler?: () => JudgeProvider | null;
+  /** Juri contract views for /protected, /verifiers, /treasury; absent → 503 no_contract. */
+  contract?: ContractReader | null;
+  /** Explorer base for links, e.g. https://testnet.nearblocks.io */
+  explorerUrl?: string;
   now?: () => Date;
 }
 
@@ -152,6 +171,8 @@ export function createApp(cfg: AppConfig): Hono {
       return c.json({ error: { code: err.code, message: err.message, ...(err.details ? { details: err.details } : {}) } }, err.status);
     if (err instanceof BlobError)
       return c.json({ error: { code: err.code, message: err.message } }, err.status);
+    if (err instanceof RpcError || (err instanceof Error && err.name === "TimeoutError"))
+      return c.json({ error: { code: "rpc_error", message: `contract RPC failed: ${err.message}`.slice(0, 300) } }, 502);
     console.error(err);
     return c.json({ error: { code: "internal", message: "Internal error" } }, 500);
   });
@@ -505,6 +526,177 @@ export function createApp(cfg: AppConfig): Hono {
       "x-content-sha256": sha,
       "cache-control": "public, max-age=31536000, immutable",
     });
+  });
+
+  // ---- /protected, /verifiers, /treasury (P4/P5 integration, 05 §8) ----
+  const contract = (): ContractReader => {
+    if (!cfg.contract) throw new ApiError(503, "no_contract", "JURI_CONTRACT_ID is not configured");
+    return cfg.contract;
+  };
+  const explorer = (cfg.explorerUrl ?? `https://${cfg.network === "mainnet" ? "" : "testnet."}nearblocks.io`).replace(/\/$/, "");
+  const LABELS = ["FAIL", "PASS", "UNSURE"] as const;
+  const tryBlob = (sha: string | null | undefined): Buffer | null => {
+    if (!sha) return null;
+    try {
+      return getBlob(db, cfg.blobDir, sha).bytes;
+    } catch {
+      return null;
+    }
+  };
+  const evidenceBlob = (sha: string | null | undefined): Evidence | null => {
+    const b = tryBlob(sha);
+    if (!b) return null;
+    const r = EvidenceSchema.safeParse(parseJson(b.toString("utf8"), null));
+    return r.success ? r.data : null;
+  };
+  type RunnerRow = { verifier: string; phase: JurorView["phase"]; evidence_sha: string | null; attestation_sha: string | null; commit_tx: string | null; reveal_tx: string | null; error: string | null };
+  const runnerRows = (job: ContractJob) =>
+    new Map(
+      (sql.prepare(`SELECT verifier, phase, evidence_sha, attestation_sha, commit_tx, reveal_tx, error FROM runner_state WHERE job_id = ?`).all(`${job.id}#${job.restarts}`) as RunnerRow[]).map(
+        (r) => [r.verifier, r],
+      ),
+    );
+  const jobIdParam = (c: Context) => {
+    const s = c.req.param("jobId") ?? "";
+    if (!/^\d{1,12}$/.test(s)) throw new ApiError(400, "invalid_job_id", "job id must be a positive integer");
+    return Number(s);
+  };
+  const loadJob = async (c: Context) => {
+    const job = await contract().job(jobIdParam(c));
+    if (!job) throw new ApiError(404, "not_found", "protected job not found on the contract");
+    return job;
+  };
+
+  app.get("/api/protected", async (c) => {
+    const { account, role, cursor, limit } = q(
+      c,
+      PageQuery.extend({ account: z.string().max(64).optional(), role: z.enum(["requester", "worker"]).optional(), limit: z.coerce.number().int().min(1).max(50).default(20) }),
+    );
+    const k = contract();
+    if (account) {
+      const roles = role ? [role] : (["requester", "worker"] as const);
+      const all = new Map<number, ContractJob>();
+      for (const r of roles) for (const j of await k.jobsByAccount(account, r)) all.set(j.id, j);
+      const sorted = [...all.values()].sort((a, b) => b.id - a.id);
+      return c.json(paginate(sorted, cursor, limit) satisfies ProtectedListResponse);
+    }
+    // Newest first: cursor is an offset from the newest job id.
+    const n = await k.jobCount();
+    const off = cursor ? Number(cursor) : 0;
+    const hi = n - off;
+    if (hi < 1) return c.json({ data: [], next: null } satisfies ProtectedListResponse);
+    const lo = Math.max(1, hi - limit + 1);
+    const data = (await k.jobs(lo, hi - lo + 1)).sort((a, b) => b.id - a.id);
+    return c.json({ data, next: lo > 1 ? String(off + limit) : null } satisfies ProtectedListResponse);
+  });
+
+  app.get("/api/protected/:jobId", async (c) => {
+    const job = await loadJob(c);
+    // Criteria: only shown when the stored blob hashes to the on-chain criteria_hash (getBlob re-checks the bytes).
+    let criteria: CriteriaDoc | null = null;
+    const cb = tryBlob(job.criteria_hash);
+    if (cb) {
+      const r = CriteriaDocSchema.safeParse(parseJson(cb.toString("utf8"), null));
+      if (r.success) criteria = r.data;
+    }
+    let deliverable_meta: DeliverableMeta | null = null;
+    if (job.deliverable_hash) {
+      const row = sql.prepare(`SELECT size, content_type FROM blobs WHERE sha256 = ?`).get(job.deliverable_hash) as { size: number; content_type: string } | undefined;
+      deliverable_meta = {
+        hash: job.deliverable_hash,
+        uri: job.deliverable_uri,
+        available: !!row && !!tryBlob(job.deliverable_hash),
+        size: row?.size ?? null,
+        content_type: row?.content_type ?? null,
+      };
+    }
+    const rs = runnerRows(job);
+    const jury: JurorView[] = job.jury.map((v) => {
+      const reveal = job.reveals.find((r) => r.verifier === v);
+      const committed = job.commits.some((x) => x.verifier === v);
+      const st = rs.get(v);
+      const evidence_sha = reveal?.evidence_hash ?? st?.evidence_sha ?? null;
+      const ev = evidenceBlob(evidence_sha);
+      // Once revealed, the evidence must be the one whose hash is on chain (evidenceBlob is content-addressed).
+      const attested = !!ev?.attestation?.signature_valid && (!reveal || !!reveal.attestation_hash);
+      return {
+        verifier: v,
+        model: reveal?.model ?? ev?.model ?? null,
+        provider: ev?.provider ?? null,
+        phase: reveal ? "revealed" : committed ? "committed" : st && st.phase !== "revealed" && st.phase !== "committed" ? st.phase : "pending",
+        committed,
+        revealed: !!reveal,
+        verdicts: reveal ? reveal.verdicts.map((x) => LABELS[x] ?? "UNSURE") : null,
+        injection_flag: reveal ? reveal.injection_flag : null,
+        attested,
+        attestation_hash: reveal?.attestation_hash ?? st?.attestation_sha ?? null,
+        evidence_sha,
+        evidence_available: !!ev,
+        error: st?.error ?? null,
+        commit_tx: st?.commit_tx ?? null,
+        reveal_tx: st?.reveal_tx ?? null,
+      };
+    });
+    const body: ProtectedDetail = {
+      job,
+      criteria,
+      criteria_verified: !!criteria,
+      deliverable_meta,
+      jury,
+      explorer: { contract: `${explorer}/address/${contract().contractId}` },
+    };
+    return c.json(body);
+  });
+
+  app.get("/api/protected/:jobId/evidence/:verifier", async (c) => {
+    const job = await loadJob(c);
+    const v = c.req.param("verifier");
+    if (!job.jury.includes(v)) throw new ApiError(404, "not_found", `${v} is not on this job's jury`);
+    const sha = job.reveals.find((r) => r.verifier === v)?.evidence_hash ?? runnerRows(job).get(v)?.evidence_sha ?? null;
+    const ev = evidenceBlob(sha);
+    if (!ev) throw new ApiError(404, "not_found", "evidence not available (not judged yet, or judged by another runner)");
+    c.header("X-Content-SHA256", sha!);
+    return c.json(ev);
+  });
+
+  const LOW_BALANCE = 50_000_000_000_000_000_000_000n; // 0.05 NEAR ≈ 100+ commit/reveal calls at 30 Tgas
+  app.get("/api/verifiers", async (c) => {
+    const k = contract();
+    const vs = await k.verifiers();
+    const attestedSet = new Set(
+      (sql.prepare(`SELECT DISTINCT verifier FROM runner_state WHERE attestation_sha IS NOT NULL`).all() as { verifier: string }[]).map((r) => r.verifier),
+    );
+    const balances = await Promise.all(vs.map((v) => k.balance(v.account_id)));
+    const latest = sql.prepare(
+      `SELECT evidence_sha, updated_at FROM runner_state WHERE verifier = ? AND evidence_sha IS NOT NULL ORDER BY updated_at DESC LIMIT 1`,
+    );
+    const data = vs.map((v, i) => {
+      const [prov, ...rest] = v.model_label.split(":");
+      const hasProv = rest.length > 0;
+      const bal = balances[i] ?? null;
+      const last = latest.get(v.account_id) as { evidence_sha: string; updated_at: string } | undefined;
+      const ev = evidenceBlob(last?.evidence_sha);
+      return {
+        account_id: v.account_id,
+        model: ev?.model ?? (hasProv ? rest.join(":") : v.model_label),
+        provider: ev?.provider ?? (hasProv ? prov! : null),
+        registered_label: v.model_label,
+        last_judged_at: ev?.created_at ?? null,
+        attested: attestedSet.has(v.account_id),
+        active: v.active,
+        stake: v.stake,
+        stats: { votes: v.votes, majority_agreements: v.majority_agreements, missed_reveals: v.missed_reveals, earned: v.earned },
+        balance: bal,
+        allowance_status: bal === null ? ("unknown" as const) : BigInt(bal) < LOW_BALANCE ? ("low" as const) : ("ok" as const),
+      };
+    });
+    return c.json({ data } satisfies VerifiersResponse);
+  });
+
+  app.get("/api/treasury", async (c) => {
+    const k = contract();
+    const [treasury, totals, params] = await Promise.all([k.treasury(), k.totals(), k.params().catch(() => null)]);
+    return c.json({ treasury, ...totals, params } satisfies TreasuryResponse);
   });
 
   return app;

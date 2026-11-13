@@ -89,7 +89,7 @@ export function parseContractError(err: unknown): { code: ContractErrorCode; nam
 
 // ---------- types ----------
 
-const U128 = z.string().regex(/^\d+$/);
+export const U128 = z.string().regex(/^\d+$/);
 const U64 = z.string().regex(/^\d+$/);
 
 export const JobStatusSchema = z.enum(["Funded", "Submitted", "Committing", "Stalled", "Settled", "Cancelled", "Expired"]);
