@@ -30,6 +30,9 @@ import {
   type TrustView,
 } from "@juri/shared";
 import type { Db } from "@juri/workers/src/db/index.js";
+import { CompileError, compileCriteria, ProviderError, type JudgeProvider } from "@juri/jury";
+import { CompileRequestSchema, criteriaHash } from "@juri/shared";
+import { randomUUID } from "node:crypto";
 import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
 import { z } from "zod";
@@ -38,9 +41,9 @@ import { rateLimit } from "./ratelimit.js";
 import { flattenSources } from "./records.js";
 
 /**
- * Read API (05 §8, FR-H1), P2 scope: health, meta, insights, jobs, agents, patterns, blobs.
- * /criteria/compile (P4), /protected* /verifiers /treasury (P3/P4) are added later.
- * Reads the SQLite file the workers write; never calls external services.
+ * Read API (05 §8, FR-H1): health, meta, insights, jobs, agents, patterns, blobs, and (P4) criteria/compile.
+ * /protected* /verifiers /treasury are added later.
+ * Reads the SQLite file the workers write; only /criteria/compile calls out (to the configured LLM).
  */
 export interface AppConfig {
   db: Db;
@@ -51,7 +54,9 @@ export interface AppConfig {
   contractId: string | null;
   /** Live sync older than this → /health status "degraded" (05 §10). */
   staleAfterMs?: number;
-  rateLimits?: { get: number; blobs: number };
+  rateLimits?: { get: number; blobs: number; compile?: number };
+  /** Spec Compiler provider (P4); null → POST /criteria/compile answers 503 no_llm. */
+  compiler?: () => JudgeProvider | null;
   now?: () => Date;
 }
 
@@ -66,9 +71,10 @@ const DATA_NOTES = [
 
 class ApiError extends Error {
   constructor(
-    readonly status: 400 | 404 | 413 | 422,
+    readonly status: 400 | 404 | 413 | 422 | 502 | 503,
     readonly code: string,
     message: string,
+    readonly details?: unknown,
   ) {
     super(message);
   }
@@ -132,13 +138,19 @@ export function createApp(cfg: AppConfig): Hono {
   const now = cfg.now ?? (() => new Date());
   const app = new Hono();
 
-  app.use("*", cors({ origin: "*", allowMethods: ["GET", "POST", "OPTIONS"], exposeHeaders: ["X-Content-SHA256"] }));
+  app.use(
+    "*",
+    cors({ origin: "*", allowMethods: ["GET", "POST", "OPTIONS"], exposeHeaders: ["X-Content-SHA256", "X-Criteria-SHA256", "X-Model", "X-Provider"] }),
+  );
   const getLimit = rateLimit({ name: "read", max: cfg.rateLimits?.get ?? 60 });
   const blobLimit = rateLimit({ name: "blobs", max: cfg.rateLimits?.blobs ?? 20 });
+  const compileLimit = rateLimit({ name: "compile", max: cfg.rateLimits?.compile ?? 5 });
   app.use("/api/*", async (c, next) => (c.req.method === "GET" ? getLimit(c, next) : next()));
 
   app.onError((err, c) => {
-    if (err instanceof ApiError || err instanceof BlobError)
+    if (err instanceof ApiError)
+      return c.json({ error: { code: err.code, message: err.message, ...(err.details ? { details: err.details } : {}) } }, err.status);
+    if (err instanceof BlobError)
       return c.json({ error: { code: err.code, message: err.message } }, err.status);
     console.error(err);
     return c.json({ error: { code: "internal", message: "Internal error" } }, 500);
@@ -424,6 +436,49 @@ export function createApp(cfg: AppConfig): Hono {
       disclaimer: PATTERN_DISCLAIMER,
     };
     return c.json(body);
+  });
+
+  // ---- /criteria/compile (P4, 05 §6) ----
+  app.post("/api/criteria/compile", compileLimit, async (c) => {
+    let raw: unknown;
+    try {
+      raw = await c.req.json();
+    } catch {
+      throw new ApiError(400, "invalid_json", "body must be JSON: { market_job_id? , text? }");
+    }
+    const r = CompileRequestSchema.safeParse(raw);
+    if (!r.success) throw new ApiError(400, "invalid_request", r.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "));
+    let job: { title: string; description: string; tags?: string[]; budget?: string | null; market_job_id?: string | null };
+    if (r.data.market_job_id) {
+      const j = sql.prepare(`SELECT * FROM market_jobs WHERE id = ?`).get(r.data.market_job_id) as JobDb | undefined;
+      if (!j && !r.data.text) throw new ApiError(404, "not_found", "market job not known to Juri; send its text instead");
+      job = j
+        ? { title: j.title ?? "", description: j.description ?? "", tags: parseJson<string[]>(j.tags_json, []), budget: j.budget_amount ? `${j.budget_amount} ${j.budget_token ?? ""}`.trim() : null, market_job_id: j.id }
+        : { title: r.data.text!.split("\n")[0]!.slice(0, 200), description: r.data.text!, market_job_id: r.data.market_job_id };
+    } else {
+      job = { title: r.data.text!.split("\n")[0]!.slice(0, 200), description: r.data.text! };
+    }
+    const provider = cfg.compiler?.() ?? null;
+    if (!provider) throw new ApiError(503, "no_llm", "Spec Compiler needs an LLM key (NEARAI_API_KEY or FALLBACK_LLM_*); none is configured");
+    let out: Awaited<ReturnType<typeof compileCriteria>>;
+    try {
+      out = await compileCriteria(job, provider);
+    } catch (e) {
+      if (e instanceof CompileError) throw new ApiError(422, "compile_failed", e.message, { attempts: e.attempts, issues: e.issues });
+      if (e instanceof ProviderError) throw new ApiError(502, "provider_error", e.message.slice(0, 300));
+      throw e;
+    }
+    const hash = criteriaHash(out.doc);
+    if (job.market_job_id) {
+      const b = putBlob(db, cfg.blobDir, "criteria", out.doc, now());
+      sql
+        .prepare(`INSERT OR IGNORE INTO criteria_docs (id, blob_sha256, market_job_id, created_at) VALUES (?, ?, ?, ?)`)
+        .run(randomUUID(), b.sha256, job.market_job_id, now().toISOString());
+    }
+    c.header("X-Criteria-SHA256", hash);
+    c.header("X-Model", provider.model);
+    c.header("X-Provider", provider.id);
+    return c.json(out.doc);
   });
 
   // ---- /blobs ----

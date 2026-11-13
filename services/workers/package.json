@@ -16,12 +16,15 @@
     "snapshot:import": "tsx src/cli.ts snapshot:import",
     "trust": "tsx src/trust-engine.ts",
     "derive": "tsx src/cli.ts derive",
-    "load:snapshot": "tsx src/cli.ts load:snapshot"
+    "load:snapshot": "tsx src/cli.ts load:snapshot",
+    "jury": "tsx src/jury-main.ts"
   },
   "dependencies": {
+    "@juri/jury": "workspace:*",
     "@juri/shared": "workspace:*",
     "better-sqlite3": "^12.4.1",
     "drizzle-orm": "^0.38.3",
+    "near-api-js": "5.1.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

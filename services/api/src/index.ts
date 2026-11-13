@@ -1,5 +1,6 @@
 import "@juri/workers/src/load-env.js"; // first: loads <repo>/.env (P0 accounts, contract id, keys)
 import { serve } from "@hono/node-server";
+import { DEFAULT_COMPILER_MODEL, liveProviderKind, makeProvider } from "@juri/jury";
 import { DataModeSchema } from "@juri/shared";
 import { openDb, REPO_ROOT } from "@juri/workers/src/db/index.js";
 import { isEmpty, loadSnapshot } from "@juri/workers/src/pipeline.js";
@@ -25,6 +26,8 @@ const app = createApp({
   publicUrl: process.env.PUBLIC_API_URL ?? `http://localhost:${port}`,
   network: process.env.NEAR_NETWORK ?? "testnet",
   contractId: process.env.JURI_CONTRACT_ID || null,
+  // Spec Compiler: NEAR AI Cloud when NEARAI_API_KEY is set, else FALLBACK_LLM_*, else 503 no_llm.
+  compiler: () => (liveProviderKind() ? makeProvider(process.env.COMPILER_MODEL || DEFAULT_COMPILER_MODEL) : null),
 });
 
 const server = serve({ fetch: app.fetch, port }, (info) => console.log(`juri api (${mode}) on http://localhost:${info.port}`));

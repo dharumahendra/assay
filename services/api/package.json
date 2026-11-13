@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.8",
+    "@juri/jury": "workspace:*",
     "@juri/shared": "workspace:*",
     "@juri/workers": "workspace:*",
     "hono": "^4.13.18",
