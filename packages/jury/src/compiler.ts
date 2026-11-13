@@ -1,7 +1,7 @@
 import { C0, CriteriaDocSchema, RuleSchema, type CriteriaDoc } from "@juri/shared";
 import { z } from "zod";
 import { extractJson } from "./json.js";
-import { MAX_TOKENS, type JudgeProvider } from "./providers.js";
+import { MAX_TOKENS, ProviderError, type JudgeProvider } from "./providers.js";
 
 /** Spec Compiler (05 §6, FR-C1–C3, FR-C5). */
 
@@ -123,17 +123,21 @@ export function toCriteriaDoc(raw: unknown, job: JobInput): CriteriaDoc {
 const issuesOf = (e: unknown): string[] =>
   e instanceof z.ZodError ? e.issues.map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`) : [e instanceof Error ? e.message : String(e)];
 
-/** Temperature 0.2, max_tokens 1500; one retry with the validation errors; then CompileError (→ 422). */
+/**
+ * Temperature 0.2, short reasoning; one retry with the validation errors; then CompileError (→ 422).
+ * An empty reply (reasoning used the whole budget) counts as an invalid attempt, not a provider outage.
+ */
 export async function compileCriteria(job: JobInput, provider: JudgeProvider): Promise<{ doc: CriteriaDoc; attempts: number }> {
   let user = compilerUserMessage(job);
   let issues: string[] = [];
   for (let attempt = 1; attempt <= 2; attempt++) {
-    const r = await provider.complete({ system: COMPILER_SYSTEM, user, jsonSchema: COMPILER_JSON_SCHEMA, maxTokens: MAX_TOKENS, temperature: 0.2 });
     try {
+      const r = await provider.complete({ system: COMPILER_SYSTEM, user, jsonSchema: COMPILER_JSON_SCHEMA, maxTokens: MAX_TOKENS, temperature: 0.2, reasoning: "low" });
       return { doc: toCriteriaDoc(extractJson(r.text), job), attempts: attempt };
     } catch (e) {
+      if (e instanceof ProviderError && e.code !== "bad_response") throw e; // outage/auth → 502, not 422
       issues = issuesOf(e);
-      user = `${compilerUserMessage(job)}\n\nYour previous answer was invalid:\n- ${issues.slice(0, 10).join("\n- ")}\nReturn corrected JSON only.`;
+      user =`${compilerUserMessage(job)}\n\nYour previous answer was invalid:\n- ${issues.slice(0, 10).join("\n- ")}\nReturn corrected JSON only.`;
     }
   }
   throw new CompileError("compiler output failed validation twice", 2, issues);

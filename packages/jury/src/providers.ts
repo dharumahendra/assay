@@ -22,6 +22,11 @@ export interface CompletionRequest {
   temperature: number;
   /** Structured view of the same request, for providers that do not read prose (rules). */
   context?: { criteria: CriteriaDoc["criteria"]; facts: Record<string, Fact>; prescan: Prescan };
+  /**
+   * "low" asks reasoning models to think briefly (reasoning_effort=low + enable_thinking=false; both were
+   * accepted by every NEAR AI model in a 2026-11-13 probe). Default: the model's own setting.
+   */
+  reasoning?: "low";
 }
 
 export interface CompletionResult {
@@ -143,6 +148,7 @@ export class OpenAICompatProvider implements JudgeProvider {
         temperature: req.temperature,
         max_tokens: req.maxTokens,
         ...(json ? { response_format: { type: "json_object" } } : {}),
+        ...(req.reasoning === "low" ? { reasoning_effort: "low", chat_template_kwargs: { enable_thinking: false } } : {}),
       });
     let r: unknown;
     try {
@@ -153,9 +159,13 @@ export class OpenAICompatProvider implements JudgeProvider {
       this.jsonMode = false;
       r = await this.request("/chat/completions", { method: "POST", body: body(false) });
     }
-    const resp = r as { id?: string; choices?: { message?: { content?: string | null } }[]; usage?: Partial<Usage> };
+    const resp = r as { id?: string; choices?: { finish_reason?: string; message?: { content?: string | null } }[]; usage?: Partial<Usage> };
     const text = resp.choices?.[0]?.message?.content;
-    if (typeof text !== "string") throw new ProviderError("bad_response", `${this.id}: no message content`);
+    if (typeof text !== "string" || !text.trim())
+      throw new ProviderError(
+        "bad_response",
+        `${this.id}: no message content (finish_reason=${resp.choices?.[0]?.finish_reason ?? "?"}, completion_tokens=${resp.usage?.completion_tokens ?? "?"}${resp.choices?.[0]?.finish_reason === "length" ? ": token budget used up by reasoning" : ""})`,
+      );
     return {
       text,
       chatId: resp.id,
