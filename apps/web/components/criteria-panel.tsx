@@ -167,7 +167,7 @@ export function CriteriaPanel({ marketJobId, initial }: { marketJobId: string; i
           {editing && doc.criteria.length < MAX_CRITERIA && (
             <button
               type="button"
-              onClick={() => update([...doc.criteria, { id: nextId(doc.criteria), text: "", kind: "SHOULD", method: "llm", rule: null }])}
+              onClick={() => update([...doc.criteria, { id: nextId(doc.criteria), text: "", kind: "SHOULD", method: "llm", rule: null, rationale: "Added by the requester" }])}
               className="rounded-md border border-rule px-3 py-1.5 hover:border-ink"
             >
               Add criterion
@@ -188,7 +188,7 @@ export function CriteriaPanel({ marketJobId, initial }: { marketJobId: string; i
                           <button
                             type="button"
                             className="link ml-2"
-                            onClick={() => update([...doc.criteria, { id: nextId(doc.criteria), text: u.replacement!, kind: "SHOULD", method: "llm", rule: null }])}
+                            onClick={() => update([...doc.criteria, { id: nextId(doc.criteria), text: u.replacement!, kind: "SHOULD", method: "llm", rule: null, rationale: `Replaces: ${u.original}`.slice(0, 300) }])}
                           >
                             Use replacement
                           </button>

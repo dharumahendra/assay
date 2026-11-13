@@ -1,33 +1,18 @@
 /**
- * CriteriaDoc v1 (docs/05 §6.1). Local shape until P4 publishes the frozen schema in
- * @juri/shared (criteria.ts); then this file re-exports that one.
+ * Browser-safe helpers around CriteriaDoc v1 (freeze #3, packages/shared/src/criteria.ts).
+ * Type-only imports: the shared barrel pulls in node:crypto, which must stay out of client bundles.
+ * Full zod validation (CriteriaDocSchema) runs on the server and in the API.
  */
-export type CriterionKind = "MUST" | "SHOULD";
+import type { CriteriaDoc, Criterion } from "@juri/shared";
 
-export interface Criterion {
-  id: string;
-  text: string;
-  kind: CriterionKind;
-  method: "llm" | "deterministic";
-  rule: { type: string; params: Record<string, unknown> } | null;
-  rationale?: string | null;
-}
-
-export interface CriteriaDoc {
-  version: string;
-  source?: { type: string; market_job_id?: string | null; title?: string | null };
-  summary?: string | null;
-  deliverable_format?: string | null;
-  criteria: Criterion[];
-  unverifiable: { original: string; reason: string; replacement: string | null }[];
-  ambiguities: string[];
-}
+export type { CriteriaDoc, Criterion };
 
 export const MAX_CRITERIA = 13;
 
+/** Shape check for API responses in the browser (the API already validated with CriteriaDocSchema). */
 export function isCriteriaDoc(x: unknown): x is CriteriaDoc {
   const d = x as CriteriaDoc;
-  return !!d && typeof d === "object" && Array.isArray(d.criteria);
+  return !!d && typeof d === "object" && Array.isArray(d.criteria) && Array.isArray(d.unverifiable ?? []);
 }
 
 /** "At most 13 criteria; at least one MUST besides C0" (07 §2.8 step 2). */

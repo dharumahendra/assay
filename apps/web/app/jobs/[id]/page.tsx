@@ -4,7 +4,7 @@ import { Chip } from "@/components/badges";
 import { CriteriaPanel } from "@/components/criteria-panel";
 import { External } from "@/components/icons";
 import { api, API_URL } from "@/lib/api";
-import { isCriteriaDoc, type CriteriaDoc } from "@/lib/criteria";
+import { CriteriaDocSchema, type CriteriaDoc } from "@juri/shared";
 import { shortDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Job Analysis" };
@@ -13,8 +13,8 @@ async function latestCriteria(sha: string | undefined): Promise<CriteriaDoc | nu
   if (!sha) return null;
   try {
     const res = await fetch(`${API_URL}/api/blobs/${sha}`, { cache: "force-cache" });
-    const body: unknown = res.ok ? await res.json() : null;
-    return isCriteriaDoc(body) ? body : null;
+    const parsed = CriteriaDocSchema.safeParse(res.ok ? await res.json() : null);
+    return parsed.success ? parsed.data : null;
   } catch {
     return null;
   }

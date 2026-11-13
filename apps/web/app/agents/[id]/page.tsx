@@ -229,7 +229,7 @@ function Breakdown({ trust }: { trust: TrustView }) {
                   </span>
                 </td>
                 <td className="num py-2.5 text-right font-semibold whitespace-nowrap">
-                  {neg ? "−" : "+"}
+                  {v === 0 ? "" : neg ? "−" : "+"}
                   {v.toFixed(1)} <span className="font-normal text-muted">/ {k.max}</span>
                 </td>
               </tr>

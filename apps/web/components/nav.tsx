@@ -23,7 +23,7 @@ export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snap
         <Link href="/" className="display text-[1.6rem] leading-none" aria-label="Juri home">
           Juri
         </Link>
-        <nav aria-label="Main" className="order-3 -mx-4 w-[calc(100%+2rem)] overflow-x-auto px-4 sm:order-none sm:mx-0 sm:w-auto sm:px-0">
+        <nav aria-label="Main" className="order-3 -mx-4 w-[calc(100%+2rem)] overflow-x-auto px-4 [scrollbar-width:none] sm:order-none sm:mx-0 sm:w-auto sm:px-0">
           <ul className="flex gap-1 whitespace-nowrap">
             {LINKS.map((l) => {
               const active = path === l.href || path.startsWith(`${l.href}/`);
@@ -43,7 +43,7 @@ export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snap
         </nav>
         <div className="ml-auto flex items-center gap-2">
           {mode && <ModeBadge mode={mode} snapshotAt={snapshotAt} />}
-          <span className="rounded-full border border-rule px-2 py-0.5 text-[0.8125rem] text-muted">NEAR {network}</span>
+          <span className="hidden rounded-full border border-rule px-2 py-0.5 text-[0.8125rem] text-muted sm:inline">NEAR {network}</span>
         </div>
       </div>
     </header>
