@@ -1,7 +1,7 @@
 import { C0, CriteriaDocSchema, RuleSchema, type CriteriaDoc } from "@juri/shared";
 import { z } from "zod";
 import { extractJson } from "./json.js";
-import type { JudgeProvider } from "./providers.js";
+import { MAX_TOKENS, type JudgeProvider } from "./providers.js";
 
 /** Spec Compiler (05 §6, FR-C1–C3, FR-C5). */
 
@@ -128,7 +128,7 @@ export async function compileCriteria(job: JobInput, provider: JudgeProvider): P
   let user = compilerUserMessage(job);
   let issues: string[] = [];
   for (let attempt = 1; attempt <= 2; attempt++) {
-    const r = await provider.complete({ system: COMPILER_SYSTEM, user, jsonSchema: COMPILER_JSON_SCHEMA, maxTokens: 1500, temperature: 0.2 });
+    const r = await provider.complete({ system: COMPILER_SYSTEM, user, jsonSchema: COMPILER_JSON_SCHEMA, maxTokens: MAX_TOKENS, temperature: 0.2 });
     try {
       return { doc: toCriteriaDoc(extractJson(r.text), job), attempts: attempt };
     } catch (e) {

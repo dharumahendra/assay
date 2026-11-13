@@ -231,7 +231,7 @@ describe("compiler", () => {
     expect(d.criteria.map((c) => c.id)).toEqual(["C0", "C1", "C2", "C3"]);
     expect(d.criteria[0]).toEqual(C0);
     expect(p.calls[0]!.temperature).toBe(0.2);
-    expect(p.calls[0]!.maxTokens).toBe(1500);
+    expect(p.calls[0]!.maxTokens).toBe(4000);
   });
 
   it("retries once with the validation errors, then fails (→ 422)", async () => {

@@ -19,7 +19,9 @@
     "load:snapshot": "tsx src/cli.ts load:snapshot",
     "jury": "tsx src/jury-main.ts",
     "jury:demo": "tsx src/jury-demo.ts",
-    "withdraw": "tsx src/withdraw.ts"
+    "withdraw": "tsx src/withdraw.ts",
+    "jury:inspect": "tsx src/jury-inspect.ts",
+    "fund:demo": "tsx src/fund-demo.ts"
   },
   "dependencies": {
     "@juri/jury": "workspace:*",

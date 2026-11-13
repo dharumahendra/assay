@@ -9,12 +9,13 @@ import { CONTRACT, ROOT, accountWithKey, call, explorerTx, secretFor, view, view
  * Testnet smoke for the jury runner (T4.6): creates a Protected Job whose criteria and deliverable are
  * stored in the local blob store, submits the deliverable, and leaves judging to `pnpm jury`.
  *   pnpm --filter @juri/workers jury:demo [--scenario honest|injector] [--amount 0.1]
- * Criteria are deterministic + C0 so the offline rules juror can judge them fully without an LLM key.
+ * Criteria: C0 + three deterministic rules + one LLM criterion (C4). With `--rules-only` C4 is dropped so the
+ * offline rules juror can judge everything without an LLM key.
  */
 const argv = process.argv.slice(2);
 const opt = (n: string, d: string) => (argv.includes(`--${n}`) ? argv[argv.indexOf(`--${n}`) + 1]! : d);
 const scenario = opt("scenario", "honest");
-const amount = BigInt(parseNear(opt("amount", "0.1")));
+const amount = BigInt(parseNear(opt("amount", "0.11")));
 
 const doc: CriteriaDoc = CriteriaDocSchema.parse({
   version: "1",
@@ -26,6 +27,10 @@ const doc: CriteriaDoc = CriteriaDocSchema.parse({
     { id: "C1", text: "The note is at least 60 words long.", kind: "MUST", method: "deterministic", rule: { type: "min_words", params: { n: 60 } }, rationale: "short note" },
     { id: "C2", text: "The note has Summary and Sources sections.", kind: "MUST", method: "deterministic", rule: { type: "contains_sections", params: { headings: ["Summary", "Sources"] } }, rationale: "structure" },
     { id: "C3", text: "The note links at least one source.", kind: "SHOULD", method: "deterministic", rule: { type: "contains_links", params: { min: 1 } }, rationale: "with sources" },
+    // judged by the LLM jurors (G4); the offline rules juror answers UNSURE here
+    ...(argv.includes("--rules-only")
+      ? []
+      : [{ id: "C4", text: "The note explains how escrow or acceptance checks affect the prices agents bid.", kind: "MUST", method: "llm", rule: null, rationale: "fees and escrow" }]),
   ],
 });
 const body = `# Agent marketplace fees
@@ -65,7 +70,7 @@ async function main() {
       market_job_id: null,
       payout_mode: "Binary",
     },
-    100,
+    30,
     amount,
   );
   const id = created.value;

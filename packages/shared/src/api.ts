@@ -332,7 +332,9 @@ export const BLOB_MAX_CHARS: Record<BlobKind, number> = {
   criteria: 64_000,
   deliverable: 50_000,
   evidence: 256_000,
-  attestation: 256_000,
+  // NEAR AI attestation reports (TDX quote + NVIDIA payload + event log) are ≈0.3–1 MB. Written by the jury
+  // runner; public POST /api/blobs is still capped at 1 MB per request.
+  attestation: 2_000_000,
 };
 
 export const BlobPutRequestSchema = z.object({

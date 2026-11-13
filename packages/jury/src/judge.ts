@@ -12,7 +12,7 @@ import { z } from "zod";
 import { attestationNonce, captureReport, finishAttestation } from "./attestation.js";
 import { extractJson } from "./json.js";
 import { prescan as runPrescan } from "./prescan.js";
-import type { JudgeProvider } from "./providers.js";
+import { MAX_TOKENS, type JudgeProvider } from "./providers.js";
 import { runRules, type RuleContext } from "./rules.js";
 
 /** Jury verdicts (05 §7.3–7.4, FR-E3/E4/E9). */
@@ -164,12 +164,19 @@ export async function judge(input: JudgeInput): Promise<JudgeResult> {
       error = `attestation report: ${e instanceof Error ? e.message : e}`;
       return null;
     });
-    const r = await provider.complete({ system, user, jsonSchema: JUDGE_JSON_SCHEMA, maxTokens: 1500, temperature: 0, context: { criteria: doc.criteria, facts, prescan: pre } });
+    const r = await provider.complete({ system, user, jsonSchema: JUDGE_JSON_SCHEMA, maxTokens: MAX_TOKENS, temperature: 0, context: { criteria: doc.criteria, facts, prescan: pre } });
     usage = r.usage ?? null;
     ({ out, error } = ((p) => ({ out: p.out, error: p.error ?? error }))(parseJudgeOutput(r.text, doc)));
     if (cap && r.chatId) {
+      // Storing the raw report is best effort: its sha256 is in the attestation either way.
+      let reportBlob: string | null = null;
       try {
-        const a = await finishAttestation(provider, cap, r.chatId, input.storeReport?.(cap.report) ?? null);
+        reportBlob = input.storeReport?.(cap.report) ?? null;
+      } catch (e) {
+        error = `${error ? `${error}; ` : ""}attestation report not stored: ${e instanceof Error ? e.message : e}`;
+      }
+      try {
+        const a = await finishAttestation(provider, cap, r.chatId, reportBlob);
         attestation = a.attestation;
         attHash = a.hash;
       } catch (e) {

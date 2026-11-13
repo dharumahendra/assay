@@ -191,6 +191,34 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
       const now = chain.nowNs();
       const commitDl = BigInt(job.commit_deadline);
       const revealDl = BigInt(job.reveal_deadline);
+      const jobId = job.id;
+
+      const commitOne = async (v: string) => {
+        const st = getState(db, key, v);
+        if (!st || st.phase !== "judged") return;
+        if (chain.nowNs() > commitDl - COMMIT_MARGIN_NS) {
+          setState(db, key, v, { phase: "failed", error: "missed: commit deadline" });
+          return;
+        }
+        const ev = evidenceOf(deps, st.evidence_sha!);
+        const commitment = buildCommitment({
+          jobId,
+          verifierId: v,
+          verdicts: ev.verdicts.map((x) => verdictCode(x.verdict)),
+          injectionFlag: ev.injection_flag,
+          evidenceHash: st.evidence_sha!,
+          saltHex: st.salt!,
+        });
+        try {
+          const tx = await chain.commit(v, jobId, commitment);
+          setState(db, key, v, { phase: "committed", commit_tx: tx, error: null });
+          act(`#${jobId} ${v} commit_vote ${tx}`);
+        } catch (e) {
+          const m = e instanceof Error ? e.message : String(e);
+          if (/E08/.test(m)) setState(db, key, v, { phase: "committed" });
+          else (setState(db, key, v, { error: m.slice(0, 500) }), fail(m));
+        }
+      };
 
       // 1) judge (in parallel across our jurors) — only while a commit is still possible
       const toJudge = mine.filter((v) => !getState(db, key, v) && !job.commits.some((c) => c.verifier === v));
@@ -221,38 +249,15 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
               if (ev.sha256 !== canonicalHash(r.evidence)) throw new Error("evidence blob hash ≠ canonical hash");
               setState(db, key, v, { phase: "judged", salt: randomBytes(32).toString("hex"), evidence_sha: ev.sha256, attestation_sha: r.attestationHash, error: r.evidence.error });
               act(`#${job.id} ${v} judged by ${provider.model}: [${r.verdicts}] inj=${r.injectionFlag} evidence=${ev.sha256.slice(0, 12)}`);
+              // commit right away: a slow juror must not make the fast ones miss the commit deadline
+              await commitOne(v);
             }),
           );
         }
       }
 
-      // 2) commit
-      for (const v of mine) {
-        const st = getState(db, key, v);
-        if (!st || st.phase !== "judged" || job.commits.some((c) => c.verifier === v)) continue;
-        if (chain.nowNs() > commitDl - COMMIT_MARGIN_NS) {
-          setState(db, key, v, { phase: "failed", error: "missed: commit deadline" });
-          continue;
-        }
-        const ev = evidenceOf(deps, st.evidence_sha!);
-        const commitment = buildCommitment({
-          jobId: job.id,
-          verifierId: v,
-          verdicts: ev.verdicts.map((x) => verdictCode(x.verdict)),
-          injectionFlag: ev.injection_flag,
-          evidenceHash: st.evidence_sha!,
-          saltHex: st.salt!,
-        });
-        try {
-          const tx = await chain.commit(v, job.id, commitment);
-          setState(db, key, v, { phase: "committed", commit_tx: tx, error: null });
-          act(`#${job.id} ${v} commit_vote ${tx}`);
-        } catch (e) {
-          const m = e instanceof Error ? e.message : String(e);
-          if (/E08/.test(m)) setState(db, key, v, { phase: "committed" });
-          else (setState(db, key, v, { error: m.slice(0, 500) }), fail(m));
-        }
-      }
+      // 2) commit anything judged but not yet committed (resume after restart / failed tx)
+      for (const v of mine) if (!job.commits.some((c) => c.verifier === v)) await commitOne(v);
 
       // 3) reveal — after everyone committed or the commit deadline passed
       job = await chain.getJob(job.id);

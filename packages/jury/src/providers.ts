@@ -64,6 +64,13 @@ export class ProviderError extends Error {
   }
 }
 
+/**
+ * Completion budget. Spec 05 §6.3/§7.3 says 1500; the NEAR AI models are reasoning models and their
+ * reasoning tokens count against max_tokens (content comes back null when it runs out), so we allow 4000.
+ * Only tokens actually generated are billed.
+ */
+export const MAX_TOKENS = 4000;
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- OpenAI-compatible (NEAR AI Cloud, fallback) ----------
@@ -168,13 +175,20 @@ export class NearAIProvider extends OpenAICompatProvider {
     super({ ...cfg, id: "nearai" });
   }
 
+  /**
+   * Verified live 2026-11-13: the report has `model_attestations[]` with model_name, signing_address,
+   * signing_algo, request_nonce (echo of our nonce), intel_quote, nvidia_payload, event_log.
+   */
   async attest(nonce: string): Promise<AttestationReport> {
     const q = new URLSearchParams({ model: this.model, nonce, signing_algo: this.signingAlgo });
     const raw = (await this.request(`/attestation/report?${q}`)) as Record<string, unknown>;
-    const pick = (o: unknown): Record<string, unknown> | null => (o && typeof o === "object" ? (o as Record<string, unknown>) : null);
-    const model = pick((raw.model_attestations as unknown[] | undefined)?.[0]) ?? pick(raw.model_attestation) ?? raw;
-    const addr = (model.signing_address ?? model.signing_key ?? raw.signing_address) as string | undefined;
-    if (!addr) throw new ProviderError("bad_response", "attestation report has no signing_address");
+    const list = (Array.isArray(raw.model_attestations) ? raw.model_attestations : []) as Record<string, unknown>[];
+    const model = list.find((m) => m.model_name === this.model) ?? list[0];
+    if (!model) throw new ProviderError("bad_response", "attestation report has no model_attestations");
+    const echoed = model.request_nonce ?? model.nonce;
+    if (echoed !== nonce) throw new ProviderError("bad_response", `attestation nonce mismatch (${String(echoed).slice(0, 12)}…)`);
+    const addr = model.signing_address as string | undefined;
+    if (!addr) throw new ProviderError("bad_response", "attestation report has no per-model signing_address (3P TEE): responses cannot be signature-checked");
     return { raw, signing_address: addr, signing_algo: String(model.signing_algo ?? this.signingAlgo) };
   }
 
@@ -301,14 +315,16 @@ export interface ModelSpec {
 }
 
 /**
- * Default jury: 4 different model families, all TEE-attested on NEAR AI Cloud (near.ai/pricing, 2026-11).
- * The contract draws 3 of the 4 active verifiers per job, so every one must be attested.
+ * Default jury: NEAR AI "Private TEE" models only (near.ai/pricing, 2026-11). Their attestation report carries a
+ * per-model signing key, so every response signature can be checked. "Private 3P TEE" models (e.g. Kimi K2.6 on
+ * chutes) were dropped after a live probe: no signing_address in the report and upstream 429s.
+ * The contract draws 3 of the 4 active verifiers per job; v1–v3 are three different model families.
  */
 export const DEFAULT_VERIFIER_MODELS: Record<string, string> = {
   v1: "deepseek-ai/DeepSeek-V4.1-Flash-1017",
   v2: "Qwen/Qwen3.8-27B",
-  v3: "moonshotai/kimi-k2.6",
-  v4: "z-ai/glm-5.3-flash",
+  v3: "z-ai/glm-5.3-flash",
+  v4: "Qwen/Qwen3.6-35B-A3B-FP8",
 };
 export const DEFAULT_COMPILER_MODEL = "Qwen/Qwen3.8-27B";
 

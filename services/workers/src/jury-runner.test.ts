@@ -128,6 +128,28 @@ describe("jury runner", () => {
     expect(chain.job.status).toBe("Settled");
   });
 
+  it("a slow juror does not make the fast ones miss the commit deadline", async () => {
+    const { db, chain, deps } = setup(`# Report\n\n${"word ".repeat(30)}`);
+    await tick(deps);
+    const rules = new RulesProvider();
+    const slow = {
+      ...rules,
+      id: rules.id,
+      model: "slow",
+      attested: false,
+      complete: async (req: Parameters<RulesProvider["complete"]>[0]) => {
+        await new Promise((r) => setTimeout(r, 30));
+        chain.t = BigInt(chain.job.commit_deadline) + S; // answer arrives after the deadline
+        return rules.complete(req);
+      },
+    };
+    const fast = new RulesProvider();
+    await tick({ ...deps, providerFor: (v: string) => (v === "v3.j" ? slow : fast) });
+    expect(chain.job.commits.map((c) => c.verifier).sort()).toEqual(["v1.j", "v2.j"]);
+    const v3 = db.$client.prepare(`SELECT phase, error FROM runner_state WHERE verifier = 'v3.j'`).get() as { phase: string; error: string };
+    expect([v3.phase, v3.error]).toEqual(["failed", "missed: commit deadline"]);
+  });
+
   it("missed commit deadline → no commit, recorded as missed", async () => {
     const { db, chain, deps } = setup(`# Report\n\n${"word ".repeat(30)}`);
     await tick(deps);
