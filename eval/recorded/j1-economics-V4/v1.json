@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V4",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "d2c0138d7028c1e0c0b46b8969478778ce3a2c68b5778286710fd70d2db6187b",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Whole document is an economics report; no text addresses evaluators, judges, or AI systems.\",\"reason\":\"No meta-instructions or evaluator-directed text present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: 292 words, min_words pass.\",\"reason\":\"Authoritative word count exceeds 250.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Headings '## Executive Summary', '## Fee Structures', '## Recommendations' present.\",\"reason\":\"Deterministic check confirms all required sections found.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"\\\"a requester posts a 10 USDC job and the platform charges 3 percent... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC... bids about 25 percent higher\\\"\",\"reason\":\"Explains fee/escrow effect on pricing with a worked numeric example.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Links: https://docs.near.ai/ and https://www.jstor.org/stable/1879431\",\"reason\":\"Deterministic check found 2 links, meeting the two-source threshold.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.85,\"evidence\":\"\\\"reputation built on platform ratings alone is easy to inflate\\\"; \\\"20 percent chance of a dispute it cannot win\\\" (non-payment risk)\",\"reason\":\"Identifies ratings inflation and dispute/non-payment risk as market failures.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-db725564-24fb-4789-8cc6-96e3abfa3915",
+    "usage": {
+      "prompt_tokens": 1180,
+      "completion_tokens": 656
+    }
+  },
+  "response_sha256": "380333126bbce3cf0da586a10a92fb4f998a5d9ba3cd5da19b72a84bc5396834",
+  "recorded_at": "2026-11-13T15:43:19.420Z"
+}

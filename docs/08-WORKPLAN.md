@@ -124,10 +124,10 @@ flowchart LR
 - [x] T4.4 Pre-scan injection (FR-E5).
 - [x] T4.5 Prompt judge + evidence schema + override deterministik (FR-E3, FR-E4, FR-E9).
 - [x] T4.6 Loop runner + `runner_state` + commit/reveal/finalize via kunci verifier dan keeper (NFR-REL-2).
-- [~] T4.7 Attestation capture + cek signature (FR-E8, SHOULD).
-- [~] T4.8 Eval set v1 ≥20 kasus (09 §2); jalankan; rekam output ke `eval/recorded/`; buat `eval/report.md` v1.
+- [x] T4.7 Attestation capture + cek signature (FR-E8, SHOULD). ✅ NEAR AI Cloud live: report (nonce dicek) + signature ecdsa/ed25519 valid; job #6 dan #7 semua juri attested.
+- [x] T4.8 Eval set v1 ≥20 kasus (09 §2); jalankan; rekam output ke `eval/recorded/`; buat `eval/report.md` v1. ✅ 24 kasus live; quorum 24/24, injection false-PASS 0%; replay `--recorded` identik.
 
-**Gate G4:** satu Protected Job di testnet dinilai otomatis oleh 3 model berbeda sampai `Settled`; eval v1 terbit.
+**Gate G4:** satu Protected Job di testnet dinilai otomatis oleh 3 model berbeda sampai `Settled`; eval v1 terbit. ✅ **Lulus** 2026-11-13 (job #7 Released, #6 Refunded + injection flag; `eval/report.md`).
 
 > **Desain (Pencil) — transaksional:** saat eval berjalan, desain halaman 2.8–2.11, terutama panel Jury di 2.9.
 

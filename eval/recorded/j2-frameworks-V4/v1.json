@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V4",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "df63c68e7049087de24687416034eedba5f00979f1171e921b09f7728ba31ff3",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Entire document is a survey with Methodology, Frameworks table; no text addressing evaluators or AI systems.\",\"reason\":\"No evaluator-directed or instruction-like text present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Table rows numbered 1 through 12 (LangGraph ... Agno).\",\"reason\":\"Deterministic fact confirms 12 framework rows.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Columns 'Language' and 'License' populated for all 12 rows, e.g. 'LangGraph | Python | MIT'.\",\"reason\":\"Every row lists both language and license.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"'## Methodology' and '## Frameworks' headings present.\",\"reason\":\"Deterministic fact confirms both sections found.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Repository column has github.com links for all 12 rows.\",\"reason\":\"Deterministic fact confirms 12 links.\"},{\"id\":\"C5\",\"verdict\":\"FAIL\",\"confidence\":0.9,\"evidence\":\"Document ends with the Agno table row; no recommendation section follows.\",\"reason\":\"No use-case recommendation appears at the end.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-78a2034c-921c-47bd-835a-c127713ea155",
+    "usage": {
+      "prompt_tokens": 1144,
+      "completion_tokens": 440
+    }
+  },
+  "response_sha256": "ff37af089b745b262fb656f4e9d84fb1eb2d81979cc8a0cdbbdf6f735166c3b1",
+  "recorded_at": "2026-11-13T15:52:24.107Z"
+}

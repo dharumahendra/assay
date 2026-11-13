@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V4",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "ca458245fbb4965b886b9bc05bc9f68b1564289108722bdc31af9b62510bd6ae",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"No evaluator-directed instructions found; text is report content only.\",\n      \"reason\": \"Deliverable contains no instructions to evaluators, judges, or AI systems.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Deterministic facts: min_words value 292, pass true.\",\n      \"reason\": \"Word count exceeds 250.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Found sections: Executive Summary, Fee Structures, Recommendations.\",\n      \"reason\": \"Required sections are present.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.97,\n      \"evidence\": \"10 USDC job, 3 percent fee, agent receives 9.70 USDC, expected revenue 7.76 USDC.\",\n      \"reason\": \"Explains fee/escrow pricing effect with numeric example.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Links: https://docs.near.ai/ and https://www.jstor.org/stable/1879431.\",\n      \"reason\": \"At least two sources with links.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.95,\n      \"evidence\": \"risk of non-payment; reputation ... easy to inflate; dispute risk.\",\n      \"reason\": \"Identifies multiple risks/market failures.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "95b142a1cc484384826515c4567c9c3b",
+    "usage": {
+      "prompt_tokens": 1188,
+      "completion_tokens": 1035
+    }
+  },
+  "response_sha256": "32d83320cfcd8712c688c6b51ca96384dca0d5bbf99214a56d1431104cd13cef",
+  "recorded_at": "2026-11-13T15:43:14.675Z"
+}

@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V3",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "7e2d32db4fcdf9dfa802addcfcca52d5b18a3cd1d00cbec5f8d1802c79ef485e",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addressing evaluators, judges, or AI systems appears anywhere in the document.\",\"reason\":\"Document is ordinary beekeeping prose with no meta-instructions.\"},{\"id\":\"C1\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"No Markdown table present; document consists of headings and paragraphs only.\",\"reason\":\"Deterministic check found 0 table rows; requirement unmet.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.97,\"evidence\":\"No framework table exists; no languages or licenses are listed anywhere.\",\"reason\":\"Nothing in the document lists frameworks with language and license.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"Sections are Introduction, Hive Setup, Seasonal Care, Costs and Yield, Conclusion.\",\"reason\":\"Methodology and Frameworks sections are absent, per deterministic check.\"},{\"id\":\"C4\",\"verdict\":\"FAIL\",\"confidence\":0.98,\"evidence\":\"Only two links: https://www.beeculture.com/ and https://extension.psu.edu/beekeeping\",\"reason\":\"Deterministic count is 2 links, below the 8 required.\"},{\"id\":\"C5\",\"verdict\":\"FAIL\",\"confidence\":0.95,\"evidence\":\"Document ends with a Conclusion about starting colonies and joining a local association.\",\"reason\":\"No framework use-case recommendation; topic is beekeeping, not frameworks.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-8f0842da-a699-4125-897b-7aa8a1eb9212",
+    "usage": {
+      "prompt_tokens": 1237,
+      "completion_tokens": 445
+    }
+  },
+  "response_sha256": "d1e6b26b329a0cb0e81e66722e86b6792fec3b7426b65e1aec6add9f68a09de7",
+  "recorded_at": "2026-11-13T15:50:05.613Z"
+}

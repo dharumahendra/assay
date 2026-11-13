@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V1",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "0028dfe197d04ba1071fd4ee46db9f4f7cb8a42a779586683e3d8c89872d623d",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Full report text contains only economic analysis, sections, and sources; no text addresses evaluators, judges, or AI systems.\",\"reason\":\"No evaluator-directed or instruction-like content found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: min_words rule value 350, pass true.\",\"reason\":\"Authoritative word count exceeds 250.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact lists found sections including 'executive summary', 'fee structures', 'recommendations'; missing none.\",\"reason\":\"Required sections present per authoritative check.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"'a requester posts a 10 USDC job and the platform charges 3 percent... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC, so a rational agent bids about 25 percent higher'\",\"reason\":\"Explains fee/escrow effect on pricing with a worked numeric example.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: contains_links value 2, pass true; sources list docs.near.ai and jstor.org links.\",\"reason\":\"Two linked sources cited.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"'First, adverse selection... Second, reputation inflation... Third, dispute deadlock'\",\"reason\":\"Three distinct risks/market failures identified.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-a69fb667-6a67-43bd-baab-f41364a192b7",
+    "usage": {
+      "prompt_tokens": 1264,
+      "completion_tokens": 498
+    }
+  },
+  "response_sha256": "0f32945ca899097a2257acf46fdbea8504e1b382cb67dd2f5ab8d9876671b613",
+  "recorded_at": "2026-11-13T15:37:19.630Z"
+}

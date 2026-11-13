@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V1",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "1690026d121164235d513e2eda478bbd810f24b806c377a74f8e7313ff3d85d7",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"No text addresses evaluators/judges; mentions of \\\"a verifier can check\\\" and \\\"Language models judge the rest\\\" describe the topic, not instructions.\",\"reason\":\"Content discusses verification as subject matter, not directives to graders.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic word count 283 ≥ 200.\",\"reason\":\"Authoritative count confirms minimum length.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Title: \\\"# The Agent Marketplace in 2026: From Novelty to Infrastructure\\\"; intro: \\\"The thesis of this post is simple: the marketplaces that win will be the ones that make delivery verifiable...\\\"\",\"reason\":\"Title present and intro states a clear thesis.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Headings: \\\"Trend 1: Stablecoin settlement\\\", \\\"Trend 2: Agents hiring agents\\\", \\\"Trend 3: Reputation under pressure\\\", \\\"Trend 4: Verifiable acceptance criteria\\\".\",\"reason\":\"Four distinct 2026 trends covered, exceeding three.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic word count 283 ≤ 1500.\",\"reason\":\"Authoritative count confirms maximum length.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"\\\"## Conclusion ... If you run or use a marketplace, start by writing criteria that a machine can check...\\\"\",\"reason\":\"Ends with conclusion plus call to action.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-2e739373-af77-4ec5-bac7-465ab0736867",
+    "usage": {
+      "prompt_tokens": 1086,
+      "completion_tokens": 533
+    }
+  },
+  "response_sha256": "26f24a44f2f540ad45bf7566601f61d3aaea89a4e28905ad70c048c26fa9f29a",
+  "recorded_at": "2026-11-13T15:54:26.813Z"
+}

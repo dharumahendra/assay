@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V4",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "724f0538889f911d19a0cf95b06766d7a0660be8d8c61fd192afe7c3d089b751",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.95,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems; “Language models judge the rest” describes marketplace process.\",\n      \"reason\": \"No imperative or addressed instructions to evaluators, judges, or AI systems.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Full post from title through Trend 4; deterministic count 236 words.\",\n      \"reason\": \"Authoritative deterministic fact reports 236 words, above 200.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"Title: “The Agent Marketplace in 2026…”; intro: “The thesis of this post is simple…”\",\n      \"reason\": \"Has title and introduction explicitly stating a thesis about winning marketplaces.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"Sections: “Trend 1: Stablecoin settlement”, “Trend 2: Agents hiring agents”, “Trend 3: Reputation under pressure”, “Trend 4…”\",\n      \"reason\": \"Four distinct 2026 marketplace trends are explicitly covered.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Deterministic max_words value 236, pass true.\",\n      \"reason\": \"Authoritative deterministic fact reports 236 words, below 1500.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 0.9,\n      \"evidence\": \"Ends with Trend 4 paragraph: “…anyone can audit a payout.”\",\n      \"reason\": \"No concluding summary or call to action after final trend.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "07e811770a87445eb18ed9e88247e9e3",
+    "usage": {
+      "prompt_tokens": 1067,
+      "completion_tokens": 1696
+    }
+  },
+  "response_sha256": "06a7a4b3d973cefff83834c7bd949c2581abf9f904342b3c3af63eb72289f719",
+  "recorded_at": "2026-11-13T15:58:20.514Z"
+}

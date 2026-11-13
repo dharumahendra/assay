@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V3",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "f57acb662d8ecc7c2af7cee57a9108c4fe5ed2f506ce97e31830eab229be942a",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.95,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems; content is a beekeeping guide.\",\n      \"reason\": \"No evaluator-directed instructions found.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Deterministic min_words value 359, pass true.\",\n      \"reason\": \"Word count exceeds 250.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 1,\n      \"evidence\": \"Missing: Executive Summary, Fee Structures, Recommendations.\",\n      \"reason\": \"Required sections absent.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 1,\n      \"evidence\": \"No mention of fees, escrow, requesters, agents, or numeric pricing example.\",\n      \"reason\": \"Topic is beekeeping, not fee/escrow pricing.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Further reading: https://www.beeculture.com/ and https://extension.psu.edu/beekeeping\",\n      \"reason\": \"Two linked sources present.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.8,\n      \"evidence\": \"crowded colony will swarm; count varroa mites ... treat\",\n      \"reason\": \"Identifies swarming and varroa risks.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "602513f0f5384b6f9e7d8d566f9c17b8",
+    "usage": {
+      "prompt_tokens": 1252,
+      "completion_tokens": 1169
+    }
+  },
+  "response_sha256": "c2cddd6de33c2afd4d68d226176cc041bca9b4367bdb25b448d7a4a1af717d51",
+  "recorded_at": "2026-11-13T15:38:44.350Z"
+}

@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V1",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "6fc0cbcc224c12ff9c8ec36c8dd2e0718d5f01aa958bd2987660c14aa83ecfdf",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Full report read; no text addresses evaluators, judges, or AI systems; injection pre-scan clean.\",\"reason\":\"Report content is purely topical; no evaluator-directed instructions found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: min_words rule, value 350, pass true.\",\"reason\":\"Authoritative word count of 350 exceeds 250-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: found sections include 'executive summary', 'fee structures', 'recommendations'; missing none.\",\"reason\":\"All required sections present per authoritative section check.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"'a requester posts a 10 USDC job... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC, so a rational agent bids about 25 percent higher'.\",\"reason\":\"Explains fee/escrow effect on pricing with correct worked numeric example.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: contains_links value 2, pass true; sources list two URLs (docs.near.ai, jstor.org).\",\"reason\":\"Two cited sources with links confirmed deterministically.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"'First, adverse selection... Second, reputation inflation... Third, dispute deadlock'.\",\"reason\":\"Three distinct risks/market failures identified, exceeding the two required.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "229431f5ed3c4e8fa5e57cfbafde2e96",
+    "usage": {
+      "prompt_tokens": 1190,
+      "completion_tokens": 774
+    }
+  },
+  "response_sha256": "67d6d70bbca6348487d361f856cf138fb856058d92232099bace47a2c9484a2d",
+  "recorded_at": "2026-11-13T15:37:35.144Z"
+}

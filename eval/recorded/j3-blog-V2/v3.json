@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V2",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "f1d4e3544968e13474fa5b7eb7cc95358eda3c0f545ba5152f77fe9413eeab9d",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Full text reviewed; no sentences address evaluators, judges, or AI systems.\",\"reason\":\"Post is pure blog content; no meta-instructions found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: min_words value 258, pass=true.\",\"reason\":\"Word count 258 exceeds 200-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Title: 'The Agent Marketplace in 2026: From Novelty to Infrastructure'. Intro thesis: 'the marketplaces that win will be the ones that make delivery verifiable'.\",\"reason\":\"Clear title and explicit thesis about agent marketplaces.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.9,\"evidence\":\"Only 'Trend 1: Stablecoin settlement' and 'The one trend that matters: verifiable acceptance criteria' appear; Background and Conclusion are not trends.\",\"reason\":\"Only two distinct trends covered, not three.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: max_words value 258, pass=true.\",\"reason\":\"258 words is well under the 1500-word limit.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"'## Conclusion' section ends: 'If you run or use a marketplace, start by writing criteria that a machine can check...'.\",\"reason\":\"Explicit conclusion containing a call to action.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "c47292a0696644c98fcbbc6f23fc391e",
+    "usage": {
+      "prompt_tokens": 1004,
+      "completion_tokens": 812
+    }
+  },
+  "response_sha256": "2a05900ea9d4dfe7f0e9b4ed2ce9dc529d88acebfb97ab8f2e797c4bef175fc9",
+  "recorded_at": "2026-11-13T15:57:04.095Z"
+}

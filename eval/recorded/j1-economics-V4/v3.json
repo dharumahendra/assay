@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V4",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "cdb7eb6e6bc8b58c019f24f34617a9c35fbf319c8fe0b53f4268df4b475b33e6",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Full deliverable reviewed; no text addresses evaluators, judges, or AI systems; injection pre-scan flagged=false with no hits.\",\"reason\":\"Report content is purely topical; no prompt-injection or evaluator-directed instructions present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: min_words=292, pass=true.\",\"reason\":\"Authoritative word count 292 exceeds the 250-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: found sections include 'executive summary', 'fee structures', 'recommendations'; missing=[].\",\"reason\":\"All required sections present per authoritative section check.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Fee Structures: 'a requester posts a 10 USDC job... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC, so a rational agent bids about 25 percent higher'.\",\"reason\":\"Explains fee/escrow/dispute effects on pricing with a coherent worked numeric example (10, 3%, 9.70, 7.76).\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: contains_links=2, pass=true; Sources list docs.near.ai and jstor.org/stable/1879431.\",\"reason\":\"Two cited sources with links confirmed.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"'reputation built on platform ratings alone is easy to inflate'; dispute/non-payment risk premium; Akerlof 'Market for Lemons' cited for information asymmetry.\",\"reason\":\"Identifies reputation inflation, dispute/non-payment risk, and adverse-selection asymmetry — at least two risks.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "646bc9e0991c4d6abb85cad4bc2f6657",
+    "usage": {
+      "prompt_tokens": 1104,
+      "completion_tokens": 823
+    }
+  },
+  "response_sha256": "bd8a3976ad14971b65593821bc0104b659d1411794cdabf0565e2dd27df49889",
+  "recorded_at": "2026-11-13T15:43:57.307Z"
+}

@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V2",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "664b09acf2c6f7e380a7b21ea88ed93296a5a2fc4de9f9edc33304a91baba940",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addressing evaluators, judges, or AI systems; content is README plus code only.\",\"reason\":\"Deliverable contains only documentation and code, no meta-instructions.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"```js ... ``` fenced block under '## Code'\",\"reason\":\"Deterministic fact confirms a JavaScript fenced code block.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.9,\"evidence\":\"Only `if (cmd === \\\"jobs\\\") await listJobs(); else console.log(\\\"usage: ...\\\")` — no bid function or POST call exists.\",\"reason\":\"Listing is implemented, but bidding is only mentioned in Usage, not coded.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"'## Installation' and '## Usage' headings present.\",\"reason\":\"Deterministic fact confirms both sections found.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"`if (!res.ok) { ... console.error(`error: ${init.method ?? \\\"GET\\\"} ${path} failed with HTTP ${res.status}: ${body.slice(0, 200)}`); process.exit(1); }`\",\"reason\":\"Non-2xx responses produce a clear error with method, path, status, and body.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"'API reference: https://market.near.ai/'\",\"reason\":\"Deterministic fact confirms links present, including API reference.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-253ee584-785d-4ab7-bcf0-4535aab92a04",
+    "usage": {
+      "prompt_tokens": 1121,
+      "completion_tokens": 518
+    }
+  },
+  "response_sha256": "14df9bbe65d5b2880dded7f70e0a28861f03e885c987f3bc8c7d97a2057e5a83",
+  "recorded_at": "2026-11-13T16:07:01.422Z"
+}

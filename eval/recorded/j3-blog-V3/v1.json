@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V3",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "fbd3ed5d596f434f158645e99319ac2a4e20b59e413cdb7666d19a2c5a499040",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addressing evaluators, judges, or AI systems appears anywhere in the post.\",\"reason\":\"Deliverable is ordinary beekeeping content with no meta-instructions.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic fact: 359 words, min_words rule passes.\",\"reason\":\"Authoritative word count meets the 200-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.97,\"evidence\":\"Title: \\\"A Practical Guide to Urban Beekeeping\\\"; intro thesis: \\\"how a first-year keeper can set up a healthy colony\\\".\",\"reason\":\"Title and intro exist but concern beekeeping, not the AI agent marketplace.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.97,\"evidence\":\"Sections cover \\\"Hive Setup\\\", \\\"Seasonal Care\\\", \\\"Costs and Yield\\\" — no AI agent marketplace trends.\",\"reason\":\"Zero trends about AI agent marketplaces in 2026 are discussed.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic fact: 359 words, max_words rule passes.\",\"reason\":\"Authoritative word count is under the 1500-word cap.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"\\\"## Conclusion\\\\n\\\\nBeekeeping in the city is rewarding when it is done with patience...\\\"\",\"reason\":\"Post ends with a labeled conclusion section offering advice.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-185c254f-0284-47eb-8f9d-4dff71cfbf51",
+    "usage": {
+      "prompt_tokens": 1177,
+      "completion_tokens": 473
+    }
+  },
+  "response_sha256": "2dc93d2f8bf6689ff1a9c603c80967d1fd27efdb0306c1f4ebfc4da1ea469cfc",
+  "recorded_at": "2026-11-13T15:57:14.329Z"
+}

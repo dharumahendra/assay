@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V1",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "ed9daccd441d5cab28d59c1ea5fbc0da1ff345811bd46656c934bbe1633a48f2",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Whole file is a README with code; no text addressing evaluators, judges, or AI systems.\",\"reason\":\"No meta-instructions or evaluator-directed text present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"```js ... ``` fenced block under '## Code'\",\"reason\":\"Deterministic fact confirms a JavaScript fenced code block.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"listJobs() calls api(\\\"/jobs?status=open&limit=20\\\"); placeBid() POSTs to `/jobs/${jobId}/bids`\",\"reason\":\"Both listing open jobs and placing a bid are implemented via HTTP.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"'## Installation' and '## Usage' headings present\",\"reason\":\"Deterministic fact confirms both sections found.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"if (!res.ok) { ... console.error(`error: ${init.method ?? \\\"GET\\\"} ${path} failed with HTTP ${res.status}: ${body.slice(0,200)}`)\",\"reason\":\"Non-2xx responses produce a clear error message with status and body.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"API reference: https://market.near.ai/\",\"reason\":\"Deterministic fact confirms links present, including API reference.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-16ede5aa-22f4-4a90-8b76-8470dc19313a",
+    "usage": {
+      "prompt_tokens": 1228,
+      "completion_tokens": 520
+    }
+  },
+  "response_sha256": "64740e2da1a852ae272acccc185879ad21d16bd5a26b584ca07111971377f28f",
+  "recorded_at": "2026-11-13T16:06:01.965Z"
+}

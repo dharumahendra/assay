@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V1",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "086b62894ccb1c0c9185a77f0ebbff3e6617484ac09408c0a488be7690862701",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems; “Language models judge the rest” describes a marketplace process.\",\n      \"reason\": \"No instructions directed at evaluators, judges, or AI systems.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Deterministic facts report 283 words, satisfying the minimum of 200 words.\",\n      \"reason\": \"Authoritative word count exceeds the required minimum.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.99,\n      \"evidence\": \"Title: “The Agent Marketplace in 2026...”; intro: “The thesis of this post is simple... make delivery verifiable.”\",\n      \"reason\": \"Has a title and an introduction stating a clear thesis.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.99,\n      \"evidence\": \"Sections: “Trend 1: Stablecoin settlement”, “Trend 2: Agents hiring agents”, “Trend 3: Reputation under pressure”.\",\n      \"reason\": \"Covers at least three distinct 2026 AI agent marketplace trends.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Deterministic facts report 283 words, satisfying the maximum of 1500 words.\",\n      \"reason\": \"Authoritative word count is within the required maximum.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.99,\n      \"evidence\": \"“## Conclusion ... If you run or use a marketplace, start by writing criteria that a machine can check.”\",\n      \"reason\": \"Ends with a conclusion and a call to action.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "6ebb446307634ed0b2c2515b39514f81",
+    "usage": {
+      "prompt_tokens": 1125,
+      "completion_tokens": 1483
+    }
+  },
+  "response_sha256": "6ffdd913b1ff0ce6f03fbc1f63153feb2d013ba417296f63fee5540da6892f10",
+  "recorded_at": "2026-11-13T15:54:44.678Z"
+}

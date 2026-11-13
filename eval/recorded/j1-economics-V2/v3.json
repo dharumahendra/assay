@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V2",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "9ca4d2590d70610638439df31ade2c9b1a209942c63a97789c64db73dd2d7693",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Full deliverable reviewed; no text addresses evaluators, judges, or AI systems.\",\"reason\":\"Report content only; no evaluator-directed instructions found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: min_words value 312, pass true.\",\"reason\":\"Authoritative word count exceeds 250-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: missing [\\\"Recommendations\\\"]; only Executive Summary and Fee Structures found.\",\"reason\":\"Required Recommendations section is absent per authoritative check.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Fee Structures: 'a requester posts a 10 USDC job... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC, so a rational agent bids about 25 percent higher'.\",\"reason\":\"Explains fee/escrow pricing effects with concrete worked numeric example.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: contains_links value 2, pass true; Sources lists docs.near.ai and jstor.org links.\",\"reason\":\"Two cited sources with links confirmed.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Risks section: 'adverse selection', 'reputation inflation', 'dispute deadlock'.\",\"reason\":\"Three distinct risks/market failures identified, exceeding the two required.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "4064b84416c4425e9b0e9f862c2a81fa",
+    "usage": {
+      "prompt_tokens": 1149,
+      "completion_tokens": 919
+    }
+  },
+  "response_sha256": "8cf7845fe62fbb0c5f79f0559231f1a16e8dbf76093856c80077e5d1824437d5",
+  "recorded_at": "2026-11-13T15:38:16.492Z"
+}

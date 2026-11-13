@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V1",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "6ff53e2bf8fdefdde01a4c9f898f607e5405a02c971e4381eaf9e2e28858f822",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Document contains only survey content: Methodology, Frameworks table, Recommendation. No text addresses evaluators or AI systems.\",\"reason\":\"No meta-instructions or evaluator-directed text present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Table rows numbered 1 through 12 (LangGraph ... Agno); deterministic count = 12.\",\"reason\":\"Markdown table has 12 framework rows, meeting the ≥12 requirement.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Header '| # | Framework | Language | License | Repository |' with every row populated, e.g. 'LangGraph | Python | MIT', 'Agno | Python | MPL-2.0'.\",\"reason\":\"All 12 rows include both Language and License values.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Sections '## Methodology' and '## Frameworks' both present; deterministic found both.\",\"reason\":\"Both required sections exist.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Repository column has github.com links for all 12 rows; deterministic link count = 12.\",\"reason\":\"12 repository links, exceeding the ≥8 threshold.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"'## Recommendation' closes the document: 'For multi-step workflows ... LangGraph ... CrewAI ... Mastra or the Vercel AI SDK ... DSPy.'\",\"reason\":\"Ends with use-case-based framework recommendations.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-b1552502-345a-49e2-add8-2029b51a8d44",
+    "usage": {
+      "prompt_tokens": 1211,
+      "completion_tokens": 495
+    }
+  },
+  "response_sha256": "914154e4660d73d33329a88ec723b082912cf115854d0604cec732d98fa51db1",
+  "recorded_at": "2026-11-13T15:48:25.356Z"
+}

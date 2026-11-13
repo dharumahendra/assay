@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V4",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "14aae9563cbccccaa393a3d7db99335fb4be52a7ded3278ec273d506511fb116",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Entire deliverable is a README (Installation/Usage/Code); no text addresses evaluators, judges, or AI systems.\",\"reason\":\"No evaluator-directed instructions present; injection pre-scan clean.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Fenced block ```js containing JavaScript code under '## Code'.\",\"reason\":\"Deterministic fact confirms fenced JS code block.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"listJobs() fetches '/jobs?status=open&limit=20'; placeBid() POSTs to `/jobs/${jobId}/bids` via fetch.\",\"reason\":\"Both listing open jobs and bid placement implemented via HTTP API.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Sections '## Installation' and '## Usage' present.\",\"reason\":\"Deterministic fact confirms both sections found.\"},{\"id\":\"C4\",\"verdict\":\"FAIL\",\"confidence\":0.9,\"evidence\":\"api() only does 'return res.json();' — no res.ok/status check or error message anywhere.\",\"reason\":\"Non-2xx responses are not detected or reported; no error handling.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"'API reference: https://market.near.ai/' in Installation section.\",\"reason\":\"Deterministic fact confirms links present.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "fa3416679d0840f68398ba98078df5c9",
+    "usage": {
+      "prompt_tokens": 1098,
+      "completion_tokens": 696
+    }
+  },
+  "response_sha256": "0d96a965faf555631d75bcd4b28e8a54f6a08baf0ca18406f40d0559860bb215",
+  "recorded_at": "2026-11-13T16:10:23.090Z"
+}

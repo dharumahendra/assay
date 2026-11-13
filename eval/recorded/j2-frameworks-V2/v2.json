@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V2",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "47ba9b141f080c3b21499dbe638e51734b1da516e2009272b51942e422d76e21",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems; content is a survey only.\",\n      \"reason\": \"Deliverable contains no evaluator-directed instructions.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1.0,\n      \"evidence\": \"Table rows 1-12 under Frameworks.\",\n      \"reason\": \"Markdown table has twelve framework rows.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 1.0,\n      \"evidence\": \"Columns are “# | Framework | Repository”; no primary language or license columns.\",\n      \"reason\": \"Required language and license fields are absent.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1.0,\n      \"evidence\": \"Sections “## Methodology” and “## Frameworks” present.\",\n      \"reason\": \"Both required sections exist.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1.0,\n      \"evidence\": \"All 12 rows include GitHub repository URLs.\",\n      \"reason\": \"At least eight frameworks link to repositories.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.97,\n      \"evidence\": \"Final “## Recommendation” maps LangGraph, CrewAI, Mastra/Vercel AI SDK, DSPy to use cases.\",\n      \"reason\": \"Document ends with use-case recommendations.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "3489ee4575e648c2a31180205c29c9d7",
+    "usage": {
+      "prompt_tokens": 1160,
+      "completion_tokens": 823
+    }
+  },
+  "response_sha256": "14eedebb3cac36ff45bbf4933dc80120ce4d62a189c812d7bd2f52d95c5d30af",
+  "recorded_at": "2026-11-13T15:49:17.774Z"
+}

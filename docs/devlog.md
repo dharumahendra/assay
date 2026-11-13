@@ -85,3 +85,18 @@
 - Antarmuka berubah: blob store pindah ke `services/workers/src/blobs.ts` (API me-re-export); freeze #3 `criteria.ts`; deposit `create_job` harus > storage + `min_amount` (0,1 NEAR) → pakai 0,15.
 - Blocker (aksi owner): `NEARAI_API_KEY` + kredit atau `FALLBACK_LLM_*` untuk G4 (3 model), `pnpm eval --live`, `eval/report.md`, attestation live, dan compile endpoint.
 - Cara menjalankan: `pnpm jury:demo [-- --scenario injector]` lalu `pnpm jury`; `pnpm eval`; `pnpm --filter @juri/workers withdraw <akun>`.
+## 2026-11-13 — P4 live (NEAR AI Cloud) + integrasi P0–P5, G4 lulus
+- Model juri (semua Private TEE di NEAR AI Cloud, kredit hackathon $10): v1 `deepseek-ai/DeepSeek-V4.1-Flash-1017`, v2 `Qwen/Qwen3.8-27B`, v3 `z-ai/glm-5.3-flash`, v4 `Qwen/Qwen3.6-35B-A3B-FP8`; compiler `Qwen/Qwen3.8-27B` (`reasoning_effort=low`). Kimi K2.6 dibuang (lewat pihak ketiga: 429 + attestation tanpa `signing_address`).
+- G4 lulus di testnet (runner otomatis, 3 model berbeda, semua `attested=true`, `att_hash` on-chain):
+  - Job #7 honest → Settled/Released `1,1,1,1,1` (DeepSeek, Qwen3.6, GLM): start `4Jnhv9UKfPEo71HfvGfPvuZ8nh1tsKTzhDVbLQR8CDcL`, finalize `8G5TXSB6PS7YG3FnuFmDRtrG1iSuHebfEzJomMFcAEbU`.
+  - Job #6 injector → restart_jury `FBEG7nhFsfAmGx3HC4kFjLXyHkGLi7i8UaXZFCXmJfeL` → Settled/Refunded `0,1,1,1,1`, `injection_flagged=true`: finalize `598dmK94KCJ56F3KCYeZZKA75JhBwfEauWGzV6i2bErg`.
+  - Job #5 Released tanpa attestation (bug batas blob, sudah diperbaiki): finalize `vx9auu6GaPzDi35FV1SverMpF8PZcPuYWLY4WguphPj`.
+- Eval v1 live (`eval/report.md`, 72 completion terekam di `eval/recorded/`): quorum 3 model 24/24 outcome benar, injection false-PASS 0%, deteksi injection 100%. Per model: DeepSeek 24/24 (p50 15,6 dtk), Qwen3.8 23/24 (25 dtk), GLM 24/24 tapi 2 panggilan gagal → UNSURE (61 dtk). `pnpm eval --recorded` (tanpa kunci) menghasilkan `eval/report-replay.md` dengan kolom putusan identik; kegagalan live kini ikut direkam.
+- Perbaikan selama live: `max_tokens` 4000 (token reasoning ikut dihitung; konten null bila habis); compiler pakai reasoning pendek + balasan kosong = percobaan invalid; batas blob attestation 2 MB + simpan report best-effort; runner commit per juri segera setelah menilai (juri lambat tidak membuat yang lain lewat deadline; job #6 sempat Stalled karena ini); nonce attestation dicek terhadap `request_nonce`.
+- Integrasi P0–P5:
+  - API baru (05 §8): `GET /api/protected` (terbaru dulu, filter `account`/`role`), `/api/protected/:id` (job kontrak + criteria yang hash-nya cocok + meta deliverable + status per juri: model, fase, attested, evidence), `/api/protected/:id/evidence/:verifier`, `/api/verifiers` (model aktual dari evidence terakhir; `registered_label` on-chain masih label P0), `/api/treasury`. Skema di `packages/shared/src/protected.ts`. Test api 29/29.
+  - `pnpm dev` = API :8787 + jury runner + web :3000 sekaligus. Dicek end-to-end: web → rewrite `/api/*` → API → kontrak testnet + blob evidence.
+  - FE (sesi P5) akan memakai endpoint ini untuk `/jury`, `/protected`, dan `/protected/[id]` (menunggu desain Pencil).
+- Test: shared 21, jury 21, workers 31, api 29, web 4; typecheck bersih.
+- Belum: label model verifier on-chain masih placeholder P0 (kontrak tidak punya setter; API memakai model dari evidence). Event log job belum disajikan API (`events` di 05 §8).
+- Cara menjalankan: isi `.env` (`NEARAI_API_KEY`), `pnpm dev` → http://localhost:3000; demo job baru: `pnpm jury:demo [-- --scenario injector]`; cek: `pnpm --filter @juri/workers jury:inspect <id>` atau `GET /api/protected/<id>`.

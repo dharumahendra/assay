@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V2",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "57c19d31f3f80425bbcae5e28637dd81d6f6401d9fd55e3777510e1f4f94a341",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addresses evaluators, judges, or AI systems; the post is ordinary prose.\",\"reason\":\"No meta-instructions or grader-directed text found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic fact: 258 words, min_words rule passes.\",\"reason\":\"Authoritative word count meets 200-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Title: \\\"# The Agent Marketplace in 2026: From Novelty to Infrastructure\\\"; intro: \\\"The thesis of this post is simple: the marketplaces that win will be the ones that make delivery verifiable...\\\"\",\"reason\":\"Title present and intro states a clear thesis about agent marketplaces.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.8,\"evidence\":\"Only \\\"Trend 1: Stablecoin settlement\\\" and \\\"The one trend that matters: verifiable acceptance criteria\\\" are labeled trends; \\\"Background\\\" is history, not a trend.\",\"reason\":\"Only two distinct 2026 trends are covered, not three.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic fact: 258 words, max_words 1500 rule passes.\",\"reason\":\"Well under the 1500-word limit.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"\\\"## Conclusion ... If you run or use a marketplace, start by writing criteria that a machine can check...\\\"\",\"reason\":\"Ends with a conclusion containing a call to action.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-af56945f-493e-4b6e-9d85-964183d32ea8",
+    "usage": {
+      "prompt_tokens": 1053,
+      "completion_tokens": 520
+    }
+  },
+  "response_sha256": "066c65cc604360353c9284a15981179b7c111802606e942456ca9b4e0948fcaf",
+  "recorded_at": "2026-11-13T15:55:07.064Z"
+}

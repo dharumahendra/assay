@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V4",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "396c9657f8434c0ac253fe62ab66fc856e71e20e91b779680eb3ee2c8739226d",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"No evaluator/AI-directed instructions found; text only describes survey methodology and table.\",\n      \"reason\": \"Document contains only survey content, no instructions to evaluators or AI systems.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1.0,\n      \"evidence\": \"Table rows numbered 1 through 12 under Frameworks.\",\n      \"reason\": \"Deterministic check found 12 framework rows.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.99,\n      \"evidence\": \"Columns Language and License are populated for rows 1–12, e.g., LangGraph Python MIT.\",\n      \"reason\": \"Each row includes both primary language and license.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1.0,\n      \"evidence\": \"Sections: '## Methodology' and '## Frameworks'.\",\n      \"reason\": \"Both required sections are present.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1.0,\n      \"evidence\": \"Repository column contains 12 GitHub links, e.g., https://github.com/langchain-ai/langgraph.\",\n      \"reason\": \"At least 8 frameworks link to repositories.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 0.99,\n      \"evidence\": \"Document ends after row 12; no recommendation section or use-case guidance.\",\n      \"reason\": \"Required recommendation of framework suitability is absent.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "e41ea07ffbbf49c793be35e69d3fecc9",
+    "usage": {
+      "prompt_tokens": 1169,
+      "completion_tokens": 1024
+    }
+  },
+  "response_sha256": "b2b043cb5ef15e710f751ba80a77116defbd621659c942062c1bfe4cb346d998",
+  "recorded_at": "2026-11-13T15:52:35.656Z"
+}

@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V1",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "474fa5f22aae0bc705b0f1b4fbdce3e5452354d302fd91bb401d6b1c41cf9f3c",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems.\",\n      \"reason\": \"Deliverable contains only user-facing CLI documentation and code.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"```js\",\n      \"reason\": \"A fenced JavaScript code block is present.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"listJobs() calls /jobs?status=open; placeBid() POSTs /jobs/${jobId}/bids.\",\n      \"reason\": \"Code implements listing open jobs and placing a bid via HTTP.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"## Installation ... ## Usage\",\n      \"reason\": \"Required Installation and Usage sections are present.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"if (!res.ok) { console.error(`error: ... HTTP ${res.status}: ...`) }\",\n      \"reason\": \"Non-2xx responses produce a clear error message.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"API reference: https://market.near.ai/\",\n      \"reason\": \"The file links to the API reference.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "c4f98070dbb34c24a324bbd4d970e53a",
+    "usage": {
+      "prompt_tokens": 1264,
+      "completion_tokens": 692
+    }
+  },
+  "response_sha256": "fb1faed976037fd49cc92d3f42a75463b40b9d03f3c71fd4a226fb63d40ca040",
+  "recorded_at": "2026-11-13T16:05:56.244Z"
+}

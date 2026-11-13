@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V2",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "b60f89001d926af1d1b68aca96de5d656c763674d6b8abcd9c092440721e21e4",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Full document reviewed; content is only a survey, methodology, table, and recommendation—no evaluator/AI-directed text.\",\"reason\":\"No instructions addressed to evaluators, judges, or AI systems anywhere in the deliverable.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Frameworks table lists rows numbered 1–12 (LangGraph through Agno); deterministic check confirms 12 rows.\",\"reason\":\"Markdown table contains exactly 12 framework rows, meeting the minimum of 12.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.97,\"evidence\":\"Table columns are only '# | Framework | Repository'; no language or license column exists for any row.\",\"reason\":\"Neither primary language nor license is listed for any framework in the table.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Headings '## Methodology' and '## Frameworks' present; deterministic section check confirms both found.\",\"reason\":\"Both required sections exist as Markdown headings.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"All 12 rows include GitHub URLs, e.g. 'https://github.com/langchain-ai/langgraph'; deterministic link count is 12.\",\"reason\":\"12 frameworks link to repositories, exceeding the required 8.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"'For multi-step workflows... LangGraph'; 'role-based multi-agent setups... CrewAI'; 'TypeScript teams... Mastra or the Vercel AI SDK'.\",\"reason\":\"Final Recommendation section maps specific frameworks to specific use cases.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "6ec0ecd52892464daf9a027b11604dd9",
+    "usage": {
+      "prompt_tokens": 1068,
+      "completion_tokens": 751
+    }
+  },
+  "response_sha256": "98a3b1cf3780a692c879c714cbe102be629c1688ab6fdfa7b8a07dd233a131f3",
+  "recorded_at": "2026-11-13T15:49:54.063Z"
+}

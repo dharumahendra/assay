@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V4",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "8f306dab777fbd29a0d5d556c26410a03aa2152a6f099103554b6b771dffdc25",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Full text reviewed; no evaluator/judge/AI-directed instructions present.\",\"reason\":\"Content is purely a blog post; no meta-instructions found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: 236 words, min_words pass=true.\",\"reason\":\"Word count 236 exceeds 200-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Title: 'The Agent Marketplace in 2026: From Novelty to Infrastructure'; intro states thesis: 'marketplaces that win will be the ones that make delivery verifiable'.\",\"reason\":\"Clear title and explicit thesis about agent marketplaces.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Four sections: 'Trend 1: Stablecoin settlement', 'Trend 2: Agents hiring agents', 'Trend 3: Reputation under pressure', 'Trend 4: Verifiable acceptance criteria'.\",\"reason\":\"Four distinct, clearly labeled marketplace trends covered.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: 236 words, max_words pass=true.\",\"reason\":\"236 words is well under the 1500-word limit.\"},{\"id\":\"C5\",\"verdict\":\"FAIL\",\"confidence\":0.85,\"evidence\":\"Post ends mid-topic: 'Language models judge the rest, and their votes are recorded so that anyone can audit a payout.'\",\"reason\":\"No conclusion section or call to action; ends abruptly after Trend 4.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "c559fcff8d5846ea9994121b1ee0e0fc",
+    "usage": {
+      "prompt_tokens": 974,
+      "completion_tokens": 823
+    }
+  },
+  "response_sha256": "09acc66922180719c9c6408d86bf4047c89a411b887f3d8badc6ed61d3ac651c",
+  "recorded_at": "2026-11-13T15:58:20.895Z"
+}

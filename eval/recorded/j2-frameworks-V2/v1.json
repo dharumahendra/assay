@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V2",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "27c5f29354e2754d3cfeccfb7922a9084810f4ab68a19f5a13b98ad1a28844e7",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Whole document is a survey with Methodology, Frameworks table, and Recommendation; no text addresses evaluators or AI systems.\",\"reason\":\"No meta-instructions or evaluator-directed text present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Table rows 1–12: LangGraph, AutoGen, CrewAI, LlamaIndex, Semantic Kernel, Haystack, smolagents, Mastra, Vercel AI SDK, Pydantic AI, DSPy, Agno.\",\"reason\":\"Deterministic fact confirms 12 framework rows.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.95,\"evidence\":\"Table header is '| # | Framework | Repository |' — no language or license columns anywhere.\",\"reason\":\"Language and license are absent for every framework.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"'## Methodology' and '## Frameworks' headings both present.\",\"reason\":\"Deterministic fact confirms both sections found.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Each of the 12 rows contains a github.com URL, e.g. https://github.com/langchain-ai/langgraph.\",\"reason\":\"Deterministic fact confirms 12 repository links.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"'## Recommendation' — 'For multi-step workflows ... LangGraph ... role-based multi-agent ... CrewAI ... TypeScript teams ... Mastra or the Vercel AI SDK ... DSPy.'\",\"reason\":\"Final section maps frameworks to use cases.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-92a61d10-6785-4f91-8333-5d4f4be88195",
+    "usage": {
+      "prompt_tokens": 1119,
+      "completion_tokens": 469
+    }
+  },
+  "response_sha256": "995af7a7a0aeac3322ee78c15a6d9992de247708e4855a6e303bb5cf07805357",
+  "recorded_at": "2026-11-13T15:49:18.840Z"
+}

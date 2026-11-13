@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V4",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "5c9bcb26df4f7c3829752fb98600550386ddaffb13bc785bae754687b06aad01",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addressing evaluators, judges, or AI systems; content is a normal blog post.\",\"reason\":\"No meta-instructions or grader-directed text present.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic fact: 236 words, min_words rule passes.\",\"reason\":\"Authoritative word count meets 200-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Title: \\\"The Agent Marketplace in 2026: From Novelty to Infrastructure\\\"; intro: \\\"The thesis of this post is simple: the marketplaces that win will be the ones that make delivery verifiable...\\\"\",\"reason\":\"Title present and intro states a clear thesis about agent marketplaces.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Headings: \\\"Trend 1: Stablecoin settlement\\\", \\\"Trend 2: Agents hiring agents\\\", \\\"Trend 3: Reputation under pressure\\\", \\\"Trend 4: Verifiable acceptance criteria\\\".\",\"reason\":\"Four distinct 2026 trends covered, exceeding the three required.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1,\"evidence\":\"Deterministic fact: 236 words, max_words rule passes.\",\"reason\":\"Well under the 1500-word limit.\"},{\"id\":\"C5\",\"verdict\":\"FAIL\",\"confidence\":0.85,\"evidence\":\"Post ends with \\\"Trend 4: Verifiable acceptance criteria\\\" paragraph; no concluding section or call to action follows.\",\"reason\":\"No conclusion or CTA; text stops after the fourth trend.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-9e2a0270-c48d-48fb-a8c9-7f220042be20",
+    "usage": {
+      "prompt_tokens": 1039,
+      "completion_tokens": 502
+    }
+  },
+  "response_sha256": "d4e8066e5d5cfb4449db116bd870113730d686e90b185574178493924d29a1dc",
+  "recorded_at": "2026-11-13T15:57:54.572Z"
+}

@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V3",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "adfa70bb663c18a4e904d7df0459b7e1efe8c617c5e5770aedfd0a151953affd",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addresses evaluators, judges, or AI systems anywhere in the deliverable.\",\"reason\":\"Content is purely about beekeeping; no meta-instructions found.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: min_words value 359, pass=true.\",\"reason\":\"Authoritative word count 359 exceeds 200-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.98,\"evidence\":\"Title: 'A Practical Guide to Urban Beekeeping'; intro thesis is about first-year beekeeping, not AI agent marketplaces.\",\"reason\":\"Title and introduction concern beekeeping; no AI agent marketplace thesis.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.98,\"evidence\":\"Sections cover hive setup, seasonal care, costs/yield — no AI agent marketplace trends mentioned.\",\"reason\":\"Zero coverage of AI agent marketplace trends in 2026.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Deterministic fact: max_words value 359, pass=true.\",\"reason\":\"Authoritative word count 359 is under 1500-word limit.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"'## Conclusion' section: 'Beekeeping in the city is rewarding... Start with one or two colonies, keep notes...'\",\"reason\":\"Explicit conclusion section with closing advice ends the post.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "72280e52aeaf44bbaae147a42895a82b",
+    "usage": {
+      "prompt_tokens": 1120,
+      "completion_tokens": 599
+    }
+  },
+  "response_sha256": "77472783a1108c30a5495a056c73cfdcee3ff04b774e6765af52aa0fa0400548",
+  "recorded_at": "2026-11-13T15:57:37.260Z"
+}

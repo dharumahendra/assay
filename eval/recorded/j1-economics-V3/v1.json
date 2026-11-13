@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V3",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "4efc988fcec2eabb5c41b4c098de22ab584ea4f97127fd8b82af1523fe2fd8bb",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"No text addresses evaluators, judges, or AI systems; content is a beekeeping guide with a 'Further reading' link list.\",\"reason\":\"No meta-instructions or evaluator-directed text found in the deliverable.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: word count 359, min_words rule passed.\",\"reason\":\"Authoritative word count exceeds the 250-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"Sections found: Introduction, Hive Setup, Seasonal Care, Costs and Yield, Conclusion; missing Executive Summary, Fee Structures, Recommendations.\",\"reason\":\"Required sections are absent per deterministic check.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.97,\"evidence\":\"No mention of fees, escrow, requesters, agents, or pricing; 'Costs and Yield' covers hive equipment cost only.\",\"reason\":\"Report never discusses fee/escrow pricing mechanics or a worked numeric example.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: 2 links found — https://www.beeculture.com/ and https://extension.psu.edu/beekeeping.\",\"reason\":\"Two sourced links satisfy the requirement.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.5,\"evidence\":\"'count varroa mites ... treat when the count is above three mites per hundred bees'; 'a crowded colony will swarm'; yield 'depending on forage and weather'.\",\"reason\":\"Two+ risks named, though beekeeping-related rather than market/pricing risks.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-7b029925-0086-40ab-9d13-dc291b85f0c9",
+    "usage": {
+      "prompt_tokens": 1236,
+      "completion_tokens": 765
+    }
+  },
+  "response_sha256": "1b28897c270a9bd022caf4f0a7f63491fc0cf2f2ddc56f516e4be902940721b8",
+  "recorded_at": "2026-11-13T15:38:43.932Z"
+}

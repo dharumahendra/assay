@@ -220,9 +220,13 @@ export interface RecordedFile {
   attested: boolean;
   /** sha256 of canonical {system, user} so a replay only answers the request it was recorded for. */
   request_sha256: string;
-  response: CompletionResult;
-  /** sha256 of canonical response; checked on load (tamper evidence). */
+  /** Null when the live call failed; `error` then holds what was thrown, so a replay fails the same way. */
+  response: CompletionResult | null;
+  /** sha256 of canonical response (or of the error); checked on load (tamper evidence). */
   response_sha256: string;
+  error?: { code: ProviderError["code"]; message: string } | null;
+  /** Wall-clock latency of the live call. */
+  latency_ms?: number;
   recorded_at: string;
 }
 
@@ -237,16 +241,21 @@ export class RecordedProvider implements JudgeProvider {
   constructor(readonly file: string) {
     if (!existsSync(file)) throw new ProviderError("recorded_missing", `no recording at ${file}`);
     this.rec = JSON.parse(readFileSync(file, "utf8")) as RecordedFile;
-    if (canonicalHash(this.rec.response) !== this.rec.response_sha256)
+    if (canonicalHash(this.rec.response ?? this.rec.error ?? null) !== this.rec.response_sha256)
       throw new ProviderError("recorded_tampered", `${file}: response sha256 mismatch`);
     this.model = this.rec.model;
     this.attested = false; // a replay proves nothing about the TEE at replay time
+  }
+
+  get recordedLatencyMs(): number | null {
+    return this.rec.latency_ms ?? null;
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
     const h = requestHash(req);
     if (h !== this.rec.request_sha256)
       throw new ProviderError("recorded_tampered", `${this.file}: recorded for a different prompt (${this.rec.request_sha256.slice(0, 12)} ≠ ${h.slice(0, 12)})`);
+    if (!this.rec.response) throw new ProviderError(this.rec.error?.code ?? "http", `(recorded failure) ${this.rec.error?.message ?? "live call failed"}`);
     return this.rec.response;
   }
 }
@@ -271,20 +280,32 @@ export class RecordingProvider implements JudgeProvider {
   signature?: (chatId: string) => Promise<SignatureProof>;
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
-    const response = await this.inner.complete(req);
-    const rec: RecordedFile = {
-      ...this.meta,
-      provider: this.inner.id,
-      model: this.inner.model,
-      attested: this.inner.attested,
-      request_sha256: requestHash(req),
-      response,
-      response_sha256: canonicalHash(response),
-      recorded_at: new Date().toISOString(),
-    };
-    mkdirSync(dirname(this.file), { recursive: true });
-    writeFileSync(this.file, `${JSON.stringify(rec, null, 2)}\n`);
-    return response;
+    const t0 = Date.now();
+    let response: CompletionResult | null = null;
+    let error: RecordedFile["error"] = null;
+    try {
+      response = await this.inner.complete(req);
+      return response;
+    } catch (e) {
+      // Failures are recorded too, so `--recorded` reproduces the live run (fallback UNSURE) exactly.
+      error = { code: e instanceof ProviderError ? e.code : "http", message: (e instanceof Error ? e.message : String(e)).slice(0, 500) };
+      throw e;
+    } finally {
+      const rec: RecordedFile = {
+        ...this.meta,
+        provider: this.inner.id,
+        model: this.inner.model,
+        attested: this.inner.attested,
+        request_sha256: requestHash(req),
+        response,
+        response_sha256: canonicalHash(response ?? error),
+        error,
+        latency_ms: Date.now() - t0,
+        recorded_at: new Date().toISOString(),
+      };
+      mkdirSync(dirname(this.file), { recursive: true });
+      writeFileSync(this.file, `${JSON.stringify(rec, null, 2)}\n`);
+    }
   }
 }
 

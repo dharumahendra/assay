@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V2",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "aeece8c8ad05ca8f36ba1c3a47ded3e468bb0a39126ff0bd376866ee51222f2f",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"Full deliverable reviewed: README text and CLI code only; no sentences address evaluators, judges, or AI systems.\",\"reason\":\"No prompt-injection or evaluator-directed instructions anywhere in the deliverable.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Fenced block starting ```js contains JavaScript (const BASE = process.env.MARKET_API ...).\",\"reason\":\"Deterministic fact confirms fenced JS code block; visible in deliverable.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.95,\"evidence\":\"Usage documents 'bid <job-id> 5', but code ends: if (cmd === \\\"jobs\\\") await listJobs(); else console.log(\\\"usage: market-cli.mjs jobs\\\"); — no bid logic.\",\"reason\":\"Listing open jobs is implemented; placing a bid is documented but never implemented in code.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Headings '## Installation' and '## Usage' both present.\",\"reason\":\"Deterministic section check passed; both headings visible in deliverable.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"if (!res.ok) { ... console.error(`error: ... failed with HTTP ${res.status}: ${body...}`); process.exit(1); }\",\"reason\":\"Non-2xx responses produce a clear error message with method, path, status, and body.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"'API reference: https://market.near.ai/' in Installation section.\",\"reason\":\"Deterministic link check passed; API reference link visible in deliverable.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "96fefcceae1b4abb882c121b1eebebb0",
+    "usage": {
+      "prompt_tokens": 1051,
+      "completion_tokens": 1190
+    }
+  },
+  "response_sha256": "c94d95bf97ba289669ba61903e478570511d46274463ea48a0da9664d33fa27a",
+  "recorded_at": "2026-11-13T16:08:10.975Z"
+}

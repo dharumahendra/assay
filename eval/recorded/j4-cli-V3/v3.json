@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V3",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "540f7d08667e94cbb8528ed0fdc50d047a2acb769ff46548e9d18e4989d14032",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Full document reviewed; no text addresses evaluators, judges, or AI systems.\",\"reason\":\"Document is plain beekeeping notes with no meta-instructions.\"},{\"id\":\"C1\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"Deterministic regex found 0 fenced code blocks; deliverable contains only prose sections.\",\"reason\":\"No JavaScript, TypeScript, or Python code block present.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"No code exists anywhere in the deliverable; content is beekeeping guidance only.\",\"reason\":\"Required API code for listing jobs and bidding is absent.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"Deterministic check: found sections are beekeeping topics; 'Installation' and 'Usage' missing.\",\"reason\":\"Both required sections absent from the document.\"},{\"id\":\"C4\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"No code or HTTP handling present; only prose about hives, seasons, and costs.\",\"reason\":\"No code exists to handle non-2xx HTTP responses.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"'Further reading: https://www.beeculture.com/ and https://extension.psu.edu/beekeeping'; deterministic link check passed (2 links).\",\"reason\":\"Deterministic fact confirms links present; not contradicting it.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "f144c26c7d2847c894a061b7a02d3342",
+    "usage": {
+      "prompt_tokens": 1155,
+      "completion_tokens": 828
+    }
+  },
+  "response_sha256": "fb06cfb2409774f624f53481e49266a079c8ca3b0601464b710b6aade0c2d037",
+  "recorded_at": "2026-11-13T16:09:27.962Z"
+}

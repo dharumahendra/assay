@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V1",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "d8e3139ab9825ee0d783807e54f10bbc76f358c9cb74c32318949eee57a254e1",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Entire deliverable reviewed; only README content (Installation, Usage, Code). No text addressing evaluators/judges/AI.\",\"reason\":\"No evaluator-directed instructions present; injection pre-scan also clean.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Fenced block tagged ```js containing fetch-based CLI code.\",\"reason\":\"Deterministic fact confirms JavaScript fenced code block present.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.97,\"evidence\":\"listJobs() calls api(\\\"/jobs?status=open&limit=20\\\"); placeBid() POSTs to /jobs/${jobId}/bids.\",\"reason\":\"Both listing open jobs and bid placement implemented via HTTP fetch calls.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Headings '## Installation' and '## Usage' present.\",\"reason\":\"Deterministic fact confirms both sections found.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"if (!res.ok) { ... console.error(`error: ... failed with HTTP ${res.status}: ...`); process.exit(1); }\",\"reason\":\"Non-2xx responses logged with status and body excerpt, then exit.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"'API reference: https://market.near.ai/' in Installation section.\",\"reason\":\"Deterministic fact confirms links present, including API reference URL.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "d6a64e1c0d314449a0d282bd747ead6e",
+    "usage": {
+      "prompt_tokens": 1146,
+      "completion_tokens": 664
+    }
+  },
+  "response_sha256": "1147f4f69d433aee2c55e17fb9902a8cd1bc2a54800015aab2a2eda76b4889f3",
+  "recorded_at": "2026-11-13T16:06:40.667Z"
+}

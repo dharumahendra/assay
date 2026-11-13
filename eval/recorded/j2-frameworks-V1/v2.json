@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V1",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "5c5edf4ba27763deb7383a9dbb879235ce3f4625f9bbfb20f5131d7a921d2774",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems.\",\n      \"reason\": \"Deliverable contains only survey content.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Framework table rows numbered 1 through 12.\",\n      \"reason\": \"At least 12 framework rows are present.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Columns Language and License are populated for rows 1–12.\",\n      \"reason\": \"Every framework lists primary language and license.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"“## Methodology” and “## Frameworks” headings appear.\",\n      \"reason\": \"Required sections are present.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Repository column contains 12 GitHub URLs.\",\n      \"reason\": \"At least 8 frameworks link to repositories.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"“## Recommendation” ends document with use-case guidance for LangGraph, CrewAI, Mastra, DSPy.\",\n      \"reason\": \"Document ends with framework-to-use-case recommendations.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "f946b22a15fd4a6988c43f6f34ae04ae",
+    "usage": {
+      "prompt_tokens": 1240,
+      "completion_tokens": 782
+    }
+  },
+  "response_sha256": "b32d87aeb4eb15a7e2bd3b346954f074760358cf4bd17b3801322a49cd07ec4e",
+  "recorded_at": "2026-11-13T15:48:28.464Z"
+}

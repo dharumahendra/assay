@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V4",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "3e24159baf8b0e2bb7a70439acbf279b008100f31d775aa5d5fe505f6254fd2d",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.95,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems; only user-facing CLI documentation.\",\n      \"reason\": \"Deliverable contains no evaluator-directed instructions.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"```js fenced code block appears under ## Code.\",\n      \"reason\": \"JavaScript fenced code block is present.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"listJobs() calls /jobs?status=open; placeBid() POSTs /jobs/${jobId}/bids.\",\n      \"reason\": \"Both listing open jobs and placing a bid are implemented via HTTP.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"## Installation and ## Usage headings are present.\",\n      \"reason\": \"Required sections exist.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 0.98,\n      \"evidence\": \"api() returns res.json() without checking res.ok/status or throwing an error.\",\n      \"reason\": \"Non-2xx responses are not handled with a clear error message.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"API reference: https://market.near.ai/\",\n      \"reason\": \"File links to the API reference.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "b60b7962f5ee47f18c81f4b5c31758f9",
+    "usage": {
+      "prompt_tokens": 1192,
+      "completion_tokens": 1044
+    }
+  },
+  "response_sha256": "e99fd98f07368c4442f4c1cde5a4808e0e1694bd455e54a0d40f67ef3e61e413",
+  "recorded_at": "2026-11-13T16:09:44.736Z"
+}

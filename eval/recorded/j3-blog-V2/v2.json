@@ -1,0 +1,18 @@
+{
+  "case_id": "j3-blog-V2",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "ece93f1da9a6389131a35442639dd52b69daf32710c0c0e94408b1ff6aa7810a",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.95,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems; “Language models judge” is descriptive.\",\n      \"reason\": \"No evaluator-directed instructions found.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Juri: C1 min_words value 258 pass true.\",\n      \"reason\": \"Authoritative deterministic fact confirms at least 200 words.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"“The thesis of this post is simple: the marketplaces that win will be the ones that make delivery verifiable”\",\n      \"reason\": \"Title present and introduction states a clear thesis.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.72,\n      \"evidence\": \"“Trend 1: Stablecoin settlement... What is new is the speed... verifiable acceptance criteria”\",\n      \"reason\": \"Covers stablecoin settlement, transaction speed, and verifiable acceptance criteria.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Juri: C4 max_words value 258 pass true.\",\n      \"reason\": \"Authoritative deterministic fact confirms at most 1500 words.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"“## Conclusion ... If you run or use a marketplace, start by writing criteria...”\",\n      \"reason\": \"Ends with a conclusion and call to action.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "4e68ec815ae44643addf58c1dd05511d",
+    "usage": {
+      "prompt_tokens": 1095,
+      "completion_tokens": 2406
+    }
+  },
+  "response_sha256": "32a1bdebeec7252a1690fc03497b0be608a31052978924b7891551bd549e729c",
+  "recorded_at": "2026-11-13T15:55:42.199Z"
+}

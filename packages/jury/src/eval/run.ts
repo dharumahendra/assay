@@ -1,8 +1,8 @@
 import { canonicalHash, canonicalJson, sha256Hex, type VerdictCode, type VerdictLabel } from "@juri/shared";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { judge, JURY_ALGO, type JudgeResult } from "../judge.js";
-import { DEFAULT_VERIFIER_MODELS, makeProvider, RecordedProvider, RecordingProvider, RulesProvider, type JudgeProvider } from "../providers.js";
+import { DEFAULT_VERIFIER_MODELS, makeProvider, ProviderError, RecordedProvider, RecordingProvider, RulesProvider, type JudgeProvider } from "../providers.js";
 import { runRules } from "../rules.js";
 import { singleOutcome, tallyOutcome } from "../tally.js";
 import { buildCases, VARIANT_INFO, type EvalCase } from "./cases.js";
@@ -40,7 +40,18 @@ export async function materializeCases(root: string): Promise<{ cases: EvalCase[
 function providerFor(mode: EvalMode, root: string, c: EvalCase, v: string, env: NodeJS.ProcessEnv): JudgeProvider {
   const file = join(root, "recorded", c.id, `${v}.json`);
   if (mode === "rules") return new RulesProvider();
-  if (mode === "recorded") return new RecordedProvider(file);
+  if (mode === "recorded") {
+    if (existsSync(file)) return new RecordedProvider(file);
+    // Recordings made before failures were recorded: a missing file is a live call that failed.
+    return {
+      id: "recorded",
+      model: DEFAULT_VERIFIER_MODELS[v] ?? "?",
+      attested: false,
+      complete: async () => {
+        throw new ProviderError("recorded_missing", "no recording (live call failed)");
+      },
+    };
+  }
   const map = JSON.parse(env.VERIFIER_MODELS_JSON || "{}") as Record<string, string>;
   const live = makeProvider(map[v] ?? DEFAULT_VERIFIER_MODELS[v]!, env);
   if (live.id === "rules") throw new Error("--live needs NEARAI_API_KEY or FALLBACK_LLM_* (none set)");
@@ -71,6 +82,8 @@ export async function runEval(root: string, mode: EvalMode, env: NodeJS.ProcessE
           // fixed per case+verifier so recordings replay byte-for-byte
           delimiterNonce: sha256Hex(`${c.id}|${v}`).slice(0, 24),
         });
+        // a replay reports the latency measured when it was recorded (null when unknown)
+        if (mode === "recorded") r.evidence.latency_ms = provider instanceof RecordedProvider ? (provider.recordedLatencyMs ?? -1) : -1;
         return { verifier: v, model: provider.model, r, error: r.evidence.error };
       }),
     );
@@ -78,7 +91,8 @@ export async function runEval(root: string, mode: EvalMode, env: NodeJS.ProcessE
     log(`${c.id}: ${perVerifier.map((p) => (p.r ? `[${p.r.verdicts}]${p.r.injectionFlag ? "!" : ""}` : `ERR`)).join(" ")}`);
   }
   const report = renderReport(runs, mode);
-  writeFileSync(join(root, mode === "live" || mode === "recorded" ? "report.md" : "report-rules-baseline.md"), report);
+  // live → report.md; recorded → report-replay.md (must match report.md's verdict columns); rules → baseline
+  writeFileSync(join(root, { live: "report.md", recorded: "report-replay.md", rules: "report-rules-baseline.md" }[mode]), report);
   return { runs, report };
 }
 
@@ -110,11 +124,11 @@ export function renderReport(runs: CaseRun[], mode: EvalMode): string {
         if (outcome === "Released") injPass++;
         if (p.r.injectionFlag) injDet++;
       }
-      lat.push(p.r.evidence.latency_ms);
+      if (p.r.evidence.latency_ms >= 0) lat.push(p.r.evidence.latency_ms);
       tokens += (p.r.evidence.usage?.prompt_tokens ?? 0) + (p.r.evidence.usage?.completion_tokens ?? 0);
     }
     const injN = injCases.filter((r) => r.perVerifier[i]?.r).length;
-    rows.push(`| ${v} ${model} | ${pct(ok, n)} (${ok}/${n}) | ${pct(agree, total)} | ${pct(injPass, injN)} | ${pct(injDet, injN)} | ${pct(unsure, total)} | ${median(lat)} ms | ${n ? Math.round(tokens / n) : 0} |`);
+    rows.push(`| ${v} ${model} | ${pct(ok, n)} (${ok}/${n}) | ${pct(agree, total)} | ${pct(injPass, injN)} | ${pct(injDet, injN)} | ${pct(unsure, total)} | ${lat.length ? `${median(lat)} ms` : "–"} | ${n ? Math.round(tokens / n) : 0} |`);
   }
   let qOk = 0, qN = 0, qInjPass = 0, qInjDet = 0;
   for (const r of runs) {

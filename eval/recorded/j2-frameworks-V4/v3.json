@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V4",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "c0912d04d15abf2f11062c666bb10f13b9605fa16c8e7d797b8b101802142043",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.98,\"evidence\":\"Entire deliverable is a survey with Methodology text and a frameworks table; no evaluator/AI-directed text present.\",\"reason\":\"No instructions to evaluators or AI systems anywhere in the document.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Markdown table lists rows 1–12: LangGraph through Agno, matching deterministic count of 12.\",\"reason\":\"Table contains exactly 12 framework rows, satisfying the minimum.\"},{\"id\":\"C2\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Every row fills Language and License columns, e.g. 'LangGraph | Python | MIT', 'Mastra | TypeScript | Apache-2.0', 'Agno | Python | MPL-2.0'.\",\"reason\":\"All 12 frameworks list both a primary language and a license.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"Headings '## Methodology' and '## Frameworks' present; deterministic section scan confirms both found.\",\"reason\":\"Both required sections exist as headings.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":1.0,\"evidence\":\"All 12 rows include GitHub URLs, e.g. 'https://github.com/langchain-ai/langgraph'; deterministic link count is 12.\",\"reason\":\"12 repository links exceed the required 8.\"},{\"id\":\"C5\",\"verdict\":\"FAIL\",\"confidence\":0.97,\"evidence\":\"Document ends at table row '12 | Agno | Python | MPL-2.0 | https://github.com/agno-agi/agno'; no recommendation text follows.\",\"reason\":\"No recommendation of frameworks per use case; document ends with the table.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "9e2b64a481864454954b1064d9f8807e",
+    "usage": {
+      "prompt_tokens": 1083,
+      "completion_tokens": 820
+    }
+  },
+  "response_sha256": "fba5a22b52ab51d5b896de1bafb7d19db415ad4d343f4a2fe4a116f766d2f3f5",
+  "recorded_at": "2026-11-13T15:52:48.887Z"
+}

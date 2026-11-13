@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V1",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "caac589f7bba19c9dc3051b5a6a638c64b224a1496563647c14458aeca068649",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"No text addresses evaluators, judges, or AI systems.\",\n      \"reason\": \"Deliverable contains only report content, no evaluator-directed instructions.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Deterministic facts: C1 pass true, value 350.\",\n      \"reason\": \"Authoritative word count exceeds the 250-word minimum.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Sections: Executive Summary, Fee Structures, Recommendations.\",\n      \"reason\": \"All required section headings are present.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.99,\n      \"evidence\": \"“a requester posts a 10 USDC job... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC”\",\n      \"reason\": \"Explains fee/escrow pricing effects and includes a numeric worked example.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"Sources: https://docs.near.ai/ and https://www.jstor.org/stable/1879431\",\n      \"reason\": \"Two linked sources are cited.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.99,\n      \"evidence\": \"“First, adverse selection... Second, reputation inflation... Third, dispute deadlock”\",\n      \"reason\": \"At least two risks or market failures are identified.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "c7327f26f09b4019851075a34188dc20",
+    "usage": {
+      "prompt_tokens": 1282,
+      "completion_tokens": 1201
+    }
+  },
+  "response_sha256": "e9827f99de76bf4f148658dc735b628f4022050a200ead806ea533ffa98bdd62",
+  "recorded_at": "2026-11-13T15:37:45.668Z"
+}

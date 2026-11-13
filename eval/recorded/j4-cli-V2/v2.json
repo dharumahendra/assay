@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V2",
+  "verifier": "v2",
+  "provider": "nearai",
+  "model": "Qwen/Qwen3.8-27B",
+  "attested": true,
+  "request_sha256": "bfc462c22624e6dc8bf7a12f6ef663f53960e69ec20d538ba752d72db534785b",
+  "response": {
+    "text": "{\n  \"verdicts\": [\n    {\n      \"id\": \"C0\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.95,\n      \"evidence\": \"Whole deliverable; no text addresses evaluators, judges, or AI systems.\",\n      \"reason\": \"No evaluator-directed instructions are present.\"\n    },\n    {\n      \"id\": \"C1\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"```js ... ``` under ## Code\",\n      \"reason\": \"A JavaScript fenced code block is present.\"\n    },\n    {\n      \"id\": \"C2\",\n      \"verdict\": \"FAIL\",\n      \"confidence\": 0.98,\n      \"evidence\": \"if (cmd === \\\"jobs\\\") await listJobs(); else console.log(\\\"usage: market-cli.mjs jobs\\\");\",\n      \"reason\": \"Code implements listing jobs but not placing a bid via HTTP.\"\n    },\n    {\n      \"id\": \"C3\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"## Installation ... ## Usage\",\n      \"reason\": \"Both required sections are present.\"\n    },\n    {\n      \"id\": \"C4\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 0.98,\n      \"evidence\": \"if (!res.ok) { ... console.error(`error: ... HTTP ${res.status}: ...`) }\",\n      \"reason\": \"Non-2xx responses produce a clear error message.\"\n    },\n    {\n      \"id\": \"C5\",\n      \"verdict\": \"PASS\",\n      \"confidence\": 1,\n      \"evidence\": \"API reference: https://market.near.ai/\",\n      \"reason\": \"The file links to the API reference.\"\n    }\n  ],\n  \"injection_suspected\": false,\n  \"injection_evidence\": \"\"\n}",
+    "chatId": "f513df22adad44568caf8bf2057521ef",
+    "usage": {
+      "prompt_tokens": 1148,
+      "completion_tokens": 1263
+    }
+  },
+  "response_sha256": "5979b9e9550f1af72e02361b65f6e98d518f4ac9b03acd7a7c1924708ff85d41",
+  "recorded_at": "2026-11-13T16:07:03.000Z"
+}

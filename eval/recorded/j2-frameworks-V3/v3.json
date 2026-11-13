@@ -1,0 +1,18 @@
+{
+  "case_id": "j2-frameworks-V3",
+  "verifier": "v3",
+  "provider": "nearai",
+  "model": "z-ai/glm-5.3-flash",
+  "attested": true,
+  "request_sha256": "578844ed2a5365252dbe5fb2ca83f20deeb47215f46f193820d57a2ef157c06a",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Full document read; it is a beekeeping guide with no text addressing evaluators, judges, or AI systems.\",\"reason\":\"No evaluator-directed instructions present; injection pre-scan also clean.\"},{\"id\":\"C1\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"No Markdown table anywhere; deterministic regex count = 0 framework rows.\",\"reason\":\"Document contains no table at all, let alone 12 framework rows.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.95,\"evidence\":\"No table or frameworks exist; content covers hives, seasonal care, costs.\",\"reason\":\"Requirement vacuous/contradicted: no framework table, so no languages or licenses listed.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"Sections found: Introduction, Hive Setup, Seasonal Care, Costs and Yield, Conclusion; Methodology and Frameworks missing.\",\"reason\":\"Both required sections absent, confirmed by deterministic section check.\"},{\"id\":\"C4\",\"verdict\":\"FAIL\",\"confidence\":1.0,\"evidence\":\"Only links: 'https://www.beeculture.com/ and https://extension.psu.edu/beekeeping' — reading links, not repositories; count 2 < 8.\",\"reason\":\"Only two non-repository links; zero framework repository links.\"},{\"id\":\"C5\",\"verdict\":\"FAIL\",\"confidence\":0.95,\"evidence\":\"Document ends with Conclusion on beekeeping patience plus 'Further reading' links; no framework recommendation.\",\"reason\":\"No framework-vs-use-case recommendation; topic is beekeeping, not frameworks.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "241dfc8fcbdd4582bad68ab1cc72cad5",
+    "usage": {
+      "prompt_tokens": 1163,
+      "completion_tokens": 763
+    }
+  },
+  "response_sha256": "f29051a6bd0b3ac07ff4601a3450b9079a0b0681d9cbaf66ea8d0f3f3aec8e08",
+  "recorded_at": "2026-11-13T15:52:14.505Z"
+}

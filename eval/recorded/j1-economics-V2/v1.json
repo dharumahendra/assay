@@ -1,0 +1,18 @@
+{
+  "case_id": "j1-economics-V2",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "60ccd7d39d91e0f02a3b674d77878f4904e3cf7fd2e994dc2fad05db2eef1147",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.9,\"evidence\":\"Whole document is report prose (Executive Summary, Market Structure, Fee Structures, Risks, Sources); no text addresses evaluators, judges, or AI systems.\",\"reason\":\"No meta-instructions or evaluator-directed language found anywhere in the deliverable.\"},{\"id\":\"C1\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: min_words value 312, pass true.\",\"reason\":\"Authoritative word count of 312 exceeds the 250-word minimum.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: found sections include 'fee structures' but missing 'Recommendations'.\",\"reason\":\"Required Recommendations section is absent; only Fee Structures is present.\"},{\"id\":\"C3\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"\\\"a requester posts a 10 USDC job and the platform charges 3 percent... agent receives 9.70 USDC... expected revenue falls to 7.76 USDC, so a rational agent bids about 25 percent higher\\\"\",\"reason\":\"Explains fee/escrow effect on pricing with a concrete worked numeric example.\"},{\"id\":\"C4\",\"verdict\":\"PASS\",\"confidence\":0.99,\"evidence\":\"Deterministic fact: contains_links value 2, pass true; links to docs.near.ai and jstor.org/stable/1879431.\",\"reason\":\"Two sources with links are cited.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"\\\"First, adverse selection... Second, reputation inflation... Third, dispute deadlock\\\"\",\"reason\":\"Three distinct risks/market failures identified, exceeding the two required.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-46a53e92-1670-4aab-a467-d151109378fb",
+    "usage": {
+      "prompt_tokens": 1210,
+      "completion_tokens": 666
+    }
+  },
+  "response_sha256": "6ce1d619ce5acec6b932607b1302da2bfc2481c7360f96acff38f225bb4f9198",
+  "recorded_at": "2026-11-13T15:38:22.483Z"
+}

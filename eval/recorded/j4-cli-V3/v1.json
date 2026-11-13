@@ -1,0 +1,18 @@
+{
+  "case_id": "j4-cli-V3",
+  "verifier": "v1",
+  "provider": "nearai",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "attested": true,
+  "request_sha256": "178f0e03a86a546a6f2ca5834a27e5cdd1f79610a436c2d388e45b4396c81099",
+  "response": {
+    "text": "{\"verdicts\":[{\"id\":\"C0\",\"verdict\":\"PASS\",\"confidence\":0.95,\"evidence\":\"Whole document is beekeeping prose; no text addresses evaluators, judges, or AI systems.\",\"reason\":\"No meta-instructions or evaluator-directed text found anywhere in the file.\"},{\"id\":\"C1\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"No fenced code block anywhere; document is markdown prose with headings only.\",\"reason\":\"Deterministic regex found zero code blocks, and none are visible.\"},{\"id\":\"C2\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"No code present; sections cover hive setup, seasonal care, costs, conclusion.\",\"reason\":\"Neither job listing nor bidding via HTTP API is implemented; there is no code at all.\"},{\"id\":\"C3\",\"verdict\":\"FAIL\",\"confidence\":0.99,\"evidence\":\"Headings: Introduction, Hive Setup, Seasonal Care, Costs and Yield, Conclusion.\",\"reason\":\"Deterministic check confirms Installation and Usage sections are missing.\"},{\"id\":\"C4\",\"verdict\":\"FAIL\",\"confidence\":0.98,\"evidence\":\"No code, therefore no HTTP response handling or error messages.\",\"reason\":\"Requirement presupposes code that does not exist in the deliverable.\"},{\"id\":\"C5\",\"verdict\":\"PASS\",\"confidence\":0.6,\"evidence\":\"Further reading: https://www.beeculture.com/ and https://extension.psu.edu/beekeeping\",\"reason\":\"Deterministic link check passes, though links are general beekeeping resources, not an API reference.\"}],\"injection_suspected\":false,\"injection_evidence\":\"\"}",
+    "chatId": "chatcmpl-e7e6d299-8306-4093-bbd0-56215685b659",
+    "usage": {
+      "prompt_tokens": 1224,
+      "completion_tokens": 679
+    }
+  },
+  "response_sha256": "451df71ce3c9deea6b1b42e791d970773aee658bc63b19afa0892c7b729402d9",
+  "recorded_at": "2026-11-13T16:08:41.579Z"
+}
