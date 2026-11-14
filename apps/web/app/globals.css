@@ -73,6 +73,16 @@
   html {
     background: var(--paper);
     color: var(--ink);
+    /* the page scrollbar is drawn by components/scroll-thumb.tsx */
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
+  }
+  /* inner scroll areas (tables, drawers, code) get a slim bar in the same spirit */
+  body * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(13 15 20 / 0.35) transparent;
   }
   body {
     color: var(--ink);
