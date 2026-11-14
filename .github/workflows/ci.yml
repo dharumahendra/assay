@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
 
 jobs:
@@ -27,6 +27,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
+      # contracts/juri: unit tests. contracts/juri-it: near-workspaces integration tests on a local
+      # sandbox (04 §11), Linux only; deploys the committed contracts/juri/res/juri.wasm.
       - name: cargo test (contracts)
         run: |
           for d in contracts/*/; do

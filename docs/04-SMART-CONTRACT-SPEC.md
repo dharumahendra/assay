@@ -446,4 +446,4 @@ Sumber kebenaran antarmuka: `contracts/juri/abi/juri.abi.json` dan `packages/sha
 - **Parameter demo testnet** (`scripts/deploy.ts`): `verifier_stake` 0,05 NEAR, seed verifier 0,1 NEAR, `min_amount` 0,1 NEAR, window commit/reveal 180 s. Nilai produksi tetap default §2.
 - **Gas verifier:** key verifier membayar gas dari saldo seed; prepaid 100 Tgas (≈0,1 NEAR) menghabiskan seed sehingga panggilan verifier memakai **30 Tgas**. Jury runner P4 wajib memakai batas yang sama atau menaikkan seed.
 - **RPC testnet:** `rpc.testnet.near.org` mengembalikan -429 (deprecated); default `https://test.rpc.fastnear.com`.
-- Belum: `ft_on_transfer` (wNEAR, SHOULD) dan integration test near-workspaces (§11 butir integrasi dibuktikan lewat lifecycle testnet, lihat devlog).
+- Belum: `ft_on_transfer` (wNEAR, SHOULD). Integration test near-workspaces (§11) ada di `contracts/juri-it`, berjalan di CI Linux; lifecycle testnet (devlog) tetap jadi bukti di jaringan sungguhan.

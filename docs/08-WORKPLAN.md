@@ -58,7 +58,7 @@ flowchart LR
 - [x] T0.2 Salin paket dokumen ini ke `docs/`.
 - [~] T0.3 Daftarkan agent Juri di market (`POST /v1/agents/register`), simpan `MARKET_API_KEY`; jelajahi Swagger; jawab V1, V2, V3, V5, V9.
 - [x] T0.4 Uji NearBlocks v3 `ft-txns` untuk `escrow.ai.near` (V4); simpan contoh response di `docs/samples/`.
-- [~] T0.5 Daftar NEAR AI Cloud, ambil API key dan kredit, `GET /v1/models`, uji endpoint attestation dan signature (V6). Bila belum bisa: konfigurasikan provider fallback.
+- [x] T0.5 Daftar NEAR AI Cloud, ambil API key dan kredit, `GET /v1/models`, uji endpoint attestation dan signature (V6). Bila belum bisa: konfigurasikan provider fallback. Selesai: key aktif; job #8 dinilai 3 model nearai dengan attestation TEE yang tanda tangannya valid.
 - [x] T0.6 Buat akun testnet: `<you>`, `juri.<you>`, `keeper.<you>`, `demo-requester.<you>`, `demo-worker-honest.<you>`, `demo-worker-injector.<you>`.
 - [x] T0.7 Spike kontrak kecil yang membuat sub-account + FCAK (V7); catat signature near-sdk yang benar.
 - [x] T0.8 Cek `wrap.testnet` (V8).
@@ -87,10 +87,10 @@ flowchart LR
 - [x] T2.1 Pemetaan identitas (FR-B1).
 - [x] T2.2 Deteksi bid kembar + cluster (FR-B4) + unit test dengan fixture.
 - [x] T2.3 Trust Score ~~ts-0.1~~ **ts-0.2** + gate Insufficient data (FR-B2, FR-B3) + unit test.
-- [~] T2.4 Shared funder (FR-B5, SHOULD) — logika + test selesai; fetcher NearBlocks belum diuji live (0 akun terpetakan).
+- [~] T2.4 Shared funder (FR-B5, SHOULD) — logika + test selesai; fetcher NearBlocks diuji live (`pnpm --filter @juri/workers funder:smoke`: 3 akun mainnet publik, funder ter-resolve). Tetap [~]: 0 dari 691 agent terpetakan ke akun NEAR, jadi belum ada edge shared-funder di data asli (butuh T0.3).
 - [x] T2.5 API: `/health`, `/meta`, `/insights`, `/insights/:id/records`, `/jobs`, `/jobs/:id`, `/agents`, `/agents/:id`, `/patterns`, `/patterns/:id`, `/blobs` (FR-H1).
 - [x] T2.6 Bekukan tipe response di `packages/shared` (**freeze #1**).
-- [~] T2.7 Mulai `eval/patterns-review.md`: review manual top-10 cluster — file dibuat; belum ada cluster (bid privat).
+- [~] T2.7 Mulai `eval/patterns-review.md`: review manual top-10 cluster — file dibuat; belum ada cluster (bid privat). Diblokir T0.3: bid hanya terlihat oleh pembuat job.
 
 **Gate G2:** semua endpoint read mengembalikan data nyata; test scoring dan pattern hijau.
 
@@ -107,7 +107,7 @@ flowchart LR
 - [x] T3.5 `commit_vote`, `reveal_vote` + format commitment (FR-E6, FR-E7).
 - [x] T3.6 `finalize` (tally, fee split, statistik) + `restart_jury` (FR-D6, FR-E10, FR-E11, FR-G1).
 - [x] T3.7 `withdraw` + callback, `set_params`, `withdraw_treasury`, view, event, kode error (FR-D7, FR-D10, FR-G2, FR-G3, FR-F1).
-- [~] T3.8 Unit test (04 §11) ✅ 60 test; integration test near-workspaces belum (diganti bukti lifecycle testnet T3.11).
+- [~] T3.8 Unit test (04 §11) ✅ 60 test; integration test near-workspaces ditulis di `contracts/juri-it` (FCAK verifier, lifecycle penuh + withdraw, FCAK ditolak untuk method lain); hanya jalan di CI Linux (sandbox NEAR tidak ada untuk Windows, host tanpa linker MSVC). Belum terverifikasi sampai CI jalan di develop.
 - [x] T3.9 Deploy testnet; daftarkan v1–v4; buat FCAK keeper.
 - [x] T3.10 Ekspor ABI ke repo; util commitment TS + vektor uji bersama (**freeze #2**).
 - [x] T3.11 `scripts/demo-lifecycle.ts` dengan vote manual (tanpa LLM).
@@ -135,7 +135,7 @@ flowchart LR
 
 ### P5 — Frontend read-only (FE) · M
 
-- [~] T5.1 Scaffold Next.js 15 + Tailwind v4 manual (create-near-app diblokir di sesi ini; wallet ditambahkan di P6), layout, navbar dengan badge mode (FR-A6).
+- [x] T5.1 Scaffold Next.js 15 + Tailwind v4 manual (create-near-app diblokir di sesi ini; wallet ditambahkan di P6), layout, navbar dengan badge mode (FR-A6).
 - [x] T5.2 Klien API bertipe dari `packages/shared` (`apps/web/lib/api.ts`).
 - [x] T5.3 Halaman `/`, `/insights` + Source drawer (FR-A5).
 - [x] T5.4 `/jobs`, `/jobs/[id]` termasuk **Generate criteria** (memanggil `/api/criteria/compile` P4).

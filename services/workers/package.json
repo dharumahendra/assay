@@ -21,7 +21,8 @@
     "jury:demo": "tsx src/jury-demo.ts",
     "withdraw": "tsx src/withdraw.ts",
     "jury:inspect": "tsx src/jury-inspect.ts",
-    "fund:demo": "tsx src/fund-demo.ts"
+    "fund:demo": "tsx src/fund-demo.ts",
+    "funder:smoke": "tsx src/funder-smoke.ts"
   },
   "dependencies": {
     "@juri/jury": "workspace:*",
