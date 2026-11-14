@@ -1,23 +1,33 @@
-import type { MiddlewareHandler } from "hono";
+import type { Context, MiddlewareHandler } from "hono";
 import { getConnInfo } from "@hono/node-server/conninfo";
 
 /**
- * Fixed-window rate limit per IP (05 §8: GET 60/min, POST /blobs 20/min). In-memory: fine for a
- * single API container; T7.3 may replace it.
+ * Client IP for rate limiting. X-Forwarded-For is client-controlled, so it is only used when the API runs
+ * behind `trustProxy` reverse proxies (TRUST_PROXY=1 on Railway/Fly). Each proxy appends the address it saw,
+ * so the client is the entry `trustProxy` places from the right; anything further left could be forged.
  */
-export function rateLimit(opts: { name: string; max: number; windowMs?: number }): MiddlewareHandler {
+export function clientIp(c: Context, trustProxy = 0): string {
+  if (trustProxy > 0) {
+    const xff = (c.req.header("x-forwarded-for") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+    const ip = xff[xff.length - trustProxy];
+    if (ip) return ip;
+  }
+  try {
+    return getConnInfo(c).remote.address ?? "local";
+  } catch {
+    return "local"; // not running on node-server (tests)
+  }
+}
+
+/**
+ * Fixed-window rate limit per IP (05 §8: GET 60/min, POST /blobs 20/min, compile 5/min). In-memory: fine for
+ * a single API container.
+ */
+export function rateLimit(opts: { name: string; max: number; windowMs?: number; trustProxy?: number }): MiddlewareHandler {
   const windowMs = opts.windowMs ?? 60_000;
   const hits = new Map<string, { start: number; n: number }>();
   return async (c, next) => {
-    let ip = c.req.header("x-forwarded-for")?.split(",")[0]?.trim();
-    if (!ip) {
-      try {
-        ip = getConnInfo(c).remote.address;
-      } catch {
-        /* not running on node-server (tests) */
-      }
-    }
-    const key = ip ?? "local";
+    const key = clientIp(c, opts.trustProxy ?? 0);
     const now = Date.now();
     const cur = hits.get(key);
     const w = cur && now - cur.start < windowMs ? cur : { start: now, n: 0 };

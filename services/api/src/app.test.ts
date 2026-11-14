@@ -22,6 +22,7 @@ import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
 import { flattenSources } from "./records.js";
+import { CRITERIA_DOC } from "./test-fixtures.js";
 
 const NOW = "2026-11-13T12:00:00.000Z";
 const TX1 = "HJWizscR9Nbiy5WTNQVMpdUhoKw5sLUq48kW1dMe7zwS";
@@ -216,7 +217,7 @@ describe("blobs", () => {
     app.request("/api/blobs", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
 
   it("stores JSON canonically and serves it back with a verifiable hash", async () => {
-    const content = { version: "1", criteria: [{ id: "C0", kind: "MUST" }], b: 2 };
+    const content = CRITERIA_DOC;
     const res = await post({ kind: "criteria", content });
     expect(res.status).toBe(201);
     const put = BlobPutResponseSchema.parse(await res.json());

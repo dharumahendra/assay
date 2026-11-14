@@ -4,7 +4,7 @@ import { isIP } from "node:net";
 /**
  * SSRF guard (NFR-SEC-4) for every URL Juri fetches on behalf of untrusted input
  * (deliverable URIs, `url_reachable` rules):
- * - http/https only, default ports only, no credentials in the URL;
+ * - http/https only (https only for deliverables: `httpsOnly`), default ports only, no credentials in the URL;
  * - every resolved address must be public (no loopback, private, link-local, CGNAT, multicast, metadata);
  * - optional host allowlist (DELIVERABLE_URI_ALLOWLIST) for deliverable fetches;
  * - redirects are followed manually (≤3) and re-checked; timeout; body capped at `maxChars`.
@@ -27,6 +27,8 @@ export interface SafeFetchOptions {
   timeoutMs?: number;
   method?: "GET" | "HEAD";
   maxRedirects?: number;
+  /** Deliverable fetches (NFR-SEC-4): refuse plain http, also on redirects. */
+  httpsOnly?: boolean;
   /** Test hook. */
   resolve?: (host: string) => Promise<string[]>;
   fetchImpl?: typeof fetch;
@@ -52,33 +54,60 @@ const BLOCKED_V4 = [
   "224.0.0.0/4", "240.0.0.0/4",
 ];
 
+/** IPv6 → 8 numeric groups (handles "::" and a trailing dotted IPv4). Null when malformed. */
+function v6Groups(ip: string): number[] | null {
+  let a = ip.toLowerCase().split("%")[0]!;
+  const dotted = /(\d+\.\d+\.\d+\.\d+)$/.exec(a);
+  if (dotted) {
+    const n = v4ToInt(dotted[1]!);
+    a = `${a.slice(0, dotted.index)}${(n >>> 16).toString(16)}:${(n & 0xffff).toString(16)}`;
+  }
+  const [head, tail, extra] = a.split("::");
+  if (extra !== undefined) return null;
+  const h = head ? head.split(":") : [];
+  const t = tail !== undefined ? (tail ? tail.split(":") : []) : null;
+  const groups = t === null ? h : [...h, ...Array(8 - h.length - t.length).fill("0"), ...t];
+  if (groups.length !== 8) return null;
+  const nums = groups.map((g) => parseInt(g, 16));
+  return nums.some((n) => Number.isNaN(n) || n < 0 || n > 0xffff) ? null : nums;
+}
+
 export function isPublicAddress(ip: string): boolean {
   const fam = isIP(ip);
   if (fam === 4) return !BLOCKED_V4.some((c) => inV4(ip, c));
   if (fam !== 6) return false;
-  const a = ip.toLowerCase();
-  const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/.exec(a);
-  if (mapped) return isPublicAddress(mapped[1]!);
-  if (a === "::" || a === "::1") return false;
-  const first = parseInt(a.split(":")[0] || "0", 16);
+  const g = v6Groups(ip);
+  if (!g) return false;
+  const v4 = (hi: number, lo: number) => `${hi >> 8}.${hi & 0xff}.${lo >> 8}.${lo & 0xff}`;
+  // ::/96 (incl. ::, ::1, IPv4-compatible) and ::ffff:0:0/96 (IPv4-mapped): judge the embedded IPv4.
+  // WHATWG URL rewrites [::ffff:10.0.0.1] to [::ffff:a00:1], so the hex form must be caught too.
+  if (g.slice(0, 5).every((x) => x === 0) && (g[5] === 0 || g[5] === 0xffff)) {
+    if (g[5] === 0 && g[6] === 0) return false; // :: and ::1 and ::x
+    return isPublicAddress(v4(g[6]!, g[7]!));
+  }
+  const first = g[0]!;
   if ((first & 0xfe00) === 0xfc00) return false; // fc00::/7 unique local
   if ((first & 0xffc0) === 0xfe80) return false; // fe80::/10 link local
   if ((first & 0xff00) === 0xff00) return false; // multicast
-  if (a.startsWith("64:ff9b:") || a.startsWith("2001:db8:")) return false;
+  if (first === 0x2002) return false; // 6to4 (embeds an IPv4)
+  if (first === 0x2001 && g[1] === 0) return false; // Teredo
+  if (first === 0x2001 && g[1] === 0xdb8) return false; // documentation
+  if (first === 0x64 && g[1] === 0xff9b) return false; // NAT64
+  if (first === 0x100 && g[1] === 0 && g[2] === 0 && g[3] === 0) return false; // discard-only
   return true;
 }
 
 const hostAllowed = (host: string, allowlist?: string[]) =>
   !allowlist?.length || allowlist.some((h) => host === h || host.endsWith(`.${h}`));
 
-export async function checkUrl(raw: string, opts: Pick<SafeFetchOptions, "allowlist" | "resolve"> = {}): Promise<URL> {
+export async function checkUrl(raw: string, opts: Pick<SafeFetchOptions, "allowlist" | "resolve" | "httpsOnly"> = {}): Promise<URL> {
   let u: URL;
   try {
     u = new URL(raw);
   } catch {
     throw new SsrfError("bad_url", `not a URL: ${raw.slice(0, 80)}`);
   }
-  if (u.protocol !== "http:" && u.protocol !== "https:") throw new SsrfError("bad_url", `scheme ${u.protocol} not allowed`);
+  if (u.protocol !== "https:" && (opts.httpsOnly || u.protocol !== "http:")) throw new SsrfError("bad_url", `scheme ${u.protocol} not allowed`);
   if (u.username || u.password) throw new SsrfError("bad_url", "credentials in URL are not allowed");
   if (u.port && !["80", "443"].includes(u.port)) throw new SsrfError("bad_url", `port ${u.port} not allowed`);
   const host = u.hostname.replace(/^\[|\]$/g, "").toLowerCase();

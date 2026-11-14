@@ -73,6 +73,27 @@ describe("SSRF guard", () => {
     for (const ip of ["8.8.8.8", "140.82.112.3", "2606:4700::1111"]) expect(isPublicAddress(ip), ip).toBe(true);
   });
 
+  it("catches IPv4 hidden in IPv6 forms (T7.3)", () => {
+    // what WHATWG URL turns [::ffff:10.0.0.1] / [::ffff:127.0.0.1] / [::127.0.0.1] into
+    for (const ip of ["::ffff:a00:1", "::ffff:7f00:1", "::7f00:1", "::ffff:a9fe:a9fe", "0:0:0:0:0:ffff:c0a8:101", "::", "::0:1",
+      "2002:7f00:1::", "2001:0:4136:e378::1", "64:ff9b::a00:1", "2001:db8::1", "ff02::1", "fe80::1%eth0", "not:an:ip"])
+      expect(isPublicAddress(ip), ip).toBe(false);
+    for (const ip of ["::ffff:808:808", "::ffff:8.8.8.8", "2a00:1450:4001:80b::200e"]) expect(isPublicAddress(ip), ip).toBe(true);
+  });
+
+  it("rejects private literals however the URL spells them", async () => {
+    for (const u of ["http://[::ffff:10.0.0.1]/", "http://[::ffff:127.0.0.1]/x", "http://[::127.0.0.1]/", "http://2130706433/", "http://0x7f.1/", "http://017700000001/", "http://[::1]/", "http://169.254.169.254./latest"])
+      await expect(checkUrl(u), u).rejects.toBeInstanceOf(SsrfError);
+  });
+
+  it("httpsOnly refuses http, also behind a redirect", async () => {
+    const resolve = async () => ["93.184.216.34"];
+    await expect(checkUrl("http://example.com/", { resolve, httpsOnly: true })).rejects.toMatchObject({ code: "bad_url" });
+    const fetchImpl = (async (u: URL) =>
+      u.protocol === "https:" ? new Response(null, { status: 301, headers: { location: "http://example.com/plain" } }) : new Response("plain")) as unknown as typeof fetch;
+    await expect(safeFetch("https://example.com/", { fetchImpl, resolve, httpsOnly: true })).rejects.toMatchObject({ code: "bad_url" });
+  });
+
   it("rejects bad schemes, ports, credentials, private DNS and non-allowlisted hosts", async () => {
     const pub = async () => ["93.184.216.34"];
     await expect(checkUrl("file:///etc/passwd")).rejects.toMatchObject({ code: "bad_url" });

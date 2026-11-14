@@ -49,6 +49,7 @@ import {
 import { RpcError, type ContractReader } from "./contract.js";
 import { randomUUID } from "node:crypto";
 import { Hono, type Context } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { z } from "zod";
 import { BlobError, getBlob, putBlob } from "./blobs.js";
@@ -70,6 +71,8 @@ export interface AppConfig {
   /** Live sync older than this → /health status "degraded" (05 §10). */
   staleAfterMs?: number;
   rateLimits?: { get: number; blobs: number; compile?: number };
+  /** Reverse proxies in front of the API (TRUST_PROXY); 0 = ignore X-Forwarded-For (it can be forged). */
+  trustProxy?: number;
   /** Spec Compiler provider (P4); null → POST /criteria/compile answers 503 no_llm. */
   compiler?: () => JudgeProvider | null;
   /** Juri contract views for /protected, /verifiers, /treasury; absent → 503 no_contract. */
@@ -161,10 +164,15 @@ export function createApp(cfg: AppConfig): Hono {
     "*",
     cors({ origin: "*", allowMethods: ["GET", "POST", "OPTIONS"], exposeHeaders: ["X-Content-SHA256", "X-Criteria-SHA256", "X-Model", "X-Provider"] }),
   );
-  const getLimit = rateLimit({ name: "read", max: cfg.rateLimits?.get ?? 60 });
-  const blobLimit = rateLimit({ name: "blobs", max: cfg.rateLimits?.blobs ?? 20 });
-  const compileLimit = rateLimit({ name: "compile", max: cfg.rateLimits?.compile ?? 5 });
+  const trustProxy = cfg.trustProxy ?? 0;
+  const getLimit = rateLimit({ name: "read", max: cfg.rateLimits?.get ?? 60, trustProxy });
+  const blobLimit = rateLimit({ name: "blobs", max: cfg.rateLimits?.blobs ?? 20, trustProxy });
+  const compileLimit = rateLimit({ name: "compile", max: cfg.rateLimits?.compile ?? 5, trustProxy });
   app.use("/api/*", async (c, next) => (c.req.method === "GET" ? getLimit(c, next) : next()));
+  // Body caps that also hold for chunked uploads without Content-Length (NFR-SEC-3).
+  const tooLarge = (max: string) => (c: Context) => c.json({ error: { code: "too_large", message: `request body exceeds ${max}` } }, 413);
+  const blobBody = bodyLimit({ maxSize: 1_048_576, onError: tooLarge("1 MB") });
+  const compileBody = bodyLimit({ maxSize: 65_536, onError: tooLarge("64 KB") });
 
   app.onError((err, c) => {
     if (err instanceof ApiError)
@@ -460,7 +468,7 @@ export function createApp(cfg: AppConfig): Hono {
   });
 
   // ---- /criteria/compile (P4, 05 §6) ----
-  app.post("/api/criteria/compile", compileLimit, async (c) => {
+  app.post("/api/criteria/compile", compileLimit, compileBody, async (c) => {
     let raw: unknown;
     try {
       raw = await c.req.json();
@@ -503,9 +511,7 @@ export function createApp(cfg: AppConfig): Hono {
   });
 
   // ---- /blobs ----
-  app.post("/api/blobs", blobLimit, async (c) => {
-    const len = Number(c.req.header("content-length") ?? 0);
-    if (len > 1_048_576) throw new ApiError(413, "too_large", "request body exceeds 1 MB");
+  app.post("/api/blobs", blobLimit, blobBody, async (c) => {
     let raw: unknown;
     try {
       raw = await c.req.json();
@@ -514,6 +520,11 @@ export function createApp(cfg: AppConfig): Hono {
     }
     const r = BlobPutRequestSchema.safeParse(raw);
     if (!r.success) throw new ApiError(422, "invalid_blob", r.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "));
+    // Criteria must be a valid CriteriaDoc v1 (≤13 criteria incl. C0, ≤500 chars each): the jury would reject it anyway.
+    if (r.data.kind === "criteria") {
+      const d = CriteriaDocSchema.safeParse(r.data.content);
+      if (!d.success) throw new ApiError(422, "invalid_criteria", d.error.issues.slice(0, 5).map((i) => `${i.path.join(".")}: ${i.message}`).join("; "));
+    }
     const b = putBlob(db, cfg.blobDir, r.data.kind, r.data.content, now());
     return c.json({ ...b, uri: `${cfg.publicUrl.replace(/\/$/, "")}/api/blobs/${b.sha256}` }, 201);
   });

@@ -28,6 +28,7 @@
     "jury": "pnpm --filter @juri/workers jury",
     "jury:demo": "pnpm --filter @juri/workers jury:demo",
     "eval": "pnpm --filter @juri/jury eval",
-    "e2e": "pnpm --filter @juri/workers e2e"
+    "e2e": "pnpm --filter @juri/workers e2e",
+    "scan:bundle": "node scripts/scan-bundle.mjs"
   }
 }

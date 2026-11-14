@@ -116,7 +116,7 @@ async function loadBlob(deps: RunnerDeps, sha: string, uri: string | null, maxCh
   }
   if (!uri || !/^https?:\/\//.test(uri)) return { error: `blob ${sha.slice(0, 12)}… not in the local store and uri is not fetchable (${uri ?? "none"})` };
   try {
-    const r = await safeFetch(uri, { allowlist: deps.allowlist, maxChars: maxChars + 1 });
+    const r = await safeFetch(uri, { allowlist: deps.allowlist, maxChars: maxChars + 1, httpsOnly: true });
     if (r.status !== 200) return { error: `GET ${uri} → ${r.status}` };
     if (sha256Hex(r.text) !== sha) return { error: `content at ${uri} does not match on-chain hash` };
     return { text: r.text };
@@ -145,7 +145,7 @@ export async function prepareContext(deps: RunnerDeps, job: ContractJob): Promis
   const single = text.trim();
   if (/^https?:\/\/\S+$/.test(single)) {
     try {
-      const r = await safeFetch(single, { maxChars: 50_000 });
+      const r = await safeFetch(single, { maxChars: 50_000, httpsOnly: true });
       text = `Deliverable URL: ${single}\nHTTP ${r.status}${r.truncated ? " (truncated to 50000 chars)" : ""}\n\n${r.text}`;
     } catch (e) {
       text = `Deliverable URL: ${single}\n(fetch failed: ${e instanceof Error ? e.message : e})`;

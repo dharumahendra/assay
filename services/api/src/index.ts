@@ -31,6 +31,8 @@ const app = createApp({
   contractId,
   contract: rpcContractReader({ rpcUrl: process.env.NEAR_RPC_URL ?? "https://test.rpc.fastnear.com", contractId }),
   // Spec Compiler: NEAR AI Cloud when NEARAI_API_KEY is set, else FALLBACK_LLM_*, else 503 no_llm.
+  // Railway/Fly put one proxy in front: TRUST_PROXY=1. Unset locally so X-Forwarded-For can't dodge rate limits.
+  trustProxy: Number(process.env.TRUST_PROXY ?? 0) || 0,
   compiler: () => (liveProviderKind() ? makeProvider(process.env.COMPILER_MODEL || DEFAULT_COMPILER_MODEL) : null),
 });
 
