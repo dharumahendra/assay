@@ -34,6 +34,26 @@ jobs:
       - run: pnpm --filter @juri/web build
       - run: pnpm scan:bundle
 
+  # T7.2/T7.7: the deploy image builds from a clean checkout and serves SNAPSHOT mode with no keys and no .env.
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker build -t assay-backend .
+      - name: smoke test (no .env, no keys)
+        run: |
+          docker run -d --name assay -p 8787:8787 assay-backend
+          for i in $(seq 1 60); do curl -fsS localhost:8787/api/health >/dev/null 2>&1 && break; sleep 2; done
+          curl -fsS localhost:8787/api/health
+          curl -fsS localhost:8787/api/meta | grep -q '"mode":"snapshot"'
+          curl -fsS 'localhost:8787/api/insights?window=all' | grep -q '"M1"'
+          curl -fsS localhost:8787/api/agents?limit=1 | grep -q '"data"'
+          curl -fsS localhost:8787/skill.md | grep -q 'create_job'
+          echo "--- container log (tail)"; docker logs assay 2>&1 | tail -n 15
+      - if: failure()
+        run: docker logs assay || true
+
   rust:
     runs-on: ubuntu-latest
     steps:

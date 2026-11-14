@@ -1,0 +1,25 @@
+# Assay web (Next.js) for docker-compose. Production hosting is Vercel (root directory apps/web).
+# API_URL is read at build time (rewrites) and at runtime (server components): the backend's URL.
+FROM node:20-bookworm-slim AS build
+WORKDIR /app
+RUN corepack enable
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY packages/shared/package.json packages/shared/
+COPY apps/web/package.json apps/web/
+RUN pnpm install --frozen-lockfile --filter @juri/web...
+COPY packages/shared packages/shared
+COPY apps/web apps/web
+ARG API_URL=http://backend:8787
+ARG NEXT_PUBLIC_NEAR_NETWORK=testnet
+ARG NEXT_PUBLIC_JURI_CONTRACT_ID=juri.juri-assay-jdir.testnet
+ARG NEXT_PUBLIC_NEAR_RPC_URL=https://test.rpc.fastnear.com
+ENV API_URL=$API_URL NEXT_PUBLIC_NEAR_NETWORK=$NEXT_PUBLIC_NEAR_NETWORK NEXT_PUBLIC_JURI_CONTRACT_ID=$NEXT_PUBLIC_JURI_CONTRACT_ID NEXT_PUBLIC_NEAR_RPC_URL=$NEXT_PUBLIC_NEAR_RPC_URL NEXT_TELEMETRY_DISABLED=1
+RUN pnpm --filter @juri/web build
+
+FROM node:20-bookworm-slim
+WORKDIR /app
+RUN corepack enable
+COPY --from=build /app /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+EXPOSE 3000
+CMD ["pnpm", "--filter", "@juri/web", "start"]

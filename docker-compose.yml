@@ -1,0 +1,32 @@
+# Whole stack locally: docker compose up --build → web http://localhost:3000, API http://localhost:8787
+# Without a .env this is SNAPSHOT mode with no keys (FR-A4, NFR-REPRO-1). With .env (copy .env.example) the jury
+# runner signs with VERIFIER_KEYS_JSON / KEEPER_KEY and judges with NEARAI_API_KEY.
+services:
+  backend:
+    build: .
+    ports: ["8787:8787"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PUBLIC_API_URL: http://localhost:8787
+      DB_PATH: /data/juri.db
+      BLOB_DIR: /data/blobs
+    volumes:
+      - assay-data:/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        API_URL: http://backend:8787
+    environment:
+      API_URL: http://backend:8787
+    ports: ["3000:3000"]
+    depends_on: [backend]
+    restart: unless-stopped
+
+volumes:
+  assay-data:
