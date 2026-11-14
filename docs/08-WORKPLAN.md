@@ -107,7 +107,7 @@ flowchart LR
 - [x] T3.5 `commit_vote`, `reveal_vote` + format commitment (FR-E6, FR-E7).
 - [x] T3.6 `finalize` (tally, fee split, statistik) + `restart_jury` (FR-D6, FR-E10, FR-E11, FR-G1).
 - [x] T3.7 `withdraw` + callback, `set_params`, `withdraw_treasury`, view, event, kode error (FR-D7, FR-D10, FR-G2, FR-G3, FR-F1).
-- [~] T3.8 Unit test (04 §11) ✅ 60 test; integration test near-workspaces ditulis di `contracts/juri-it` (FCAK verifier, lifecycle penuh + withdraw, FCAK ditolak untuk method lain); hanya jalan di CI Linux (sandbox NEAR tidak ada untuk Windows, host tanpa linker MSVC). Belum terverifikasi sampai CI jalan di develop.
+- [x] T3.8 Unit test (04 §11) ✅ 60 test; integration test near-workspaces di `contracts/juri-it` (FCAK verifier, lifecycle penuh + withdraw, FCAK ditolak untuk method lain) ✅ 3/3 hijau di CI Linux (run 43590219631). Tidak bisa dijalankan di host Windows (sandbox NEAR tidak ada, tanpa linker MSVC).
 - [x] T3.9 Deploy testnet; daftarkan v1–v4; buat FCAK keeper.
 - [x] T3.10 Ekspor ABI ke repo; util commitment TS + vektor uji bersama (**freeze #2**).
 - [x] T3.11 `scripts/demo-lifecycle.ts` dengan vote manual (tanpa LLM).
