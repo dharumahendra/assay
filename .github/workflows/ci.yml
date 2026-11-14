@@ -42,7 +42,9 @@ jobs:
       # res/ is gitignored; the integration tests deploy this build.
       - name: build contracts/juri wasm
         working-directory: contracts/juri
-        run: cargo near build non-reproducible-wasm && ls -l res/juri.wasm
+        run: |
+          cargo near build non-reproducible-wasm
+          mkdir -p res && cp target/near/juri.wasm res/juri.wasm && ls -l res/juri.wasm
       # contracts/juri: unit tests. contracts/juri-it: near-workspaces integration tests on a local
       # sandbox (04 §11), Linux only; deploys contracts/juri/res/juri.wasm built above.
       - name: cargo test (contracts)
