@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Copy } from "./icons";
 
-export function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
+export function CopyButton({ text, label = "Copy", className }: { text: string; label?: string; className?: string }) {
   const [done, setDone] = useState(false);
   return (
     <button
@@ -17,9 +17,9 @@ export function CopyButton({ text, label = "Copy" }: { text: string; label?: str
           /* clipboard blocked: the text stays selectable on the page */
         }
       }}
-      className="inline-flex items-center gap-1 rounded-md border border-rule px-2 py-0.5 text-sm hover:border-ink"
+      className={className ?? "inline-flex items-center gap-1 rounded-md border border-rule px-2 py-0.5 text-sm hover:border-ink"}
     >
-      <Copy size={12} />
+      <Copy size={className ? 14 : 12} />
       <span aria-live="polite">{done ? "Copied" : label}</span>
     </button>
   );

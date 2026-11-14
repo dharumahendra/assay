@@ -191,6 +191,11 @@
   .bg-rings {
     background-image: repeating-radial-gradient(circle at 82% 30%, transparent 0 46px, rgb(13 15 20 / 0.09) 46px 47px);
   }
+  .bg-lattice {
+    background-image:
+      repeating-linear-gradient(45deg, rgb(13 15 20 / 0.08) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, rgb(13 15 20 / 0.08) 0 1px, transparent 1px 26px);
+  }
   .bg-squares {
     background-image:
       linear-gradient(rgb(232 160 168 / 0.5) 1px, transparent 1px),

@@ -1,14 +1,16 @@
 /** Small layout pieces shared by the wizard and /account (Assay.pen: white cards on a grid background, navy and lime accent cards). */
 import type { ReactNode } from "react";
 
-export function Card({ children, className = "", tone = "surface" }: { children: ReactNode; className?: string; tone?: "surface" | "navy" | "lime" | "peach" }) {
+export function Card({ children, className = "", tone = "surface" }: { children: ReactNode; className?: string; tone?: "surface" | "navy" | "lime" | "peach" | "sky" | "salmon" }) {
   const t = {
-    surface: "border border-rule bg-surface",
-    navy: "bg-[#12151F] text-[#EEF0F4]",
-    lime: "bg-[#C8F24A] text-[#0D0F14]",
-    peach: "bg-[#F2BC75] text-[#0D0F14]",
+    surface: "bg-surface shadow-[0_10px_30px_-20px_rgb(13_15_20/0.35)]",
+    navy: "bg-navy text-paper",
+    lime: "bg-lime text-ink",
+    peach: "bg-peach text-ink",
+    sky: "bg-sky text-ink",
+    salmon: "bg-salmon text-ink",
   }[tone];
-  return <section className={`rounded-3xl p-5 sm:p-6 ${t} ${className}`}>{children}</section>;
+  return <section className={`rounded-[1.75rem] p-5 sm:p-7 ${t} ${className}`}>{children}</section>;
 }
 
 export function Eyebrow({ children, className = "" }: { children: ReactNode; className?: string }) {

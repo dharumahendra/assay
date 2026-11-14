@@ -143,3 +143,31 @@ export const Copy = (p: P) => (
     <path d="M10.5 3H4a1 1 0 0 0-1 1v6.5" />
   </svg>
 );
+export const Undo = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M5.5 3.5 2.5 6.5l3 3M2.5 6.5H10a3.5 3.5 0 0 1 0 7H7" />
+  </svg>
+);
+export const User = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="8" cy="5.5" r="2.6" />
+    <path d="M3 13.5c.6-2.4 2.6-3.8 5-3.8s4.4 1.4 5 3.8" />
+  </svg>
+);
+export const Braces = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M5.5 2.5c-1.5 0-2 .6-2 1.8v1.6c0 .9-.5 1.6-1.5 2.1 1 .5 1.5 1.2 1.5 2.1v1.6c0 1.2.5 1.8 2 1.8M10.5 2.5c1.5 0 2 .6 2 1.8v1.6c0 .9.5 1.6 1.5 2.1-1 .5-1.5 1.2-1.5 2.1v1.6c0 1.2-.5 1.8-2 1.8" />
+  </svg>
+);
+export const Key = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="5" cy="11" r="2.6" />
+    <path d="m6.9 9.1 6.1-6.1M11 5l1.6 1.6M9.4 6.6 11 8.2" />
+  </svg>
+);
+export const Clock = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="8" cy="8" r="6" />
+    <path d="M8 4.8V8l2.2 1.5" />
+  </svg>
+);

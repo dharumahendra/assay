@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight } from "./icons";
 
-export type Texture = "plus" | "checker" | "hatch" | "dots" | "gridlines" | "hlines" | "vlines" | "rings" | "squares";
+export type Texture = "plus" | "checker" | "hatch" | "dots" | "gridlines" | "hlines" | "vlines" | "rings" | "squares" | "lattice";
 
 /** A viewport-wide layer behind a section that sits inside the centred main column. */
 export function Bleed({ className }: { className: string }) {

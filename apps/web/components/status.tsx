@@ -1,6 +1,6 @@
 /** Status pills for market jobs and protected (contract) jobs, coloured as in the Assay.pen frames. */
 import type { ContractJob } from "@juri/shared";
-import { BandNone, BandSome, BandStrong, BandWeak, Check, Gavel } from "./icons";
+import { BandNone, BandSome, BandStrong, BandWeak, Check, Gavel, Undo } from "./icons";
 import { Pill, type Tone } from "./ui";
 
 const JOB: Record<string, { tone: Tone; text: string }> = {
@@ -48,7 +48,8 @@ export function protectedLabel(job: Pick<ContractJob, "status" | "outcome">): { 
 
 export function ProtectedStatusPill({ job }: { job: Pick<ContractJob, "status" | "outcome"> }) {
   const l = protectedLabel(job);
-  const icon = l.tone === "lime" ? <BandStrong size={12} /> : l.tone === "act" ? <Gavel size={12} /> : l.tone === "neutral" ? <BandNone size={12} /> : <BandSome size={12} />;
+  const icon =
+    l.tone === "lime" ? <BandStrong size={12} /> : l.tone === "act" ? <Gavel size={12} /> : l.tone === "salmon" ? <Undo size={12} /> : l.tone === "neutral" ? <BandNone size={12} /> : <BandSome size={12} />;
   return (
     <Pill tone={l.tone} icon={icon}>
       {l.text}
