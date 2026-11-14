@@ -4,17 +4,20 @@ import type { DataMode } from "@juri/shared";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Info } from "./icons";
+import { REPO_URL } from "@/lib/format";
+import { Globe, Info } from "./icons";
 import { AssayLogo } from "./logo";
 import { WalletButton } from "./wallet/wallet-button";
 
+// Same set as the Assay.pen nav. Agents are reached from bids and the search on /jobs; Docs is the repo README
+// until a docs page exists.
 const LINKS = [
   { href: "/insights", label: "Insights" },
-  { href: "/jobs", label: "Jobs" },
-  { href: "/agents", label: "Agents" },
+  { href: "/jobs", label: "Jobs", also: ["/agents", "/patterns"] },
   { href: "/protected", label: "Protected Jobs" },
   { href: "/jury", label: "Jury" },
   { href: "/methodology", label: "Methodology" },
+  { href: `${REPO_URL}#readme`, label: "Docs", external: true },
 ];
 
 export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snapshotAt: string | null; network: string }) {
@@ -28,16 +31,19 @@ export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snap
         <nav aria-label="Main" className="order-3 -mx-6 w-[calc(100%+2.25rem)] overflow-x-auto px-6 [scrollbar-width:none] lg:order-none lg:mx-auto lg:w-auto lg:px-0">
           <ul className="flex gap-1 whitespace-nowrap">
             {LINKS.map((l) => {
-              const active = path === l.href || path.startsWith(`${l.href}/`);
+              const active = !l.external && [l.href, ...(l.also ?? [])].some((h) => path === h || path.startsWith(`${h}/`));
+              const cls = `block px-3 py-1.5 text-[0.9375rem] ${active ? "font-semibold text-ink" : "text-muted hover:text-ink"}`;
               return (
                 <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    aria-current={active ? "page" : undefined}
-                    className={`block rounded-full px-3 py-1.5 text-sm font-medium ${active ? "bg-ink text-white" : "text-muted hover:text-ink"}`}
-                  >
-                    {l.label}
-                  </Link>
+                  {l.external ? (
+                    <a href={l.href} target="_blank" rel="noreferrer" className={cls}>
+                      {l.label}
+                    </a>
+                  ) : (
+                    <Link href={l.href} aria-current={active ? "page" : undefined} className={cls}>
+                      {l.label}
+                    </Link>
+                  )}
                 </li>
               );
             })}
@@ -45,7 +51,10 @@ export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snap
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
           {mode && <ModeBadge mode={mode} snapshotAt={snapshotAt} />}
-          <span className="hidden rounded-full border border-rule px-3 py-1.5 font-mono text-[0.6875rem] text-muted 2xl:inline">NEAR {network}</span>
+          <span className="hidden items-center gap-1.5 rounded-full border border-rule px-3 py-1.5 font-mono text-[0.6875rem] text-muted xl:inline-flex">
+            <Globe size={13} />
+            NEAR {network}
+          </span>
           <WalletButton />
         </div>
       </div>
@@ -76,7 +85,7 @@ function ModeBadge({ mode, snapshotAt }: { mode: DataMode; snapshotAt: string | 
   }, [open]);
   const label =
     mode === "snapshot"
-      ? `Snapshot${snapshotAt ? ` · ${new Date(snapshotAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}` : ""}`
+      ? `Snapshot${snapshotAt ? ` · ${new Date(snapshotAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", timeZone: "UTC" })}` : ""}`
       : mode === "live"
         ? "Live"
         : "Recorded jury";
@@ -88,7 +97,7 @@ function ModeBadge({ mode, snapshotAt }: { mode: DataMode; snapshotAt: string | 
         aria-expanded={open}
         className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3 py-1.5 font-mono text-[0.6875rem] font-medium uppercase tracking-wide text-white"
       >
-        <span className={`h-[7px] w-[7px] rounded-full ${mode === "live" ? "bg-lime" : "bg-peach"}`} aria-hidden />
+        <span className={`h-[7px] w-[7px] rounded-full ${mode === "recorded" ? "bg-peach" : "bg-lime"}`} aria-hidden />
         <span className="hidden xl:inline">{label}</span>
         <Info size={12} />
       </button>

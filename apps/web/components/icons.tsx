@@ -42,6 +42,48 @@ export const LinkIcon = (p: P) => (
     <path d="M6.5 9.5 9.5 6.5M7 4.5l1-1a2.8 2.8 0 0 1 4 4l-1 1M9 11.5l-1 1a2.8 2.8 0 0 1-4-4l1-1" />
   </svg>
 );
+export const Globe = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="8" cy="8" r="6" />
+    <path d="M2 8h12M8 2c1.8 1.7 2.6 3.7 2.6 6S9.8 12.3 8 14M8 2C6.2 3.7 5.4 5.7 5.4 8s.8 4.3 2.6 6" />
+  </svg>
+);
+export const Plus = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M8 3v10M3 8h10" />
+  </svg>
+);
+export const Download = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10" />
+  </svg>
+);
+export const Search = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="7" cy="7" r="4.5" />
+    <path d="m10.5 10.5 3 3" />
+  </svg>
+);
+export const ChevronDown = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m4 6 4 4 4-4" />
+  </svg>
+);
+export const Flag = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M3.5 14V2.5h8l-1.5 3 1.5 3h-8" />
+  </svg>
+);
+export const Shield = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M8 2 3 4v3.5c0 3 2.1 5.3 5 6.5 2.9-1.2 5-3.5 5-6.5V4Z" />
+  </svg>
+);
+export const Spark = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M8 2v3M8 11v3M2 8h3M11 8h3M4 4l1.8 1.8M10.2 10.2 12 12M12 4l-1.8 1.8M5.8 10.2 4 12" />
+  </svg>
+);
 export const ArrowUpRight = (p: P) => (
   <svg {...base(p)}>
     <path d="M5 11 11 5M6 5h5v5" />

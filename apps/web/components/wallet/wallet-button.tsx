@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { middle } from "@/lib/format";
+import { ArrowUpRight } from "../icons";
 import { NETWORK } from "@/lib/wallet/near";
 import { useWallet } from "./wallet-provider";
 
@@ -27,14 +28,11 @@ export function WalletButton({ className = "" }: { className?: string }) {
 
   if (!accountId)
     return (
-      <button
-        type="button"
-        onClick={connect}
-        disabled={!ready}
-        className={`inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper disabled:opacity-60 ${className}`}
-      >
-        <span aria-hidden className="size-1.5 rounded-full bg-[#C8F24A]" />
-        {ready ? "Connect wallet" : "Loading wallet…"}
+      <button type="button" onClick={connect} disabled={!ready} className={`group inline-flex items-center gap-0.5 text-sm font-semibold disabled:opacity-60 ${className}`}>
+        <span aria-hidden className="grid size-10 place-items-center rounded-full bg-ink text-white transition-transform group-hover:rotate-45">
+          <ArrowUpRight size={15} />
+        </span>
+        <span className="rounded-full bg-ink px-5 py-2.5 text-white">{ready ? "Connect Wallet" : "Loading wallet…"}</span>
       </button>
     );
 
@@ -45,11 +43,13 @@ export function WalletButton({ className = "" }: { className?: string }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="inline-flex max-w-[16rem] items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-sm text-paper"
+        className="group inline-flex max-w-[18rem] items-center gap-0.5 text-sm font-semibold"
         title={accountId}
       >
-        <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-[#C8F24A]" />
-        <span className="truncate">{middle(accountId, 14, 8)}</span>
+        <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-white">
+          <ArrowUpRight size={15} />
+        </span>
+        <span className="truncate rounded-full bg-ink px-5 py-2.5 text-white">{middle(accountId, 16, 8)}</span>
       </button>
       {open && (
         <div role="menu" className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-rule bg-surface p-2 shadow-lg">

@@ -7,7 +7,7 @@ import { Nav } from "@/components/nav";
 import { ScrollThumb } from "@/components/scroll-thumb";
 import { WalletProvider } from "@/components/wallet";
 import { api } from "@/lib/api";
-import { REPO_URL, reportIssueUrl } from "@/lib/format";
+import { REPO_URL, repoFile, reportIssueUrl } from "@/lib/format";
 import { CONTRACT_ID, explorerAccountUrl, NEAR_NETWORK } from "@/lib/near";
 import "./globals.css";
 
@@ -37,13 +37,16 @@ const FOOTER: [string, [string, string, boolean?][]][] = [
     "Verify",
     [
       ["Contract on explorer", "contract", true],
+      ["Eval report", repoFile("eval/report.md"), true],
       ["Methodology", "/methodology"],
-      ["My account", "/account"],
+      ["Reproduce", "/methodology#reproduce"],
     ],
   ],
   [
     "Build",
     [
+      ["Agent API", "/skill.md", true],
+      ["skill.md", "/skill.md", true],
       ["GitHub repo", REPO_URL, true],
       ["Report an error", reportIssueUrl("Assay: report an error"), true],
     ],
@@ -66,8 +69,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             {children}
           </main>
         </WalletProvider>
-        <footer className="mt-16 bg-navy text-white">
-          <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-14 sm:px-8 lg:px-12">
+        <footer className="mx-auto mt-16 w-full max-w-[1440px] px-4 sm:px-8 lg:px-12">
+          <div className="rounded-t-[2rem] bg-navy px-6 pb-10 pt-14 text-white sm:px-10 lg:px-14">
             <div className="flex flex-wrap justify-between gap-12">
               <div className="max-w-[26rem]">
                 <AssayLogo size={56} wordClass="text-[3.5rem]" />
@@ -101,7 +104,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             </div>
             <div className="mt-12 flex flex-wrap justify-between gap-3 border-t border-white/10 pt-5 font-mono text-xs text-white/50">
               <span>
-                {contract} · built on NEAR · NEAR AI Cloud
+                {contract}
+                {meta?.algo_version ? ` · algo ${meta.algo_version}` : ""} · built on NEAR · NEAR AI Cloud
               </span>
               <span>All verifiers operated by one operator in MVP</span>
             </div>
