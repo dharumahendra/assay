@@ -24,3 +24,6 @@ data/blobs/
 
 # Built contract wasm (rebuild with cargo near build; sha256 recorded in docs/devlog.md)
 contracts/*/res/
+
+# Design reference PNGs (local only)
+page-design/
