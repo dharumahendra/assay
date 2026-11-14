@@ -31,13 +31,13 @@ jobs:
       # Same pinned, sha256-checked cargo-near as contracts/Dockerfile.build.
       - name: install cargo-near 0.23.0
         run: |
-          cd /tmp
+          mkdir -p "$RUNNER_TEMP/cargo-near" && cd "$RUNNER_TEMP/cargo-near"
           base=https://github.com/near/cargo-near/releases/download/cargo-near-v0.23.0
           curl -fsSLO $base/cargo-near-x86_64-unknown-linux-gnu.tar.gz
           curl -fsSLO $base/cargo-near-x86_64-unknown-linux-gnu.tar.gz.sha256
           sha256sum -c cargo-near-x86_64-unknown-linux-gnu.tar.gz.sha256
           tar xzf cargo-near-x86_64-unknown-linux-gnu.tar.gz
-          find /tmp -type f -name cargo-near -exec mv {} ~/.cargo/bin/ \;
+          find . -type f -name cargo-near -exec mv {} ~/.cargo/bin/ \;
           cargo near --version
       # res/ is gitignored; the integration tests deploy this build.
       - name: build contracts/juri wasm
