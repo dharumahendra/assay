@@ -8,7 +8,7 @@ import { ScrollThumb } from "@/components/scroll-thumb";
 import { WalletProvider } from "@/components/wallet";
 import { api } from "@/lib/api";
 import { REPO_URL, repoFile, reportIssueUrl } from "@/lib/format";
-import { CONTRACT_ID, explorerAccountUrl, NEAR_NETWORK } from "@/lib/near";
+import { CONTRACT_ID, explorerAccountUrl } from "@/lib/near";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -64,7 +64,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           Skip to content
         </a>
         <WalletProvider>
-          <Nav mode={meta?.mode ?? null} snapshotAt={meta?.snapshot?.taken_at ?? null} network={meta?.network ?? NEAR_NETWORK} />
+          <Nav />
           <main id="main" className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
             {children}
           </main>

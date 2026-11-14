@@ -28,7 +28,7 @@ export function WalletButton({ className = "" }: { className?: string }) {
 
   if (!accountId)
     return (
-      <button type="button" onClick={connect} disabled={!ready} className={`group inline-flex items-center gap-0.5 text-sm font-semibold disabled:opacity-60 ${className}`}>
+      <button type="button" onClick={connect} disabled={!ready} className={`group inline-flex cursor-pointer items-center gap-0.5 text-sm font-semibold disabled:cursor-wait disabled:opacity-60 ${className}`}>
         <span aria-hidden className="grid size-10 place-items-center rounded-full bg-ink text-white transition-transform group-hover:rotate-45">
           <ArrowUpRight size={15} />
         </span>
@@ -43,7 +43,7 @@ export function WalletButton({ className = "" }: { className?: string }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="group inline-flex max-w-[18rem] items-center gap-0.5 text-sm font-semibold"
+        className="group inline-flex max-w-[18rem] cursor-pointer items-center gap-0.5 text-sm font-semibold"
         title={accountId}
       >
         <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-white">
@@ -70,7 +70,7 @@ export function WalletButton({ className = "" }: { className?: string }) {
               setOpen(false);
               void disconnect();
             }}
-            className="block w-full rounded-md px-3 py-2 text-left text-sm text-bad hover:bg-paper"
+            className="block w-full cursor-pointer rounded-md px-3 py-2 text-left text-sm text-bad hover:bg-paper"
           >
             Disconnect
           </button>

@@ -1,26 +1,20 @@
 "use client";
 
-import type { DataMode } from "@juri/shared";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { REPO_URL } from "@/lib/format";
-import { Globe, Info } from "./icons";
 import { AssayLogo } from "./logo";
 import { WalletButton } from "./wallet/wallet-button";
 
-// Same set as the Assay.pen nav. Agents are reached from bids and the search on /jobs; Docs is the repo README
-// until a docs page exists.
-const LINKS = [
+// Agents are reached from bids and the search on /jobs. The data mode is explained on /methodology#data-sources.
+const LINKS: { href: string; label: string; also?: string[]; external?: boolean }[] = [
   { href: "/insights", label: "Insights" },
   { href: "/jobs", label: "Jobs", also: ["/agents", "/patterns"] },
   { href: "/protected", label: "Protected Jobs" },
   { href: "/jury", label: "Jury" },
   { href: "/methodology", label: "Methodology" },
-  { href: `${REPO_URL}#readme`, label: "Docs", external: true },
 ];
 
-export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snapshotAt: string | null; network: string }) {
+export function Nav() {
   const path = usePathname();
   return (
     <header className="sticky top-0 z-50 px-3 pt-3 sm:px-8 sm:pt-6 lg:px-12">
@@ -50,65 +44,9 @@ export function Nav({ mode, snapshotAt, network }: { mode: DataMode | null; snap
           </ul>
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
-          {mode && <ModeBadge mode={mode} snapshotAt={snapshotAt} />}
-          <span className="hidden items-center gap-1.5 rounded-full border border-rule px-3 py-1.5 font-mono text-[0.6875rem] text-muted xl:inline-flex">
-            <Globe size={13} />
-            NEAR {network}
-          </span>
           <WalletButton />
         </div>
       </div>
     </header>
-  );
-}
-
-const MODE_TEXT: Record<DataMode, string> = {
-  live: "Numbers come from the market API and NEAR RPC, refreshed by the sync job.",
-  snapshot: "Numbers come from a committed snapshot file, so anyone can reproduce them without API keys.",
-  recorded: "Jury decisions replay recorded model outputs instead of calling live models.",
-};
-
-function ModeBadge({ mode, snapshotAt }: { mode: DataMode; snapshotAt: string | null }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const off = (e: MouseEvent | KeyboardEvent) => {
-      if (e instanceof KeyboardEvent ? e.key === "Escape" : !ref.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", off);
-    document.addEventListener("keydown", off);
-    return () => {
-      document.removeEventListener("mousedown", off);
-      document.removeEventListener("keydown", off);
-    };
-  }, [open]);
-  const label =
-    mode === "snapshot"
-      ? `Snapshot${snapshotAt ? ` · ${new Date(snapshotAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", timeZone: "UTC" })}` : ""}`
-      : mode === "live"
-        ? "Live"
-        : "Recorded jury";
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3 py-1.5 font-mono text-[0.6875rem] font-medium uppercase tracking-wide text-white"
-      >
-        <span className={`h-[7px] w-[7px] rounded-full ${mode === "recorded" ? "bg-peach" : "bg-lime"}`} aria-hidden />
-        <span className="hidden xl:inline">{label}</span>
-        <Info size={12} />
-      </button>
-      {open && (
-        <div role="tooltip" className="absolute right-0 z-40 mt-2 w-72 rounded-md border border-rule bg-surface p-3 text-sm shadow-lg">
-          {MODE_TEXT[mode]}{" "}
-          <Link href="/methodology#data-sources" className="link" onClick={() => setOpen(false)}>
-            Data sources
-          </Link>
-        </div>
-      )}
-    </div>
   );
 }
