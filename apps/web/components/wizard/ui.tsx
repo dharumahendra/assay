@@ -37,7 +37,7 @@ export function Row({ k, v, strong }: { k: ReactNode; v: ReactNode; strong?: boo
 
 export function KindToggle({ kind, onChange, disabled }: { kind: "MUST" | "SHOULD"; onChange?: (k: "MUST" | "SHOULD") => void; disabled?: boolean }) {
   return (
-    <span className="inline-flex rounded-full border border-rule p-0.5 text-[0.6875rem] font-semibold">
+    <span className="inline-flex shrink-0 rounded-lg border border-rule bg-surface p-0.5 text-[0.6875rem] font-bold">
       {(["MUST", "SHOULD"] as const).map((k) => (
         <button
           key={k}
@@ -45,7 +45,7 @@ export function KindToggle({ kind, onChange, disabled }: { kind: "MUST" | "SHOUL
           disabled={disabled || !onChange}
           aria-pressed={kind === k}
           onClick={() => onChange?.(k)}
-          className={`rounded-full px-2 py-0.5 ${kind === k ? "bg-ink text-paper" : "text-muted"} disabled:cursor-default`}
+          className={`rounded-md px-2.5 py-1 ${kind === k ? "bg-ink text-white" : "text-faint hover:text-ink"} disabled:cursor-default`}
         >
           {k}
         </button>
@@ -54,4 +54,4 @@ export function KindToggle({ kind, onChange, disabled }: { kind: "MUST" | "SHOUL
   );
 }
 
-export const inputCls = "w-full rounded-xl border border-rule bg-surface px-3 py-2 outline-none focus:border-ink";
+export const inputCls = "w-full rounded-2xl border border-rule bg-surface-2 px-4 py-3 outline-none focus:border-act focus:bg-surface focus:ring-2 focus:ring-act/15";

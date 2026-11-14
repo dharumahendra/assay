@@ -14,6 +14,8 @@ import { StepCriteria, kindsOf, useCriteriaHash } from "./step-criteria";
 import { StepJob } from "./step-job";
 import { StepReview } from "./step-review";
 import { StepTerms, termsError } from "./step-terms";
+import { ArrowRight, Check, Close, Shield } from "@/components/icons";
+import { Bleed, PrimaryButton } from "@/components/ui";
 import { Hand } from "./ui";
 
 const STEPS = ["Job", "Criteria", "Terms", "Review & fund"] as const;
@@ -196,33 +198,40 @@ export function Wizard({ from }: { from: string | null }) {
 
   return (
     <div className="pb-28">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <Hand className="text-muted">new protected job</Hand>
-          <h1 className="mt-1 text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.03em] sm:text-[3.5rem]">{TITLES[d.step - 1]}</h1>
+      <header className="relative isolate pb-2 pt-4 sm:pt-8">
+        <Bleed className="-top-48 bottom-[-6rem] bg-plus [mask-image:linear-gradient(to_bottom,#000_70%,transparent)]" />
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <Hand>new protected job</Hand>
+            <h1 className="display mt-3 text-[2.6rem] leading-[0.98] sm:text-[3.6rem] lg:text-[4.4rem]">{TITLES[d.step - 1]}</h1>
+          </div>
+          <ol className="flex flex-wrap gap-1 rounded-full bg-surface p-1.5 text-[0.9375rem] shadow-sm">
+            {STEPS.map((s, i) => {
+              const n = (i + 1) as Draft["step"];
+              const done = n < d.step;
+              const reachable = n <= d.step || (n === 2 && !!d.doc) || (n === 3 && !!d.doc && !criteriaErr) || (n === 4 && !!d.doc && !criteriaErr && !termsErr);
+              return (
+                <li key={s}>
+                  <button
+                    type="button"
+                    disabled={!reachable}
+                    onClick={() => set({ step: n })}
+                    aria-current={n === d.step ? "step" : undefined}
+                    className={`inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4 font-medium ${n === d.step ? "bg-ink text-white" : done ? "text-ink" : "text-muted"} disabled:cursor-not-allowed`}
+                  >
+                    <span
+                      className={`grid size-7 place-items-center rounded-full text-xs font-semibold ${n === d.step ? "bg-white text-ink" : done ? "bg-lime text-ink" : "bg-surface-2 text-ink"}`}
+                    >
+                      {done ? <Check size={12} /> : n}
+                    </span>
+                    {s}
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
         </div>
-        <ol className="flex flex-wrap gap-1.5 rounded-full border border-rule bg-surface p-1.5 text-sm">
-          {STEPS.map((s, i) => {
-            const n = (i + 1) as Draft["step"];
-            const done = n < d.step;
-            const reachable = n <= d.step || (n === 2 && !!d.doc) || (n === 3 && !!d.doc && !criteriaErr) || (n === 4 && !!d.doc && !criteriaErr && !termsErr);
-            return (
-              <li key={s}>
-                <button
-                  type="button"
-                  disabled={!reachable}
-                  onClick={() => set({ step: n })}
-                  aria-current={n === d.step ? "step" : undefined}
-                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 ${n === d.step ? "bg-ink text-paper" : done ? "bg-[#C8F24A] text-[#0D0F14]" : "text-muted"} disabled:cursor-not-allowed`}
-                >
-                  <span className={`grid size-5 place-items-center rounded-full text-[0.6875rem] font-semibold ${n === d.step ? "bg-paper text-ink" : done ? "bg-[#0D0F14] text-[#C8F24A]" : "border border-rule"}`}>{done ? "✓" : n}</span>
-                  {s}
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
+      </header>
 
       {from && d.step === 1 && !d.market && (
         <p className="mt-4 text-sm text-muted">
@@ -259,7 +268,7 @@ export function Wizard({ from }: { from: string | null }) {
       </div>
 
       {busy.s === "error" && (
-        <div role="alert" className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-bad/40 bg-bad-bg px-4 py-3 text-sm">
+        <div role="alert" className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-salmon/35 px-5 py-4 text-sm">
           {busy.msg}
           <button type="button" onClick={() => setBusy({ s: "idle" })} className="underline">
             Dismiss
@@ -267,12 +276,13 @@ export function Wizard({ from }: { from: string | null }) {
         </div>
       )}
 
-      <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4">
-        <div className="mx-auto flex max-w-[84rem] items-center justify-between gap-3 rounded-full border border-rule bg-surface/95 py-2 pl-5 pr-2 shadow-lg backdrop-blur">
-          <p className={`min-w-0 truncate text-xs ${blocker && busy.s === "idle" ? "font-medium text-bad" : "font-mono text-muted"}`} role={blocker ? "status" : undefined}>
-            {busy.s === "compiling" ? "Compiling criteria… can take up to a minute" : busy.s === "uploading" ? "Storing criteria…" : blocker ? `⚠ ${blocker}` : footNote}
+      <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 sm:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-[calc(1440px-6rem)] items-center justify-between gap-3 rounded-[2rem] bg-surface/95 py-3 pl-6 pr-3 shadow-[0_10px_40px_-18px_rgb(13_15_20/0.45)] backdrop-blur">
+          <p className={`flex min-w-0 items-center gap-2 truncate text-sm ${blocker && busy.s === "idle" ? "font-medium text-bad" : "text-muted"}`} role={blocker ? "status" : undefined}>
+            <Shield size={14} className="shrink-0" />
+            {busy.s === "compiling" ? "Compiling criteria… can take up to a minute" : busy.s === "uploading" ? "Storing criteria…" : blocker ? blocker : footNote}
           </p>
-          <div className="ml-auto flex shrink-0 gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-2">
             {d.step === 1 ? (
               <button
                 type="button"
@@ -281,23 +291,22 @@ export function Wizard({ from }: { from: string | null }) {
                   clearDraft();
                   router.push(from ? `/jobs/${encodeURIComponent(from)}` : "/protected");
                 }}
-                className="rounded-full border border-rule px-4 py-2 text-sm hover:border-ink"
+                className="inline-flex items-center gap-2 rounded-full border border-ink px-5 py-2.5 text-sm font-semibold hover:bg-surface-2"
               >
-                Cancel
+                Cancel <Close size={12} />
               </button>
             ) : (
-              <button type="button" onClick={() => set({ step: (d.step - 1) as Draft["step"] })} className="rounded-full border border-rule px-4 py-2 text-sm hover:border-ink">
-                ← Back
+              <button
+                type="button"
+                onClick={() => set({ step: (d.step - 1) as Draft["step"] })}
+                className="inline-flex items-center gap-2 rounded-full border border-ink px-5 py-2.5 text-sm font-semibold hover:bg-surface-2"
+              >
+                <ArrowRight size={13} className="rotate-180" /> Back
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => (d.step === 4 && !accountId ? connect() : void next())}
-              disabled={d.step === 4 && !accountId ? !ready : !canNext}
-              className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper disabled:opacity-50"
-            >
-              {busy.s === "compiling" ? "Compiling…" : busy.s === "uploading" ? "Preparing…" : `${nextLabel} →`}
-            </button>
+            <PrimaryButton onClick={() => (d.step === 4 && !accountId ? connect() : void next())} disabled={d.step === 4 && !accountId ? !ready : !canNext}>
+              {busy.s === "compiling" ? "Compiling…" : busy.s === "uploading" ? "Preparing…" : nextLabel}
+            </PrimaryButton>
           </div>
         </div>
       </div>

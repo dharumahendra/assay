@@ -165,6 +165,22 @@ export const Key = (p: P) => (
     <path d="m6.9 9.1 6.1-6.1M11 5l1.6 1.6M9.4 6.6 11 8.2" />
   </svg>
 );
+export const Trash = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M2.8 4.2h10.4M6.3 4.2V2.8h3.4v1.4M4 4.2l.6 9h6.8l.6-9M6.6 6.8v4M9.4 6.8v4" />
+  </svg>
+);
+export const Refresh = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M13 3.5v3h-3M3 12.5v-3h3M12.6 6.5A5 5 0 0 0 3.6 5M3.4 9.5a5 5 0 0 0 9 1.5" />
+  </svg>
+);
+export const Gear = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="8" cy="8" r="2.2" />
+    <path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1" />
+  </svg>
+);
 export const Clock = (p: P) => (
   <svg {...base(p)}>
     <circle cx="8" cy="8" r="6" />

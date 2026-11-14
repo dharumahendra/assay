@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react";
 import { MAX_CRITERIA, validateCriteria, type CriteriaDoc, type Criterion } from "@/lib/criteria";
 import { canonicalJson, sha256Hex } from "@/lib/wallet/near";
+import { Check, Close, Eye, Gear, Info, Plus, Refresh, Shield, Spark, Trash } from "@/components/icons";
+import { ghostBtn } from "@/components/ui";
 import { Card, Eyebrow, KindToggle } from "./ui";
 
 export const kindsOf = (doc: CriteriaDoc) => doc.criteria.map((c) => (c.kind === "MUST" ? 0 : 1));
@@ -73,26 +75,26 @@ export function StepCriteria({
   ];
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_26rem]">
       <Card>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">
+            <h2 className="display text-[1.8rem]">
               Criteria · {doc.criteria.length} of {MAX_CRITERIA}
             </h2>
             <p className="text-sm text-muted">{meta}</p>
           </div>
           <div className="flex gap-2">
-            <button type="button" onClick={onRegenerate} disabled={compiling} className="rounded-full border border-rule px-3 py-1.5 text-sm hover:border-ink disabled:opacity-60">
-              {compiling ? "Compiling…" : "↻ Regenerate"}
+            <button type="button" onClick={onRegenerate} disabled={compiling} className={ghostBtn}>
+              <Refresh size={14} /> {compiling ? "Compiling…" : "Regenerate"}
             </button>
             <button
               type="button"
               disabled={doc.criteria.length >= MAX_CRITERIA}
               onClick={() => update([...doc.criteria, { id: nextId(doc.criteria), text: "", kind: "SHOULD", method: "llm", rule: null, rationale: "Added by the requester" }])}
-              className="rounded-full bg-ink px-3 py-1.5 text-sm font-semibold text-paper disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
             >
-              + Add criterion
+              <Plus size={14} /> Add criterion
             </button>
           </div>
         </div>
@@ -100,47 +102,53 @@ export function StepCriteria({
         <ol className="mt-5 space-y-3">
           {doc.criteria.map((c, i) =>
             c.id === "C0" ? (
-              <li key={c.id} className="rounded-2xl bg-[#12151F] p-4 text-[#EEF0F4]">
+              <li key={c.id} className="rounded-2xl bg-navy px-5 py-4 text-paper">
                 <div className="flex items-start gap-3">
-                  <span className="font-mono text-xs text-[#C8F24A]">C0</span>
-                  <p className="flex-1 text-sm">{c.text}</p>
-                  <span className="rounded-full bg-[#C8F24A] px-2 py-0.5 text-[0.6875rem] font-semibold text-[#0D0F14]">MUST</span>
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-3 pl-7 text-xs opacity-70">
-                  <span>Integrity criterion added by Assay. Without it, a deliverable that tries to instruct the jury does not automatically fail.</span>
+                  <Shield size={17} className="mt-0.5 shrink-0 text-lime" />
+                  <span className="pt-0.5 font-mono text-xs opacity-60">C0</span>
+                  <p className="flex-1">{c.text}</p>
+                  <span className="rounded-md bg-lime px-2.5 py-1 text-[0.6875rem] font-bold text-ink">MUST</span>
                   <button
                     type="button"
-                    className="shrink-0 underline"
+                    aria-label="Remove C0"
+                    className="opacity-60 hover:opacity-100"
                     onClick={() => confirm("Without C0, a deliverable that instructs the jury does not fail automatically. Remove it?") && update(doc.criteria.filter((_, j) => j !== i))}
                   >
-                    Remove
+                    <Trash size={16} />
                   </button>
                 </div>
+                <p className="mt-2 text-sm opacity-60">Integrity criterion added by Assay. Without it, a deliverable that tries to instruct the jury does not automatically fail.</p>
               </li>
             ) : (
-              <li key={`${c.id}-${i}`} className="rounded-2xl border border-rule p-4 focus-within:border-[#1D3BFF]">
-                <div className="flex items-start gap-3">
-                  <span className="pt-1 font-mono text-xs text-muted">{c.id}</span>
+              <li key={`${c.id}-${i}`} className="rounded-2xl border border-rule bg-surface-2 px-5 py-4 focus-within:border-act focus-within:ring-1 focus-within:ring-act">
+                <div className="flex flex-wrap items-start gap-3">
+                  <span className="pt-1 font-mono text-xs text-faint">{c.id}</span>
                   <textarea
                     aria-label={`Text of ${c.id}`}
                     value={c.text}
                     maxLength={500}
-                    rows={Math.max(1, Math.ceil(c.text.length / 80))}
+                    rows={Math.max(1, Math.ceil(c.text.length / 70))}
                     onChange={(e) => edit(i, { text: e.target.value })}
                     placeholder="A check a juror can verify from the deliverable alone"
-                    className="min-w-0 flex-1 resize-none bg-transparent text-sm outline-none"
+                    className="min-w-0 flex-1 basis-60 resize-none bg-transparent outline-none"
                   />
                   <KindToggle kind={c.kind} onChange={(k) => edit(i, { kind: k })} />
-                  <button type="button" aria-label={`Delete ${c.id}`} onClick={() => update(doc.criteria.filter((_, j) => j !== i))} className="px-1 text-muted hover:text-bad">
-                    ×
-                  </button>
-                </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2 pl-7">
-                  <span className={`rounded-full px-2 py-0.5 text-[0.6875rem] font-medium ${c.method === "deterministic" ? "bg-[#BDE5F7] text-[#0D0F14]" : "bg-[#F6F7FA] text-muted"}`}>
+                  <span className="inline-flex w-[8.5rem] shrink-0 items-center gap-1.5 rounded-lg border border-rule bg-surface px-2.5 py-1.5 text-xs text-muted">
+                    {c.method === "deterministic" ? <Gear size={12} /> : <Spark size={12} />}
                     {c.method === "deterministic" ? "Deterministic" : "AI-judged"}
                   </span>
-                  {ruleSummary(c) && <code className="rounded-md bg-paper px-1.5 py-0.5 font-mono text-[0.6875rem] text-muted">{ruleSummary(c)}</code>}
+                  <button type="button" aria-label={`Delete ${c.id}`} onClick={() => update(doc.criteria.filter((_, j) => j !== i))} className="pt-1 text-faint hover:text-bad">
+                    <Trash size={16} />
+                  </button>
                 </div>
+                {ruleSummary(c) && (
+                  <p className="mt-2 flex items-center gap-2 pl-8">
+                    <span aria-hidden className="text-faint">
+                      ↳
+                    </span>
+                    <code className="rounded-md bg-surface px-2 py-1 font-mono text-xs">{ruleSummary(c)}</code>
+                  </p>
+                )}
               </li>
             ),
           )}
@@ -154,11 +162,11 @@ export function StepCriteria({
 
       <div className="space-y-5">
         <Card tone={invalid ? "peach" : "lime"}>
-          <h3 className="font-semibold">{invalid ? "Fix before continuing" : "Ready to continue"}</h3>
-          <ul className="mt-3 space-y-1.5 text-sm">
+          <h3 className="display text-[1.6rem]">{invalid ? "Fix before continuing" : "Ready to continue"}</h3>
+          <ul className="mt-3 space-y-2">
             {checks.map(([ok, t]) => (
-              <li key={t} className="flex gap-2">
-                <span aria-hidden>{ok ? "✓" : "!"}</span>
+              <li key={t} className="flex items-center gap-2.5">
+                {ok ? <Check size={14} /> : <Close size={12} />}
                 {t}
               </li>
             ))}
@@ -167,20 +175,23 @@ export function StepCriteria({
 
         {doc.unverifiable.length > 0 && (
           <Card>
-            <h3 className="font-semibold">Unverifiable · {doc.unverifiable.length}</h3>
-            <ul className="mt-3 space-y-4 text-sm">
+            <h3 className="display flex items-center gap-2 text-[1.4rem]">
+              <Eye size={18} /> Unverifiable · {doc.unverifiable.length}
+            </h3>
+            <ul className="mt-3 space-y-5">
               {doc.unverifiable.map((u) => (
                 <li key={u.original}>
-                  <p className="font-medium">“{u.original}”</p>
-                  <p className="mt-1 text-muted">{u.reason}</p>
+                  <p className="font-semibold">“{u.original}”</p>
+                  <p className="mt-1.5 text-muted">{u.reason}</p>
                   {u.replacement && (
                     <button
                       type="button"
                       disabled={doc.criteria.length >= MAX_CRITERIA || doc.criteria.some((c) => c.text === u.replacement)}
                       onClick={() => update([...doc.criteria, { id: nextId(doc.criteria), text: u.replacement!, kind: "SHOULD", method: "llm", rule: null, rationale: `Replaces: ${u.original}`.slice(0, 300) }])}
-                      className="mt-2 rounded-full border border-rule px-3 py-1 text-xs hover:border-ink disabled:opacity-50"
+                      title={u.replacement}
+                      className="mt-3 inline-flex max-w-full items-center gap-2 rounded-full border border-ink px-4 py-2 text-left text-sm font-semibold hover:bg-surface-2 disabled:opacity-50"
                     >
-                      + Use replacement: {u.replacement}
+                      <Plus size={13} className="shrink-0" /> <span className="truncate">Use replacement: {u.replacement}</span>
                     </button>
                   )}
                 </li>
@@ -191,8 +202,10 @@ export function StepCriteria({
 
         {doc.ambiguities.length > 0 && (
           <Card>
-            <h3 className="font-semibold">Questions for you</h3>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted">
+            <h3 className="display flex items-center gap-2 text-[1.4rem]">
+              <Info size={18} /> Questions for you
+            </h3>
+            <ul className="mt-3 space-y-2 text-muted">
               {doc.ambiguities.map((a) => (
                 <li key={a}>{a}</li>
               ))}
@@ -202,8 +215,10 @@ export function StepCriteria({
 
         <Card tone="navy">
           <Eyebrow>Canonical JSON → SHA-256</Eyebrow>
-          <p className="mt-2 break-all font-mono text-sm text-[#C8F24A]">{hash ?? "…"}</p>
-          <p className="mt-2 text-xs opacity-70">Computed in your browser. Sent to create_job with criteria_kinds [{kindsOf(doc).join(",")}].</p>
+          <p className="mt-2 break-all font-mono text-lime" title={hash ?? undefined}>
+            {hash ? `${hash.slice(0, 12)}…${hash.slice(-9)}` : "…"}
+          </p>
+          <p className="mt-3 text-sm opacity-70">Computed in your browser. Sent to create_job with criteria_kinds [{kindsOf(doc).join(",")}].</p>
         </Card>
       </div>
     </div>
