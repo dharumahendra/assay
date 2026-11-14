@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { putBlob } from "./blobs.js";
 import { openDb } from "./db/index.js";
-import { roundKey, tick, type Chain } from "./jury-runner.js";
+import { roundKey, tick, type Chain, type LogFields } from "./jury-runner.js";
 
 const doc: CriteriaDoc = {
   version: "1",
@@ -97,6 +97,25 @@ describe("jury runner", () => {
     const txs = chain.txs;
     await tick(deps, cache);
     expect(chain.txs).toBe(txs); // nothing left to do
+  });
+
+  it("logs one structured record per action (NFR-OBS-1)", async () => {
+    const { deps } = setup(`# Report\n\n${"word ".repeat(30)}`);
+    const recs: LogFields[] = [];
+    const logged = { ...deps, log: (_m: string, f: LogFields) => recs.push(f) };
+    await tick(logged);
+    await tick(logged);
+    const count = (p: string) => recs.filter((r) => r.phase === p).length;
+    expect([count("start_judging"), count("judge"), count("commit"), count("reveal"), count("finalize")]).toEqual([1, 3, 3, 3, 1]);
+    for (const r of recs) {
+      expect(r).toMatchObject({ level: "info", job_id: 5, round: 0 });
+      expect(typeof r.latency_ms).toBe("number");
+    }
+    const judged = recs.filter((r) => r.phase === "judge");
+    expect(judged.map((r) => r.verifier).sort()).toEqual(["v1.j", "v2.j", "v3.j"]);
+    expect(judged[0]).toMatchObject({ model: "rules:v1", injection: false });
+    expect(judged[0]!.evidence_sha).toMatch(/^[0-9a-f]{64}$/);
+    expect(recs.filter((r) => r.phase === "commit" || r.phase === "reveal").every((r) => r.verifier && r.tx)).toBe(true);
   });
 
   it("injection → C0 FAIL + flag → Refunded", async () => {

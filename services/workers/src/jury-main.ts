@@ -4,7 +4,7 @@ import { liveProviderKind } from "@juri/jury";
 import type { Account } from "near-api-js";
 import { resolve } from "node:path";
 import { openDb, REPO_ROOT } from "./db/index.js";
-import { providerResolver, tick, VERIFIER_GAS_TGAS, type Chain } from "./jury-runner.js";
+import { jsonLog, providerResolver, tick, VERIFIER_GAS_TGAS, type Chain } from "./jury-runner.js";
 import { accountWithKey, call, CONTRACT, explorerTx, keeperSecret, NETWORK, secretFor, view, viewer } from "./near.js";
 
 /**
@@ -15,6 +15,7 @@ import { accountWithKey, call, CONTRACT, explorerTx, keeperSecret, NETWORK, secr
  */
 const argv = process.argv.slice(2);
 const once = argv.includes("--once");
+const json = process.env.LOG_FORMAT ? process.env.LOG_FORMAT === "json" : !process.stdout.isTTY;
 const interval = Number(argv.includes("--interval") ? argv[argv.indexOf("--interval") + 1] : process.env.JURY_INTERVAL_MS ?? 5000);
 
 async function liveChain(): Promise<Chain> {
@@ -72,14 +73,18 @@ async function main() {
     providerFor,
     autoStart: process.env.AUTO_START !== "false",
     allowlist: (process.env.DELIVERABLE_URI_ALLOWLIST ?? "").split(",").map((s) => s.trim()).filter(Boolean),
-    log: (m: string) => console.log(`${new Date().toISOString()} ${m.replace(/ ([1-9A-HJ-NP-Za-km-z]{43,44})$/, (_, h) => ` ${explorerTx(h)}`)}`),
+    // NFR-OBS-1: JSON lines when not on a terminal (Railway/Fly/CI) or LOG_FORMAT=json; human text otherwise.
+    log: json
+      ? jsonLog
+      : (m: string) => console.log(`${new Date().toISOString()} ${m.replace(/ ([1-9A-HJ-NP-Za-km-z]{43,44})$/, (_, h) => ` ${explorerTx(h)}`)}`),
   };
   const cache = new Map();
   for (;;) {
     try {
       await tick(deps, cache);
     } catch (e) {
-      console.error(`tick failed: ${e instanceof Error ? e.message : e}`);
+      const msg = `tick failed: ${e instanceof Error ? e.message : e}`;
+      console.error(json ? JSON.stringify({ ts: new Date().toISOString(), level: "error", phase: "tick", msg }) : msg);
     }
     if (once) break;
     await new Promise((r) => setTimeout(r, interval));

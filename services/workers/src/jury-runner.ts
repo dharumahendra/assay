@@ -61,8 +61,27 @@ export interface RunnerDeps {
   autoStart: boolean;
   /** DELIVERABLE_URI_ALLOWLIST for fetching blobs that are not in the local store. */
   allowlist: string[];
-  log?: (msg: string) => void;
+  /** `msg` is human readable; `fields` is the structured record (NFR-OBS-1: job_id, verifier, phase, latency_ms). */
+  log?: (msg: string, fields: LogFields) => void;
 }
+
+export interface LogFields {
+  level: "info" | "error";
+  job_id: number;
+  round?: number;
+  verifier?: string;
+  phase: "start_judging" | "restart_jury" | "judge" | "commit" | "reveal" | "finalize" | "error";
+  latency_ms?: number;
+  tx?: string;
+  model?: string;
+  verdicts?: number[];
+  injection?: boolean;
+  evidence_sha?: string;
+  error?: string;
+}
+
+/** One JSON line per runner event (NFR-OBS-1). */
+export const jsonLog = (msg: string, f: LogFields) => console.log(JSON.stringify({ ts: new Date().toISOString(), ...f, msg }));
 
 type Phase = "judged" | "committed" | "revealed" | "failed";
 interface StateRow {
@@ -169,19 +188,32 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
   const { chain, db } = deps;
   const log = deps.log ?? (() => {});
   const rep: TickReport = { jobs: 0, actions: [], errors: [] };
-  const act = (m: string) => (rep.actions.push(m), log(m));
-  const fail = (m: string) => (rep.errors.push(m), log(`! ${m}`));
+  type F = Omit<LogFields, "level">;
+  const act = (m: string, f: F) => (rep.actions.push(m), log(m, { level: "info", ...f }));
+  const fail = (m: string, f: Omit<F, "phase"> & { phase?: LogFields["phase"] }) => (rep.errors.push(m), log(`! ${m}`, { level: "error", phase: "error", ...f, error: m.slice(0, 500) }));
+  const timed = async <T>(p: () => Promise<T>): Promise<[T, number]> => {
+    const t0 = Date.now();
+    const v = await p();
+    return [v, Date.now() - t0];
+  };
   const ours = new Set(chain.ours());
 
   for (let job of await chain.activeJobs()) {
     rep.jobs++;
+    const base = { job_id: job.id, round: job.restarts };
     try {
       if (job.status === "Submitted") {
-        if (deps.autoStart && chain.hasKeeper()) act(`#${job.id} start_judging ${await chain.startJudging(job.id)}`);
+        if (deps.autoStart && chain.hasKeeper()) {
+          const [tx, ms] = await timed(() => chain.startJudging(job.id));
+          act(`#${job.id} start_judging ${tx}`, { ...base, phase: "start_judging", tx, latency_ms: ms });
+        }
         continue;
       }
       if (job.status === "Stalled") {
-        if (chain.hasKeeper()) act(`#${job.id} restart_jury ${await chain.restartJury(job.id)}`);
+        if (chain.hasKeeper()) {
+          const [tx, ms] = await timed(() => chain.restartJury(job.id));
+          act(`#${job.id} restart_jury ${tx}`, { ...base, phase: "restart_jury", tx, latency_ms: ms });
+        }
         continue;
       }
       if (job.status !== "Committing") continue;
@@ -210,13 +242,13 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
           saltHex: st.salt!,
         });
         try {
-          const tx = await chain.commit(v, jobId, commitment);
+          const [tx, ms] = await timed(() => chain.commit(v, jobId, commitment));
           setState(db, key, v, { phase: "committed", commit_tx: tx, error: null });
-          act(`#${jobId} ${v} commit_vote ${tx}`);
+          act(`#${jobId} ${v} commit_vote ${tx}`, { ...base, verifier: v, phase: "commit", tx, latency_ms: ms });
         } catch (e) {
           const m = e instanceof Error ? e.message : String(e);
           if (/E08/.test(m)) setState(db, key, v, { phase: "committed" });
-          else (setState(db, key, v, { error: m.slice(0, 500) }), fail(m));
+          else (setState(db, key, v, { error: m.slice(0, 500) }), fail(m, { ...base, verifier: v, phase: "commit" }));
         }
       };
 
@@ -232,12 +264,13 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
           await Promise.all(
             toJudge.map(async (v) => {
               const provider = deps.providerFor(v);
-              const base = { jobId: job.id, verifier: v, provider, criteriaHash: job.criteria_hash, deliverableHash: job.deliverable_hash ?? "" };
+              const input = { jobId: job.id, verifier: v, provider, criteriaHash: job.criteria_hash, deliverableHash: job.deliverable_hash ?? "" };
+              const t0 = Date.now();
               const r: JudgeResult =
                 c.mismatch || !c.doc || c.deliverable === null
-                  ? hashMismatchResult({ ...base, criteriaCount: job.criteria_kinds.length, reason: c.mismatch ?? "unavailable" })
+                  ? hashMismatchResult({ ...input, criteriaCount: job.criteria_kinds.length, reason: c.mismatch ?? "unavailable" })
                   : await judge({
-                      ...base,
+                      ...input,
                       doc: c.doc,
                       deliverable: c.deliverable,
                       facts: c.facts,
@@ -248,7 +281,17 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
               const ev = putBlob(db, deps.blobDir, "evidence", r.evidence);
               if (ev.sha256 !== canonicalHash(r.evidence)) throw new Error("evidence blob hash ≠ canonical hash");
               setState(db, key, v, { phase: "judged", salt: randomBytes(32).toString("hex"), evidence_sha: ev.sha256, attestation_sha: r.attestationHash, error: r.evidence.error });
-              act(`#${job.id} ${v} judged by ${provider.model}: [${r.verdicts}] inj=${r.injectionFlag} evidence=${ev.sha256.slice(0, 12)}`);
+              act(`#${job.id} ${v} judged by ${provider.model}: [${r.verdicts}] inj=${r.injectionFlag} evidence=${ev.sha256.slice(0, 12)}`, {
+                ...base,
+                verifier: v,
+                phase: "judge",
+                latency_ms: Date.now() - t0,
+                model: provider.model,
+                verdicts: r.verdicts,
+                injection: r.injectionFlag,
+                evidence_sha: ev.sha256,
+                ...(r.evidence.error ? { error: r.evidence.error.slice(0, 300) } : {}),
+              });
               // commit right away: a slow juror must not make the fast ones miss the commit deadline
               await commitOne(v);
             }),
@@ -281,13 +324,13 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
           model: ev.model.slice(0, 96),
         };
         try {
-          const tx = await chain.reveal(v, args);
+          const [tx, ms] = await timed(() => chain.reveal(v, args));
           setState(db, key, v, { phase: "revealed", reveal_tx: tx, error: null });
-          act(`#${job.id} ${v} reveal_vote ${tx}`);
+          act(`#${job.id} ${v} reveal_vote ${tx}`, { ...base, verifier: v, phase: "reveal", tx, latency_ms: ms });
         } catch (e) {
           const m = e instanceof Error ? e.message : String(e);
           if (/E21/.test(m)) setState(db, key, v, { phase: "revealed" });
-          else (setState(db, key, v, { error: m.slice(0, 500) }), fail(m));
+          else (setState(db, key, v, { error: m.slice(0, 500) }), fail(m, { ...base, verifier: v, phase: "reveal" }));
         }
       }
 
@@ -295,10 +338,11 @@ export async function tick(deps: RunnerDeps, ctxCache = new Map<string, JobConte
       job = await chain.getJob(job.id);
       const allIn = job.commits.length === job.jury.length && job.reveals.length === job.commits.length;
       if (job.status === "Committing" && (allIn || chain.nowNs() > revealDl) && chain.hasKeeper()) {
-        act(`#${job.id} finalize ${await chain.finalize(job.id)}`);
+        const [tx, ms] = await timed(() => chain.finalize(job.id));
+        act(`#${job.id} finalize ${tx}`, { ...base, phase: "finalize", tx, latency_ms: ms });
       }
     } catch (e) {
-      fail(`#${job.id}: ${e instanceof Error ? e.message : String(e)}`);
+      fail(`#${job.id}: ${e instanceof Error ? e.message : String(e)}`, base);
     }
   }
   return rep;
