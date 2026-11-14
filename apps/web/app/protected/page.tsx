@@ -53,12 +53,19 @@ export default async function ProtectedJobs() {
                 <th className="py-2 text-right font-medium">Amount</th>
                 <th className="py-2 font-medium">Status</th>
                 <th className="py-2 font-medium">Created</th>
+                <th className="py-2">
+                  <span className="sr-only">Open</span>
+                </th>
               </tr>
             </thead>
             <tbody>
               {jobs.map((j) => (
                 <tr key={j.id} className="border-b border-rule">
-                  <td className="num py-3 pr-3 font-semibold">#{j.id}</td>
+                  <td className="num py-3 pr-3 font-semibold">
+                    <Link href={`/protected/${j.id}`} className="link">
+                      #{j.id}
+                    </Link>
+                  </td>
                   <td className="py-3 pr-3 font-mono text-[0.8125rem]" title={j.criteria_hash}>
                     {middle(j.criteria_hash)} · {j.criteria_kinds.length} criteria
                   </td>
@@ -73,14 +80,18 @@ export default async function ProtectedJobs() {
                     <span className="font-medium">{uiStatus(j)}</span>
                     {j.injection_flagged && <span className="block text-sm text-bad">Injection attempt detected</span>}
                   </td>
-                  <td className="py-3 text-sm text-muted">{dateTime(nsToIso(j.created_at))}</td>
+                  <td className="py-3 pr-3 text-sm text-muted">{dateTime(nsToIso(j.created_at))}</td>
+                  <td className="py-3 text-right">
+                    <Link href={`/protected/${j.id}`} className="rounded-full border border-rule px-3 py-1 text-sm hover:border-ink">
+                      View
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
-      <p className="text-sm text-muted">The job detail page with the live jury panel arrives with wallet support.</p>
     </div>
   );
 }
