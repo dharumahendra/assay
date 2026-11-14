@@ -5,8 +5,8 @@
 //!      (worker and verifier payout account).
 //!   3. A verifier's FCAK cannot call create_job or withdraw_treasury (rejected by the runtime).
 //!
-//! Uses the committed build at contracts/juri/res/juri.wasm (rebuild with cargo near build first
-//! if the contract changed).
+//! Deploys contracts/juri/res/juri.wasm (gitignored): build it first with
+//! `cargo near build non-reproducible-wasm` in contracts/juri. CI does this before the tests.
 
 use near_workspaces::network::Sandbox;
 use near_workspaces::types::{KeyType, NearToken, SecretKey};
@@ -46,7 +46,7 @@ struct Env {
 
 async fn setup() -> anyhow::Result<Env> {
     let worker = near_workspaces::sandbox().await?;
-    let wasm = std::fs::read(WASM)?;
+    let wasm = std::fs::read(WASM).map_err(|e| anyhow::anyhow!("{WASM}: {e}. Build it first: cd contracts/juri && cargo near build non-reproducible-wasm"))?;
     let contract = worker.dev_deploy(&wasm).await?;
     let root = worker.root_account()?;
     let owner = root.create_subaccount("owner").initial_balance(NearToken::from_near(30)).transact().await?.into_result()?;
