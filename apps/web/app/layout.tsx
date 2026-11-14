@@ -54,7 +54,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const contract = meta?.contract_id ?? CONTRACT_ID;
   return (
     <html lang="en" className={`${inter.variable} ${interTight.variable} ${mono.variable} ${caveat.variable}`}>
-      <body className="flex min-h-screen flex-col">
+      {/* overflow-x-clip: full-bleed sections use w-screen, which includes the scrollbar width */}
+      <body className="flex min-h-screen flex-col overflow-x-clip">
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:m-2 focus:rounded focus:bg-surface focus:p-2">
           Skip to content
         </a>

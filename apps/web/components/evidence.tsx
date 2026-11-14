@@ -15,12 +15,15 @@ export function EvidenceMark({
   title,
   children,
   className = "",
+  marker = true,
 }: {
   metricId: string;
   window?: MetricWindow;
   title: string;
   children: ReactNode;
   className?: string;
+  /** Hide the yellow tag where the metric id is already labelled (e.g. on a lime card). */
+  marker?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
@@ -34,7 +37,7 @@ export function EvidenceMark({
         aria-label={`${title}: show the records behind this number`}
       >
         <span className="num">{children}</span>
-        <Marker id={metricId} />
+        {marker && <Marker id={metricId} />}
       </button>
       {open &&
         createPortal(

@@ -42,6 +42,21 @@ export const LinkIcon = (p: P) => (
     <path d="M6.5 9.5 9.5 6.5M7 4.5l1-1a2.8 2.8 0 0 1 4 4l-1 1M9 11.5l-1 1a2.8 2.8 0 0 1-4-4l1-1" />
   </svg>
 );
+export const ArrowUpRight = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M5 11 11 5M6 5h5v5" />
+  </svg>
+);
+export const ArrowRight = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M3 8h10M9 4l4 4-4 4" />
+  </svg>
+);
+export const Check = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m3.5 8.5 3 3 6-7" />
+  </svg>
+);
 export const External = (p: P) => (
   <svg {...base(p)}>
     <path d="M9.5 3H13v3.5M13 3 7.5 8.5M11 9.5V13H3V5h3.5" />
