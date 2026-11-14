@@ -12,7 +12,10 @@ const config = {
   },
   // Browser code calls /api/* on the same origin; Next forwards it to the Juri API.
   async rewrites() {
-    return [{ source: "/api/:path*", destination: `${API_URL}/api/:path*` }];
+    return [
+      { source: "/api/:path*", destination: `${API_URL}/api/:path*` },
+      { source: "/skill.md", destination: `${API_URL}/skill.md` },
+    ];
   },
 };
 

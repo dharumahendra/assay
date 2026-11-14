@@ -71,6 +71,18 @@ describe("rate limit", () => {
   });
 });
 
+describe("GET /skill.md (FR-H2)", () => {
+  it("serves the agent guide with this deployment's API, network and contract", async () => {
+    const app = mk({ publicUrl: "https://api.example", contractId: "juri.x.testnet" });
+    const r = await app.request("/skill.md");
+    expect(r.status).toBe(200);
+    expect(r.headers.get("content-type")).toMatch(/text\/markdown/);
+    const md = await r.text();
+    for (const s of ["https://api.example/api/jobs/{market_job_id}", "POST https://api.example/api/criteria/compile", "juri.x.testnet", "create_job", "submit_deliverable", "withdraw", "one operator"])
+      expect(md).toContain(s);
+  });
+});
+
 describe("size and input validation (NFR-SEC-3)", () => {
   it("rejects a streamed body over 1 MB even without Content-Length", async () => {
     const app = mk();

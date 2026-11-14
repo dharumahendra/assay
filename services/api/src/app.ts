@@ -55,6 +55,7 @@ import { z } from "zod";
 import { BlobError, getBlob, putBlob } from "./blobs.js";
 import { rateLimit } from "./ratelimit.js";
 import { flattenSources } from "./records.js";
+import { skillMd } from "./skill.js";
 
 /**
  * Read API (05 §8, FR-H1): health, meta, insights, jobs, agents, patterns, blobs, criteria/compile (P4),
@@ -184,6 +185,11 @@ export function createApp(cfg: AppConfig): Hono {
     console.error(err);
     return c.json({ error: { code: "internal", message: "Internal error" } }, 500);
   });
+  // FR-H2: agent guide (root path, not /api; the web app rewrites /skill.md here)
+  app.get("/skill.md", (c) =>
+    c.body(skillMd({ publicUrl: cfg.publicUrl, network: cfg.network, contractId: cfg.contractId }), 200, { "content-type": "text/markdown; charset=utf-8", "cache-control": "public, max-age=300" }),
+  );
+
   app.notFound((c) => c.json({ error: { code: "not_found", message: `No route ${c.req.method} ${c.req.path}` } }, 404));
 
   // ---- shared lookups (small tables; read per request so the API always sees the latest run) ----
