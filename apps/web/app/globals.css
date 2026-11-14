@@ -154,14 +154,14 @@
 
   /* Landing band textures (Assay.pen): pink plus marks, pink checker, pink hatch, grey dots, pink grid lines. */
   .bg-plus {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M36 31v10M31 36h10' stroke='%23e8a0a8' stroke-width='1.2'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M36 31v10M31 36h10' stroke='%23e8a0a8' stroke-opacity='0.45' stroke-width='1.2'/%3E%3C/svg%3E");
     background-size: 72px 72px;
   }
   .bg-checker {
     background-image: conic-gradient(
-      rgb(232 160 168 / 0.26) 0 25%,
+      rgb(232 160 168 / 0.15) 0 25%,
       transparent 0 50%,
-      rgb(232 160 168 / 0.26) 0 75%,
+      rgb(232 160 168 / 0.15) 0 75%,
       transparent 0
     );
     background-size: 44px 44px;
