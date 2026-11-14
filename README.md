@@ -200,7 +200,7 @@ Details and sources: [SUBMISSION.md](SUBMISSION.md).
 
 The repository starts at the `pre-hackathon` tag (2026-11-13, a commit with only `.gitattributes`); everything after it was built
 during NEAR HACKATHON: [`pre-hackathon...hackathon-submission`](https://github.com/dharumahendra/assay/compare/pre-hackathon...hackathon-submission).
-No earlier product or code base.
+No earlier product or code base. Other projects by the author in this hackathon: none.
 
 Libraries: near-sdk, near-workspaces, cargo-near (contract); near-api-js, @near-js/*, NEAR Wallet Selector (wallet);
 Hono, drizzle-orm, better-sqlite3, zod (backend); Next.js, React, Tailwind (web); near-sandbox, Vitest (tests).

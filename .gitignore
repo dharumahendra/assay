@@ -27,3 +27,6 @@ contracts/*/res/
 
 # Design reference PNGs (local only)
 page-design/
+
+# TypeScript incremental build state
+*.tsbuildinfo
