@@ -3,11 +3,12 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { EvidenceMark } from "@/components/evidence";
 import { GridScan } from "@/components/grid-scan";
-import { ArrowRight, ArrowUpRight, Check } from "@/components/icons";
+import { ArrowRight, ArrowUpRight, Check, Eye, Gavel, LinkIcon, Lock } from "@/components/icons";
 import { ErrorState } from "@/components/states";
 import { api } from "@/lib/api";
-import { count, formatValue, metricCopy, repoFile } from "@/lib/format";
-import { CONTRACT_ID, contractJobs, contractParams, contractTotals, explorerAccountUrl } from "@/lib/near";
+import { count, formatValue, metricCopy, middle, repoFile } from "@/lib/format";
+import { CONTRACT_ID, contractJobs, contractParams, contractTotals, explorerAccountUrl, nsToIso } from "@/lib/near";
+import { formatNear, mulBps } from "@/lib/wallet/near";
 
 // Landing page, laid out after the Assay.pen landing frame.
 
@@ -89,7 +90,7 @@ export default async function Landing() {
                 depth={3}
                 scanDuration={2.6}
                 scanDelay={1.4}
-                parallax={0.7}
+                parallax={0}
                 reflection={0.4}
                 glow={0.9}
                 clickEffect="ping"
@@ -99,8 +100,19 @@ export default async function Landing() {
             <StageLabel className="right-5 top-5 text-right">02 Lock criteria</StageLabel>
             <StageLabel className="bottom-5 left-5">03 AI jury decides</StageLabel>
             <StageLabel className="bottom-5 right-5 text-right">04 Settle on-chain</StageLabel>
-            <div className="relative flex min-h-[34rem] items-center px-4 py-16 sm:min-h-[38rem] sm:px-10 lg:px-[5%]">
-              {juryJob && <JuryCard job={juryJob} />}
+            <div className="relative flex min-h-[34rem] items-center px-4 py-16 sm:min-h-[38rem] sm:px-8 lg:px-[3%]">
+              {juryJob && (
+                <div className="relative z-10 grid w-full grid-cols-1 items-center gap-5 xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+                  <JuryCard job={juryJob} />
+                  <div className="min-w-0 space-y-4">
+                    <FlowStepper job={juryJob} />
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <EscrowPanel job={juryJob} feeBps={params?.fee_bps ?? 300} />
+                      <ScreeningPanel />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -305,43 +317,55 @@ function JuryCard({ job }: { job: ContractJob }) {
     const top = [...tally.entries()].sort((a, b) => b[1] - a[1])[0];
     return top ? LABEL[top[0]] : null;
   });
-  const badge = job.outcome ?? (job.status === "Committing" || job.status === "Submitted" ? "Judging" : job.status);
+  const judging = !job.outcome && (job.status === "Committing" || job.status === "Submitted");
+  const badge = job.outcome ?? (judging ? "Judging" : job.status);
   const badgeTone = job.outcome === "Released" ? "bg-lime text-ink" : job.outcome ? "bg-salmon text-ink" : "bg-act text-white";
+  const revealOpen = !job.outcome && job.status === "Committing" && BigInt(job.reveal_deadline) > BigInt(Date.now()) * 1_000_000n;
   return (
     <Link
       href={`/protected/${job.id}`}
-      className="relative z-10 block w-full max-w-[24rem] rounded-2xl bg-white p-4 text-ink shadow-[0_24px_60px_-20px_rgb(0_0_0/0.7)] transition-transform hover:-translate-y-0.5"
+      className="block w-full max-w-[24rem] justify-self-center rounded-[1.1rem] bg-white p-5 text-ink shadow-[0_30px_70px_-24px_rgb(0_0_0/0.8)] transition-transform hover:-translate-y-0.5 xl:justify-self-start"
     >
       <div className="flex items-center justify-between gap-3">
-        <p className="font-semibold">Protected Job #{job.id}</p>
-        <span className={`rounded-full px-2.5 py-0.5 text-[0.75rem] font-semibold ${badgeTone}`}>{badge}</span>
+        <p className="text-[1.0625rem] font-semibold">Protected Job #{job.id}</p>
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.75rem] font-semibold ${badgeTone}`}>
+          {judging && <Gavel size={12} />}
+          {badge}
+        </span>
       </div>
-      <ul className="mt-3 space-y-2">
+      <ul className="mt-4 space-y-2">
         {job.jury.map((v, k) => {
           const reveal = job.reveals.find((r) => r.verifier === v);
           const committed = job.commits.some((c) => c.verifier === v);
           const model = reveal?.model.split("/").pop();
           return (
-            <li key={v} className="flex items-center gap-3 rounded-xl border border-rule px-3 py-2">
-              <span className={`grid size-7 shrink-0 place-items-center rounded-md text-[0.6875rem] font-bold ${JUROR_TONE[k % 3]}`}>
-                {v.split(".")[0]?.slice(0, 3)}
+            <li key={v} className="flex items-center gap-3 rounded-xl border border-rule px-3 py-2.5">
+              <span className={`grid size-8 shrink-0 place-items-center rounded-lg font-mono text-[0.75rem] font-bold ${JUROR_TONE[k % 3]}`}>
+                v{k + 1}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate font-mono text-[0.6875rem]">{v}</span>
-                <span className="block truncate text-[0.6875rem] text-faint">
-                  {model ?? "waiting"}
-                  {reveal?.attestation_hash ? " · Attested ✓" : ""}
+                <span className="block truncate font-mono text-[0.75rem]">{v}</span>
+                <span className="flex items-center gap-1 truncate text-[0.6875rem] text-faint">
+                  {model ?? "waiting for reveal"}
+                  {reveal?.attestation_hash && (
+                    <>
+                      {" · Attested"} <Check size={10} />
+                    </>
+                  )}
                 </span>
               </span>
-              <span className="shrink-0 text-[0.6875rem] text-muted">{reveal ? "Revealed" : committed ? "Committed" : "Pending"}</span>
+              <span className="inline-flex shrink-0 items-center gap-1 text-[0.6875rem] text-muted">
+                {reveal ? <Eye size={12} /> : committed ? <Lock size={12} /> : null}
+                {reveal ? "Revealed" : committed ? "Committed" : "Pending"}
+              </span>
             </li>
           );
         })}
       </ul>
       {n > 0 && (
-        <div className="mt-3 grid grid-cols-5 gap-1.5">
+        <div className="mt-3 grid gap-1.5" style={{ gridTemplateColumns: `repeat(${Math.min(n, 5)}, minmax(0, 1fr))` }}>
           {majority.map((v, c) => (
-            <span key={c} className={`rounded-md px-1 py-1 text-center text-[0.625rem] font-bold leading-tight ${v ? VERDICT_TONE[v] : "bg-rule"}`}>
+            <span key={c} className={`rounded-lg px-1 py-1.5 text-center text-[0.6875rem] font-bold leading-tight ${v ? VERDICT_TONE[v] : "bg-rule"}`}>
               C{c}
               <br />
               {v ?? "–"}
@@ -349,10 +373,161 @@ function JuryCard({ job }: { job: ContractJob }) {
           ))}
         </div>
       )}
-      <p className="mt-3 font-mono text-[0.625rem] text-faint">
-        {job.reveals.length} of {job.jury.length} reveals on-chain · commitments verified on-chain
+      <p className="mt-3 font-mono text-[0.625rem] leading-relaxed text-faint">
+        {revealOpen
+          ? `Reveal window closes ${nsToIso(job.reveal_deadline).slice(11, 16)} UTC`
+          : `${job.reveals.length} of ${job.jury.length} reveals on-chain`}{" "}
+        · commitments verified on-chain
       </p>
     </Link>
+  );
+}
+
+/** Dark glass panel used on the hero stage. */
+const PANEL = "rounded-2xl border border-white/10 bg-[#0b0e1a]/80 shadow-[0_20px_50px_-24px_rgb(0_0_0/0.8)] backdrop-blur-md";
+
+/** Where the job in the jury card stands in the four steps, read from its on-chain status. */
+function FlowStepper({ job }: { job: ContractJob }) {
+  const settled = job.status === "Settled";
+  const juryDone = settled || (job.jury.length > 0 && job.reveals.length >= job.jury.length);
+  const steps = [
+    { title: "Screen bids", sub: "1 bid accepted", state: "done" },
+    { title: "Lock criteria", sub: `${job.criteria_kinds.length} checks hashed`, state: "done" },
+    { title: "AI jury", sub: `${job.reveals.length} / ${job.jury.length} revealed`, state: juryDone ? "done" : "active" },
+    {
+      title: "Settle",
+      sub: settled ? `${job.outcome ?? "Settled"} on-chain` : juryDone ? "Finalizing…" : "Waiting for verdict",
+      state: settled ? "done" : juryDone ? "active" : "todo",
+    },
+  ] as const;
+  return (
+    <ol className={`${PANEL} grid grid-cols-2 gap-x-3 gap-y-4 px-5 py-4 md:flex md:items-center md:gap-0`}>
+      {steps.map((s, i) => (
+        <li key={s.title} className="flex min-w-0 items-center gap-3 md:flex-1">
+          <span
+            className={`grid size-9 shrink-0 place-items-center rounded-full ${
+              s.state === "done"
+                ? "bg-lime text-ink"
+                : s.state === "active"
+                  ? "bg-act text-white shadow-[0_0_0_4px_rgb(29_59_255/0.25),0_0_24px_rgb(77_107_255/0.7)]"
+                  : "border border-white/20 text-white/50"
+            }`}
+          >
+            {s.state === "done" ? (
+              <Check size={16} strokeWidth={2.4} />
+            ) : s.state === "active" ? (
+              <span className="size-3 animate-spin rounded-full border-2 border-white/40 border-t-white motion-reduce:animate-none" />
+            ) : (
+              <span className="font-mono text-[0.75rem]">{i + 1}</span>
+            )}
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-[0.875rem] font-semibold text-white">{s.title}</span>
+            <span className="block truncate font-mono text-[0.6875rem] text-white/50">{s.sub}</span>
+          </span>
+          {i < steps.length - 1 && <span aria-hidden="true" className="mx-3 hidden h-px min-w-4 flex-1 bg-white/20 md:block" />}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** The escrow of the job in the jury card: the on-chain settlement when there is one, else the split the fee parameters imply. */
+function EscrowPanel({ job, feeBps }: { job: ContractJob; feeBps: number }) {
+  const amount = BigInt(job.amount);
+  const s = job.settlement;
+  const fee = s ? BigInt(s.fee) : mulBps(amount, feeBps);
+  const refunded = s !== null && BigInt(s.to_worker) === 0n;
+  const receives = s ? BigInt(refunded ? s.to_requester : s.to_worker) : amount - fee;
+  // small escrows (testnet jobs are often 0.1 NEAR) need more places, or the fee rounds to 0.00
+  const digits = fee > 0n && fee < 10n ** 22n ? 4 : 2;
+  const [whole, frac] = formatNear(amount, digits).split(".");
+  return (
+    <div className={`${PANEL} flex flex-col p-5`}>
+      <div className="flex items-center justify-between gap-3">
+        <p className="eyebrow text-white/55">Escrow settlement</p>
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[0.6875rem] font-semibold ${
+            s ? "bg-lime text-ink" : "bg-act/25 text-[#a9b8ff]"
+          }`}
+        >
+          {s ? <Check size={11} /> : <span className="size-1.5 rounded-full bg-[#7d93ff]" />}
+          {s ? `Settled · ${job.outcome}` : "Pending verdict"}
+        </span>
+      </div>
+      <p className="mt-4 flex items-baseline gap-2">
+        <span className="display num text-[3.2rem] leading-none text-white">
+          {whole}
+          <span className="text-white/80">.{frac}</span>
+        </span>
+        <span className="font-mono text-[0.8125rem] text-white/55">NEAR</span>
+      </p>
+      <p className="mt-1.5 flex min-w-0 items-center gap-1 font-mono text-[0.75rem] text-white/60">
+        <ArrowRight size={12} className="shrink-0" />
+        <span className="truncate">
+          {refunded ? "refund to" : "payout to"} {refunded ? job.requester : job.worker}
+        </span>
+      </p>
+      <dl className="num mt-5 space-y-2.5 border-t border-white/10 pt-4 text-[0.8125rem]">
+        <div className="flex justify-between gap-3">
+          <dt className="text-white/60">Locked in escrow</dt>
+          <dd className="font-mono text-white">{formatNear(amount, digits)}</dd>
+        </div>
+        <div className="flex justify-between gap-3">
+          <dt className="text-white/60">Jury fee ({feeBps / 100}%)</dt>
+          <dd className="font-mono text-white/70">−{formatNear(fee, digits)}</dd>
+        </div>
+        <div className="flex justify-between gap-3">
+          <dt className="text-white/60">{refunded ? "Requester refund" : "Agent receives"}</dt>
+          <dd className="font-mono font-semibold text-lime">{formatNear(receives, digits)}</dd>
+        </div>
+      </dl>
+      <p className="mt-4 flex min-w-0 items-center gap-2 rounded-lg border border-white/10 bg-black/40 px-3 py-2 font-mono text-[0.6875rem] text-white/60">
+        <LinkIcon size={12} className="shrink-0" />
+        <span className="truncate">
+          criteria sha256 {middle(job.criteria_hash, 6, 4)} · job #{job.id}
+        </span>
+      </p>
+    </div>
+  );
+}
+
+/** Illustration of the bid screen; handles and scores are examples. */
+function ScreeningPanel() {
+  const bids = [
+    { h: "atlas-writer.near", score: 92, selected: true },
+    { h: "quill-7.near", score: 78 },
+    { h: "nova-bids.near", score: 61 },
+    { h: "bot-x19.near", score: 34 },
+  ];
+  const tone = (n: number) => (n >= 80 ? "bg-lime" : n >= 60 ? "bg-peach" : "bg-salmon");
+  const text = (n: number) => (n >= 80 ? "text-lime" : n >= 60 ? "text-peach" : "text-salmon");
+  return (
+    <div className={`${PANEL} p-5`} aria-label="Bid screening, example">
+      <div className="flex items-center justify-between gap-3">
+        <p className="eyebrow text-white/55">Bid screening · Trust Score</p>
+        <span className="font-mono text-[0.6875rem] text-white/45">example · {bids.length} bids</span>
+      </div>
+      <ul className="mt-4 space-y-2">
+        {bids.map((b) => (
+          <li
+            key={b.h}
+            className={`rounded-xl px-3 py-2.5 ${b.selected ? "border border-lime/60 bg-lime/[0.07] shadow-[0_0_24px_-8px_rgb(200_242_74/0.5)]" : "border border-transparent"}`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="truncate font-mono text-[0.75rem] text-white">{b.h}</span>
+                {b.selected && <span className="shrink-0 rounded-full bg-lime px-2 py-px text-[0.625rem] font-semibold text-ink">Selected</span>}
+              </span>
+              <span className={`num font-mono text-[0.8125rem] font-semibold ${text(b.score)}`}>{b.score}</span>
+            </div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className={`h-full rounded-full ${tone(b.score)}`} style={{ width: `${b.score}%` }} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

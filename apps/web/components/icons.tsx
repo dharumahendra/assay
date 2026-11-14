@@ -78,6 +78,23 @@ export const Unmapped = (p: P) => (
     <path d="M3 8h3M10 8h3M6.5 5.5l3 5" />
   </svg>
 );
+export const Eye = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M1.8 8S4 3.8 8 3.8 14.2 8 14.2 8 12 12.2 8 12.2 1.8 8 1.8 8Z" />
+    <circle cx="8" cy="8" r="1.9" />
+  </svg>
+);
+export const Lock = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3.5" y="7" width="9" height="6.5" rx="1.4" />
+    <path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" />
+  </svg>
+);
+export const Gavel = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m6.2 3.2 4.6 4.6M4.6 4.8l3.2-3.2M9.2 9.4l3.2-3.2M7.4 6.6 2.5 11.5a1.1 1.1 0 0 0 1.6 1.6L9 8.2M9.5 13.5h4.5" />
+  </svg>
+);
 export const Copy = (p: P) => (
   <svg {...base(p)}>
     <rect x="5.5" y="5.5" width="7.5" height="7.5" rx="1.5" />
