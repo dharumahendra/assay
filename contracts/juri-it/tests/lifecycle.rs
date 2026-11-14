@@ -180,6 +180,7 @@ async fn full_lifecycle_released_and_withdrawn() -> anyhow::Result<()> {
     // worker withdraws
     let before = worker_acc.view_account().await?.balance;
     worker_acc.call(c.id(), "withdraw").max_gas().transact().await?.into_result()?;
+    env.worker.fast_forward(3).await?; // balances are read at final finality, a few blocks behind
     let after = worker_acc.view_account().await?.balance;
     assert!(after.as_yoctonear() > before.as_yoctonear() + net - NearToken::from_millinear(5).as_yoctonear(), "worker balance {before} → {after}, net {net}");
     assert_eq!(claimable(c, worker_acc.id().as_str()).await?, 0);
@@ -191,6 +192,7 @@ async fn full_lifecycle_released_and_withdrawn() -> anyhow::Result<()> {
     let before = payout.view_account().await?.balance;
     let r = v.call(c.id(), "withdraw").gas(near_workspaces::types::Gas::from_tgas(30)).transact().await?;
     assert!(r.is_success(), "verifier withdraw: {r:?}");
+    env.worker.fast_forward(3).await?;
     let after = payout.view_account().await?.balance;
     assert_eq!(after.as_yoctonear(), before.as_yoctonear() + share, "payout account should receive exactly the share");
 
