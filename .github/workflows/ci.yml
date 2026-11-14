@@ -52,3 +52,25 @@ jobs:
           for d in contracts/*/; do
             if [ -f "$d/Cargo.toml" ]; then (cd "$d" && cargo test); fi
           done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: juri-wasm
+          path: contracts/juri/res/juri.wasm
+
+  # T7.1: full lifecycle on a local NEAR sandbox with the real jury runner and RECORDED jurors (no key).
+  e2e:
+    needs: rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: juri-wasm
+          path: contracts/juri/res
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm e2e

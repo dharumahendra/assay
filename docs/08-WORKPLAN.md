@@ -163,7 +163,8 @@ flowchart LR
 
 ### P7 — Hardening & eval (semua) · M
 
-- [ ] T7.1 Mode RECORDED-JURY + `pnpm e2e` di sandbox (near-workspaces) memakai output terekam.
+- [~] T7.1 Mode RECORDED-JURY + `pnpm e2e` di sandbox (near-workspaces) memakai output terekam.
+  `services/workers/src/e2e.ts` (npm `near-sandbox` 0.3.4): deploy wasm → 3 verifier FCAK → 2 job dari eval (`j1-economics-V1` → Released, `-V5` injeksi → Refunded) → runner `tick()` asli → withdraw. Juri memutar ulang `eval/recorded/` lewat `e2e-replay.ts` (hanya id juri + nonce delimiter yang dipetakan; unit test di Windows hijau). Linux/macOS saja; dijalankan di CI job `e2e`. Tandai [x] setelah run CI pertama hijau.
 - [ ] T7.2 `docker-compose.yml`; deploy API + workers; deploy FE.
 - [ ] T7.3 Rate limit, validasi ukuran, SSRF test, scan secret di bundle FE (NFR-SEC-1, NFR-SEC-3, NFR-SEC-4).
 - [ ] T7.4 Eval final + review pattern final; isi angka ke README.
