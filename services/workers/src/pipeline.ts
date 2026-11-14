@@ -1,5 +1,7 @@
+import { eq } from "drizzle-orm";
+import { basename } from "node:path";
 import type { Db } from "./db/index.js";
-import { marketAgents } from "./db/schema.js";
+import { marketAgents, snapshots } from "./db/schema.js";
 import { computeMetrics, type MetricRow } from "./metrics.js";
 import { importSnapshot, latestSnapshotFile } from "./snapshot.js";
 import { runTrustEngine, type TrustEngineResult } from "./trust/engine.js";
@@ -25,6 +27,18 @@ export function loadSnapshot(db: Db, file = latestSnapshotFile()): DeriveResult 
   if (!file) throw new Error("no snapshot file found in data/snapshots");
   const { sha256 } = importSnapshot(db, file);
   return { file, sha256, ...derive(db) };
+}
+
+/**
+ * The committed snapshot this database should serve in SNAPSHOT mode, or null when it already has it.
+ * A persistent volume (Railway) keeps the database across deploys, so a newer committed snapshot must be
+ * picked up at start, not only on an empty database. Snapshot rows are matched by file name.
+ */
+export function pendingSnapshot(db: Db, file = latestSnapshotFile()): string | null {
+  if (!file) return null;
+  if (isEmpty(db)) return file;
+  const loaded = db.select({ file: snapshots.file }).from(snapshots).where(eq(snapshots.file, basename(file))).get();
+  return loaded ? null : file;
 }
 
 /** True when the raw market tables are empty (fresh clone / new DB). */

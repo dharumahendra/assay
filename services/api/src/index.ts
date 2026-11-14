@@ -3,7 +3,7 @@ import { serve } from "@hono/node-server";
 import { DEFAULT_COMPILER_MODEL, liveProviderKind, makeProvider } from "@juri/jury";
 import { DataModeSchema } from "@juri/shared";
 import { openDb, REPO_ROOT } from "@juri/workers/src/db/index.js";
-import { isEmpty, loadSnapshot } from "@juri/workers/src/pipeline.js";
+import { loadSnapshot, pendingSnapshot } from "@juri/workers/src/pipeline.js";
 import { resolve } from "node:path";
 import { createApp } from "./app.js";
 import { rpcContractReader } from "./contract.js";
@@ -15,11 +15,12 @@ const db = openDb();
 // Same default as the workers and the web app (P0 deploy).
 const contractId = process.env.JURI_CONTRACT_ID || `juri.${process.env.NEAR_ROOT_ACCOUNT ?? "juri-assay-jdir.testnet"}`;
 
-// Fresh clone / empty DB in SNAPSHOT mode: load the committed snapshot and derive metrics + trust,
-// so the app runs without network or API keys (FR-A4).
-if (mode === "snapshot" && isEmpty(db)) {
-  const r = loadSnapshot(db);
-  console.log(`empty database: loaded ${r.file} (${r.trust.agents} agents, ${r.metrics.length} metrics)`);
+// SNAPSHOT mode: load the latest committed snapshot when the database is empty or was filled from an older
+// one (a persistent volume outlives deploys), then derive metrics + trust. No network or API keys (FR-A4).
+const pending = mode === "snapshot" ? pendingSnapshot(db) : null;
+if (pending) {
+  const r = loadSnapshot(db, pending);
+  console.log(`loaded snapshot ${r.file} (${r.trust.agents} agents, ${r.metrics.length} metrics)`);
 }
 
 const app = createApp({
