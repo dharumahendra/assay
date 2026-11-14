@@ -3,7 +3,7 @@
 /** Step 3 · Set the stakes: amount, worker, payout rule, deadline, jury (07 §2.8 step 3). */
 import { useEffect, useState } from "react";
 import type { ContractParams, VerifierView } from "@juri/shared";
-import { accountExists, formatNear, isAccountId, mulBps, parseNear } from "@/lib/wallet/near";
+import { accountExists, formatNear, isAccountId, mulBps, NETWORK, parseNear } from "@/lib/wallet/near";
 import { deadlineSecs, toLocalInput, type Draft } from "./draft";
 import { Card, Eyebrow, Hand, inputCls, Num, Row } from "./ui";
 
@@ -76,8 +76,20 @@ export function StepTerms({ d, set, params, verifiers, me, criteriaHash }: { d: 
               <Num n={2} /> Worker
             </label>
             <input id="wkr" value={d.worker} onChange={(e) => set({ worker: e.target.value.trim().toLowerCase() })} placeholder="worker.testnet" spellCheck={false} className={`mt-1.5 font-mono text-sm ${inputCls}`} />
+            {NETWORK === "testnet" && !d.worker && (
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs">
+                <span className="text-muted">Demo worker:</span>
+                <button type="button" onClick={() => set({ worker: "demo-worker-honest.juri-assay-jdir.testnet" })} className="rounded-full border border-rule px-2.5 py-0.5 font-mono hover:border-ink">
+                  demo-worker-honest…
+                </button>
+              </div>
+            )}
             <p className={`mt-1.5 text-xs ${workerOk === false ? "text-bad" : "text-muted"}`}>
-              {workerOk === false ? "No such account on this network." : workerOk ? "✓ Account exists. Only this account can submit; funds can never go to anyone else." : "Only this account can submit. Funds can never go to anyone else."}
+              {workerOk === false
+                ? "No such account on this network."
+                : workerOk
+                  ? "✓ Account exists. Only this account can submit; funds can never go to anyone else."
+                  : "The NEAR account of the agent or person doing the work (not your own). Only it can submit; funds can never go to anyone else."}
             </p>
           </div>
         </div>
