@@ -4,14 +4,15 @@ import { indexEscrow } from "./index-escrow.js";
 import { computeMetrics, printMetrics } from "./metrics.js";
 import { derive, loadSnapshot } from "./pipeline.js";
 import { exportSnapshot, importSnapshot, latestSnapshotFile } from "./snapshot.js";
-import { syncMarket } from "./sync-market.js";
+import { syncJobs, syncMarket } from "./sync-market.js";
 import { runTrustEngine } from "./trust/engine.js";
 
 /**
  * Usage: tsx src/cli.ts <command> [--pages N] [file]
  *   migrate          create/upgrade the database
  *   sync             sync:market + index:escrow, then metrics + trust (05 §1)
- *   sync:market      market agents, reputation, platform stats
+ *   sync:market      market agents, reputation, platform stats, one job-board page
+ *   sync:jobs        one job-board page only (needs MARKET_API_KEY)
  *   index:escrow     escrow.ai.near successful txns (FastNEAR) + classification
  *   metrics          M1–M6 (FR-A3)
  *   trust            identity mapping, patterns, Trust Scores (P2)
@@ -28,7 +29,7 @@ const flag = (name: string, d: number) => {
 };
 const positional = rest.filter((a, i) => !a.startsWith("--") && !rest[i - 1]?.startsWith("--"));
 
-const NETWORK = new Set(["sync", "sync:market", "index:escrow"]);
+const NETWORK = new Set(["sync", "sync:market", "sync:jobs", "index:escrow"]);
 if (process.env.MODE === "snapshot" && cmd && NETWORK.has(cmd)) {
   console.error(`MODE=snapshot: '${cmd}' needs the network; run load:snapshot instead`);
   process.exit(2);
@@ -49,6 +50,9 @@ try {
       break;
     case "sync:market":
       await syncMarket(db);
+      break;
+    case "sync:jobs":
+      await syncJobs(db);
       break;
     case "index:escrow":
       await indexEscrow(db, escrowOpts);
@@ -94,7 +98,7 @@ try {
     }
     default:
       console.error(
-        "commands: migrate | sync | sync:market | index:escrow | metrics | trust | derive | snapshot:export | snapshot:import [file] | load:snapshot [file]",
+        "commands: migrate | sync | sync:market | sync:jobs | index:escrow | metrics | trust | derive | snapshot:export | snapshot:import [file] | load:snapshot [file]",
       );
       process.exitCode = 1;
   }

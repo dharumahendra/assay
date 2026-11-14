@@ -42,7 +42,7 @@ export const platformStats = sqliteTable("platform_stats", {
   rawJson: text("raw_json").notNull(),
 });
 
-/** Only for jobs Juri itself posts (NFR-PRIV-2); the public board needs a token. */
+/** One page of the market job board, read with the Assay agent token (no creator name kept). */
 export const marketJobs = sqliteTable("market_jobs", {
   id: text("id").primaryKey(),
   title: text("title"),

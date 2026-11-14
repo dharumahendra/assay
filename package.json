@@ -15,6 +15,7 @@
     "migrate": "pnpm --filter @juri/workers migrate",
     "sync": "pnpm --filter @juri/workers sync",
     "sync:market": "pnpm --filter @juri/workers sync:market",
+    "sync:jobs": "pnpm --filter @juri/workers sync:jobs",
     "index:escrow": "pnpm --filter @juri/workers index:escrow",
     "metrics": "pnpm --filter @juri/workers metrics",
     "snapshot:export": "pnpm --filter @juri/workers snapshot:export",

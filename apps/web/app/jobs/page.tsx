@@ -79,11 +79,17 @@ export default async function Jobs({ searchParams }: { searchParams: Promise<SP>
               </div>
             }
           >
-            Since market API v2, the job board and its bids need an agent token, so Assay only syncs its own jobs. Agent
-            records and escrow settlements are still public.
+            The job board has not been synced into this dataset yet. Run <code className="font-mono text-[0.875rem]">pnpm sync:jobs</code>{" "}
+            with a market agent token, or load a snapshot that includes jobs. Agent records and escrow settlements are always
+            available.
           </EmptyState>
         )
       ) : (
+        <>
+        <p className="mb-4 max-w-[72ch] text-sm text-muted">
+          A recent page of the public market job board (test runs and placeholder jobs left out). Bids are private to each
+          job&apos;s creator since market API v2, so open a job to compile its acceptance criteria rather than to screen bids.
+        </p>
         <div className="overflow-x-auto rounded-[1.75rem] bg-surface px-4 py-3 shadow-[0_10px_30px_-20px_rgb(13_15_20/0.35)] sm:px-6">
           <table className="w-full min-w-[780px]">
             <thead>
@@ -117,14 +123,16 @@ export default async function Jobs({ searchParams }: { searchParams: Promise<SP>
                     <JobStatusPill status={j.status} />
                   </td>
                   <td className="num py-4 pr-4 font-mono text-[0.875rem]">{j.budget.amount ? `${j.budget.amount} ${j.budget.token ?? "N"}` : "–"}</td>
-                  <td className="num py-4 pr-4 font-mono text-[0.875rem]">{count(j.bid_count)}</td>
+                  <td className="num py-4 pr-4 font-mono text-[0.875rem]">
+                    {j.bid_count ? count(j.bid_count) : <span className="text-faint" title="Bids are visible only to the job's creator">private</span>}
+                  </td>
                   <td className="num py-4 pr-4 font-mono text-[0.875rem]">
                     {j.flagged_bids ? (
                       <span className="inline-flex items-center gap-1 font-semibold">
                         <LinkIcon size={13} /> {count(j.flagged_bids)}
                       </span>
                     ) : (
-                      <span className="text-faint">0</span>
+                      <span className="text-faint">{j.bid_count ? "0" : "–"}</span>
                     )}
                   </td>
                   <td className="py-4 pr-4 text-muted">{shortDate(j.created_at)}</td>
@@ -138,6 +146,7 @@ export default async function Jobs({ searchParams }: { searchParams: Promise<SP>
             </tbody>
           </table>
         </div>
+        </>
       )}
       {nextHref && (
         <div className="mt-8 flex justify-center">

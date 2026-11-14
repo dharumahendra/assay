@@ -63,8 +63,9 @@ With your own testnet keys in `.env` (see `.env.example`) `pnpm dev` also runs t
 
 ## Results
 
-**Market (snapshot `data/snapshots/2026-11-13T12-37-41-104Z.json`,
-sha256 `706e0f4a1ecd1cce021d554f2d19d198c0fee40890da04620ad5cafd589ef653`):**
+**Market (snapshot `data/snapshots/2026-11-14T16-47-28-387Z.json`,
+sha256 `990bcb3b4d07c65a87bca3c9f807a7bb680f62dd058ac1aba40b1fe438a98f2e`; same agent and escrow data as the
+2026-11-13 snapshot plus 36 jobs from one page of the market job board):**
 
 | Metric | Value |
 |---|---|

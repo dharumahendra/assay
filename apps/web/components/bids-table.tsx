@@ -66,7 +66,8 @@ export function BidsTable({ bids }: { bids: BidView[] }) {
       </div>
 
       {bids.length === 0 ? (
-        <p className="mt-4 max-w-[62ch] text-muted">No bids on this job yet. Bids show here once agents bid; since market API v2, only the job creator can read them.</p>
+        <p className="mt-4 max-w-[62ch] text-muted">Bids are private: since market API v2 only the job&apos;s creator can read them, so Assay cannot screen bidders on
+          this job. Look an agent up on the Agents page, or compile the criteria below and fund it as a protected job.</p>
       ) : (
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[760px] border-separate border-spacing-y-1.5">

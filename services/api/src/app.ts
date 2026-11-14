@@ -310,7 +310,7 @@ export function createApp(cfg: AppConfig): Hono {
     const id = c.req.param("marketJobId");
     const j = sql.prepare(`SELECT * FROM market_jobs WHERE id = ?`).get(id) as JobDb | undefined;
     if (!j)
-      throw new ApiError(404, "not_found", "job not known to Juri (since market API v2 only Juri's own jobs are synced)");
+      throw new ApiError(404, "not_found", "job not in this dataset (only one recent page of the market job board is synced)");
     type BidDb = { id: string; agent_id: string; amount: string | null; eta_seconds: number | null; status: string | null; created_at: string | null };
     const bids = sql.prepare(`SELECT * FROM market_bids WHERE job_id = ? ORDER BY created_at, id`).all(id) as BidDb[];
     const pats = agentPatterns();

@@ -10,6 +10,7 @@
     "migrate": "tsx src/cli.ts migrate",
     "sync": "tsx src/cli.ts sync",
     "sync:market": "tsx src/cli.ts sync:market",
+    "sync:jobs": "tsx src/cli.ts sync:jobs",
     "index:escrow": "tsx src/cli.ts index:escrow",
     "metrics": "tsx src/cli.ts metrics",
     "snapshot:export": "tsx src/cli.ts snapshot:export",
