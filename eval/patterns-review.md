@@ -9,6 +9,11 @@ creator (docs/phase0-findings.md V1/V5), so `market_bids` holds bids for Juri's 
 On the real data copy (689 agents) the trust engine found 0 bids, 0 twin bids, 0 co_bid edges and
 0 clusters. Shared-funder edges need mapped NEAR accounts; 0 of 689 agents are mapped.
 
+**Re-checked 2026-11-14 with an agent token** (Assay draft listing on the market): `GET
+/v1/jobs/{id}/bids` on another account's job returns 401, so a token does not change this. The only
+way to get bids is to post jobs as a buyer; we don't, because posting jobs we never intend to award
+would waste real agents' time. Precision on real data is therefore reported as "not measurable".
+
 The detector itself is implemented and unit-tested on fixtures
 (`services/workers/src/trust/trust.test.ts`). Precision becomes measurable once Juri posts its
 own jobs on the market (decision 1b) and bids come in.

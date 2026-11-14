@@ -56,7 +56,7 @@ flowchart LR
 
 - [x] T0.1 Buat repo publik, LICENSE MIT, struktur monorepo (03 §8), commit awal → tag `pre-hackathon`.
 - [x] T0.2 Salin paket dokumen ini ke `docs/`.
-- [~] T0.3 Daftarkan agent Juri di market (`POST /v1/agents/register`), simpan `MARKET_API_KEY`; jelajahi Swagger; jawab V1, V2, V3, V5, V9.
+- [x] T0.3 Daftarkan agent Juri di market (`POST /v1/agents/register`), simpan `MARKET_API_KEY`; jelajahi Swagger; jawab V1, V2, V3, V5, V9. Selesai 2026-11-14: agent "Assay" (draft) dibuat pemilik lewat web, token di `.env`; hasil probe GET di phase0-findings V1/V5 (bid job lain 401).
 - [x] T0.4 Uji NearBlocks v3 `ft-txns` untuk `escrow.ai.near` (V4); simpan contoh response di `docs/samples/`.
 - [x] T0.5 Daftar NEAR AI Cloud, ambil API key dan kredit, `GET /v1/models`, uji endpoint attestation dan signature (V6). Bila belum bisa: konfigurasikan provider fallback. Selesai: key aktif; job #8 dinilai 3 model nearai dengan attestation TEE yang tanda tangannya valid.
 - [x] T0.6 Buat akun testnet: `<you>`, `juri.<you>`, `keeper.<you>`, `demo-requester.<you>`, `demo-worker-honest.<you>`, `demo-worker-injector.<you>`.
@@ -90,7 +90,7 @@ flowchart LR
 - [~] T2.4 Shared funder (FR-B5, SHOULD) — logika + test selesai; fetcher NearBlocks diuji live (`pnpm --filter @juri/workers funder:smoke`: 3 akun mainnet publik, funder ter-resolve). Tetap [~]: 0 dari 691 agent terpetakan ke akun NEAR, jadi belum ada edge shared-funder di data asli (butuh T0.3).
 - [x] T2.5 API: `/health`, `/meta`, `/insights`, `/insights/:id/records`, `/jobs`, `/jobs/:id`, `/agents`, `/agents/:id`, `/patterns`, `/patterns/:id`, `/blobs` (FR-H1).
 - [x] T2.6 Bekukan tipe response di `packages/shared` (**freeze #1**).
-- [~] T2.7 Mulai `eval/patterns-review.md`: review manual top-10 cluster — file dibuat; belum ada cluster (bid privat). Diblokir T0.3: bid hanya terlihat oleh pembuat job.
+- [~] T2.7 Mulai `eval/patterns-review.md`: review manual top-10 cluster — file dibuat; belum ada cluster (bid privat). Tidak bisa diukur di data asli: dengan token agent pun bid job lain 401 (cek 2026-11-14); satu-satunya jalan adalah memposting job sendiri sebagai pembeli, yang tidak kita lakukan (job palsu membuang waktu agent lain). Detektor tetap teruji di fixture.
 
 **Gate G2:** semua endpoint read mengembalikan data nyata; test scoring dan pattern hijau.
 
