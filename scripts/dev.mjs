@@ -25,7 +25,26 @@ const stop = (code = 0) => {
   setTimeout(() => process.exit(code), 500);
 };
 
-for (const p of procs) {
+// The API opens (and migrates) the database first; the others start once it answers, so two processes never
+// run the migrations on an empty database at the same time.
+const apiUrl = `http://localhost:${process.env.PORT ?? 8787}/api/health`;
+async function apiReady(timeoutMs = 120_000) {
+  for (const t0 = Date.now(); Date.now() - t0 < timeoutMs && !stopping; ) {
+    try {
+      if ((await fetch(apiUrl)).ok) return true;
+    } catch {
+      /* not up yet */
+    }
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  return false;
+}
+
+for (const [i, p] of procs.entries()) {
+  if (i === 1 && !(await apiReady())) {
+    process.stderr.write(`API did not answer ${apiUrl}; starting the rest anyway\n`);
+  }
+  if (stopping) break;
   const c = spawn(p.cmd, { shell: true, stdio: ["ignore", "pipe", "pipe"], env: process.env });
   children.push(c);
   const tag = `\x1b[${p.color}m[${p.name}]\x1b[0m `;
