@@ -165,7 +165,24 @@ export function Wizard({ from }: { from: string | null }) {
     return fund();
   }
 
-  const nextLabel = ["Next: Compile criteria", "Next: Terms", "Next: Review & fund", accountId ? `Sign & fund ${formatNear(amount)} Ⓝ` : "Connect wallet to fund"][d.step - 1]!;
+  const blocker =
+    d.step === 1
+      ? !d.title.trim()
+        ? "Add a title to continue"
+        : d.description.trim().length < 20
+          ? `Describe the deliverable in at least 20 characters (${d.description.trim().length}/20)`
+          : null
+      : d.step === 2
+        ? stale
+          ? "The brief changed: recompile the criteria"
+          : criteriaErr
+        : d.step === 3
+          ? termsErr
+          : !d.agree
+            ? "Tick the confirmation box to fund"
+            : (criteriaErr ?? termsErr);
+
+  const nextLabel =["Next: Compile criteria", "Next: Terms", "Next: Review & fund", accountId ? `Sign & fund ${formatNear(amount)} Ⓝ` : "Connect wallet to fund"][d.step - 1]!;
   const footNote =
     d.step === 1
       ? "Nothing is sent on-chain until you fund in step 4"
@@ -252,8 +269,8 @@ export function Wizard({ from }: { from: string | null }) {
 
       <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4">
         <div className="mx-auto flex max-w-[84rem] items-center justify-between gap-3 rounded-full border border-rule bg-surface/95 py-2 pl-5 pr-2 shadow-lg backdrop-blur">
-          <p className="hidden truncate font-mono text-xs text-muted sm:block">
-            {busy.s === "compiling" ? "Compiling criteria… usually under 30 s" : busy.s === "uploading" ? "Storing criteria…" : footNote}
+          <p className={`min-w-0 truncate text-xs ${blocker && busy.s === "idle" ? "font-medium text-bad" : "font-mono text-muted"}`} role={blocker ? "status" : undefined}>
+            {busy.s === "compiling" ? "Compiling criteria… can take up to a minute" : busy.s === "uploading" ? "Storing criteria…" : blocker ? `⚠ ${blocker}` : footNote}
           </p>
           <div className="ml-auto flex shrink-0 gap-2">
             {d.step === 1 ? (

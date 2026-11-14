@@ -103,7 +103,9 @@ export function StepJob({ d, set }: { d: Draft; set: (p: Partial<Draft>) => void
             <span className="font-mono text-xs text-muted">{d.description.length} / 2000</span>
           </div>
           <textarea id="desc" value={d.description} maxLength={2000} rows={8} onChange={(e) => set({ description: e.target.value })} className={`mt-1.5 ${inputCls} leading-relaxed`} />
-          <p className="mt-1 text-xs text-muted">{d.description.trim().length < 20 ? "At least 20 characters." : "Markdown supported."}</p>
+          <p className={`mt-1 text-xs ${d.description.trim() && d.description.trim().length < 20 ? "font-medium text-bad" : "text-muted"}`}>
+            {d.description.trim().length < 20 ? `At least 20 characters (${d.description.trim().length}/20). Describe the outcome, e.g. “A 1,000-word Markdown report with sources”.` : "Markdown supported."}
+          </p>
         </div>
 
         <fieldset className="mt-5">
