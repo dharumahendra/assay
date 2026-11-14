@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BidsTable } from "@/components/bids-table";
 import { Chip } from "@/components/badges";
 import { CriteriaPanel } from "@/components/criteria-panel";
-import { External } from "@/components/icons";
+import { ChevronDown } from "@/components/icons";
+import { JobStatusPill } from "@/components/status";
+import { Bleed, GhostLink, PrimaryLink } from "@/components/ui";
 import { api, API_URL } from "@/lib/api";
 import { CriteriaDocSchema, type CriteriaDoc } from "@juri/shared";
-import { shortDate } from "@/lib/format";
+import { dateTime, middle } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Job Analysis" };
 
@@ -20,60 +23,84 @@ async function latestCriteria(sha: string | undefined): Promise<CriteriaDoc | nu
   }
 }
 
+const CUT = 320;
+
 export default async function JobAnalysis({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { job, bids, criteria_docs } = await api.job(id);
   const criteria = await latestCriteria(criteria_docs[0]?.blob_sha256);
+  const flagged = bids.filter((b) => b.patterns.length > 0).length;
+  const desc = job.description?.trim() ?? "";
 
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="display text-[1.8rem] sm:text-[2.3rem]">{job.title ?? "Untitled job"}</h1>
-        <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm">
-          <div>
-            <dt className="text-muted">Status</dt>
-            <dd className="font-medium">{job.status ?? "–"}</dd>
+    <div className="relative isolate space-y-5 pt-4 sm:pt-8">
+      <Bleed className="-top-48 h-[46rem] bg-gridlines [mask-image:linear-gradient(to_bottom,#000_65%,transparent)]" />
+
+      <header className="grid gap-8 rounded-[2rem] bg-surface p-6 shadow-[0_10px_30px_-20px_rgb(13_15_20/0.35)] sm:p-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="min-w-0">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted">
+            <Link href="/jobs" className="hover:text-ink">
+              Jobs
+            </Link>
+            <span aria-hidden>›</span>
+            <span className="font-mono text-ink" title={job.id}>
+              {middle(job.id, 13, 6)}
+            </span>
+          </nav>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <JobStatusPill status={job.status} />
+            {job.tags.map((t) => (
+              <Chip key={t}>{t}</Chip>
+            ))}
           </div>
-          <div>
-            <dt className="text-muted">Budget</dt>
-            <dd className="num font-medium">{job.budget.amount ? `${job.budget.amount} ${job.budget.token ?? ""}` : "–"}</dd>
+          <h1 className="display mt-4 text-[2.2rem] leading-[1] sm:text-[3.2rem]">{job.title ?? "Untitled job"}</h1>
+          {desc &&
+            (desc.length <= CUT ? (
+              <p className="mt-5 max-w-[75ch] whitespace-pre-wrap text-lg text-muted">{desc}</p>
+            ) : (
+              <details className="group mt-5 max-w-[75ch]">
+                <summary className="cursor-pointer list-none text-lg text-muted [&::-webkit-details-marker]:hidden">
+                  <span className="group-open:hidden">{desc.slice(0, CUT).trimEnd()}…</span>
+                  <span className="mt-3 flex items-center gap-1 text-base font-semibold text-act group-open:hidden">
+                    Show full description <ChevronDown size={13} />
+                  </span>
+                  <span className="hidden text-base font-semibold text-act group-open:flex group-open:items-center group-open:gap-1">
+                    Hide full description <ChevronDown size={13} className="rotate-180" />
+                  </span>
+                </summary>
+                <p className="mt-2 whitespace-pre-wrap text-lg text-muted">{desc}</p>
+              </details>
+            ))}
+        </div>
+        <div>
+          <dl>
+            <Meta k="Budget" v={job.budget.amount ? `${job.budget.amount} ${job.budget.token ?? ""}` : "–"} />
+            {job.creator_id && <Meta k="Creator" v={<span className="font-mono text-[0.875rem]">{middle(job.creator_id, 14, 6)}</span>} />}
+            <Meta k="Posted" v={dateTime(job.created_at)} />
+            <Meta k="Bids" v={`${bids.length}${flagged ? ` · ${flagged} flagged` : ""}`} />
+          </dl>
+          <div className="mt-6 flex flex-col items-start gap-3">
+            <PrimaryLink href={`/protected/new?from=${encodeURIComponent(job.id)}`}>Use in protected job</PrimaryLink>
+            <GhostLink href={job.market_url} external>
+              Open on market.near.ai
+            </GhostLink>
           </div>
-          <div>
-            <dt className="text-muted">Posted</dt>
-            <dd className="font-medium">{shortDate(job.created_at)}</dd>
-          </div>
-          {job.creator_id && (
-            <div>
-              <dt className="text-muted">Creator</dt>
-              <dd className="font-mono text-[0.8125rem]">{job.creator_id}</dd>
-            </div>
-          )}
-        </dl>
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          {job.tags.map((t) => (
-            <Chip key={t}>{t}</Chip>
-          ))}
-          <a href={job.market_url} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1">
-            Open on market <External size={12} />
-          </a>
         </div>
       </header>
 
-      {job.description && (
-        <details className="rounded-lg border border-rule bg-surface p-5" open={job.description.length < 600}>
-          <summary className="cursor-pointer font-semibold">Job description</summary>
-          <p className="mt-3 max-w-[75ch] whitespace-pre-wrap text-muted">{job.description}</p>
-        </details>
-      )}
-
-      <CriteriaPanel marketJobId={job.id} initial={criteria} />
-
-      <section aria-labelledby="bids-h">
-        <h2 id="bids-h" className="mb-3 text-[1.2rem] font-semibold">
-          Bids
-        </h2>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_28rem]">
         <BidsTable bids={bids} />
-      </section>
+        <CriteriaPanel marketJobId={job.id} initial={criteria} />
+      </div>
+    </div>
+  );
+}
+
+function Meta({ k, v }: { k: string; v: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 border-b border-rule py-3.5">
+      <dt className="text-muted">{k}</dt>
+      <dd className="text-right font-semibold">{v}</dd>
     </div>
   );
 }

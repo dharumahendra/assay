@@ -3,40 +3,40 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { BandNone, BandSome, BandStrong, BandWeak, LinkIcon, Unmapped } from "./icons";
 
-const pill = "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.8125rem] leading-5 whitespace-nowrap";
+const pill = "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.8125rem] font-semibold leading-none whitespace-nowrap";
 
 const BAND: Record<TrustBand, { icon: ReactNode; cls: string }> = {
-  "Strong record": { icon: <BandStrong />, cls: "border-good/40 bg-good-bg text-good" },
-  "Some record": { icon: <BandSome />, cls: "border-good/30 text-good" },
-  "Weak record": { icon: <BandWeak />, cls: "border-warn/40 bg-warn-bg text-warn" },
-  "Insufficient data": { icon: <BandNone />, cls: "border-rule text-muted" },
+  "Strong record": { icon: <BandStrong />, cls: "bg-lime text-ink" },
+  "Some record": { icon: <BandSome />, cls: "bg-sky text-ink" },
+  "Weak record": { icon: <BandWeak />, cls: "bg-peach text-ink" },
+  "Insufficient data": { icon: <BandNone />, cls: "bg-surface-2 text-ink" },
 };
 
-/** Trust band + optional score. Always icon + text (NFR-A11Y-1). */
+/** Trust band + optional score ("82 · Strong record"). Always icon + text (NFR-A11Y-1). */
 export function TrustBadge({ band, score }: { band: TrustBand; score?: number | null }) {
   const b = BAND[band];
   return (
     <span className={`${pill} ${b.cls}`}>
       {b.icon}
+      {score !== null && score !== undefined && <span className="num">{score} ·</span>}
       {band}
-      {score !== null && score !== undefined && <span className="num font-semibold">{score}</span>}
     </span>
   );
 }
 
-/** Neutral pattern badge: a link glyph, never a warning colour (07 §4). */
+/** Neutral pattern badge: a link glyph and an outline, never a warning colour (07 §4). */
 export function PatternBadge({ id }: { id: string }) {
   return (
-    <Link href={`/patterns/${id}`} className={`${pill} border-ink/25 text-ink hover:border-ink`}>
+    <Link href={`/patterns/${id}`} title="Linked bidding pattern (heuristic)" className={`${pill} border border-ink bg-surface text-ink hover:bg-surface-2`}>
       <LinkIcon />
-      Linked bidding pattern (heuristic)
+      Linked pattern {id}
     </Link>
   );
 }
 
 export function UnmappedBadge() {
   return (
-    <span className={`${pill} border-rule text-muted`} title="No NEAR account is linked to this market agent yet">
+    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[0.8125rem] text-muted" title="No NEAR account is linked to this market agent yet">
       <Unmapped />
       Unmapped
     </span>
@@ -44,5 +44,5 @@ export function UnmappedBadge() {
 }
 
 export function Chip({ children }: { children: ReactNode }) {
-  return <span className={`${pill} border-rule text-muted`}>{children}</span>;
+  return <span className="inline-flex items-center whitespace-nowrap rounded-full bg-surface-2 px-3 py-1.5 text-sm font-medium">{children}</span>;
 }
