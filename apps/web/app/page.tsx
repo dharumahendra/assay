@@ -1,6 +1,7 @@
 import type { Insight } from "@juri/shared";
 import Link from "next/link";
 import { EvidenceMark } from "@/components/evidence";
+import { GridScan } from "@/components/grid-scan";
 import { External } from "@/components/icons";
 import { ErrorState } from "@/components/states";
 import { api } from "@/lib/api";
@@ -37,7 +38,30 @@ export default async function Landing() {
 
   return (
     <div className="space-y-16">
-      <section className="max-w-[60rem] pt-4">
+      <section className="relative isolate overflow-hidden rounded-lg border border-rule bg-surface">
+        {/* GridScan's root is `relative h-full w-full`, so position it through a wrapper */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10">
+        <GridScan
+          lightMode
+          linesColor="#b4bac6"
+          scanColor="#1d3bff"
+          cells={8}
+          depth={3}
+          scanDuration={2.4}
+          scanDelay={1.6}
+          parallax={0.6}
+          reflection={0.3}
+          glow={0.6}
+          clickEffect="ping"
+        />
+        </div>
+        {/* keeps the copy readable over the grid: paper on the left, the grid shows through on the right */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgb(255_255_255/0.92)_0%,rgb(255_255_255/0.72)_45%,rgb(255_255_255/0)_80%)]"
+        />
+        {/* GridScan listens for pointer moves on window, so the copy can stay fully interactive */}
+        <div className="flex min-h-[32rem] max-w-[60rem] flex-col justify-center px-6 py-14 sm:min-h-[36rem] sm:px-10 lg:px-14">
         {lead ? (
           <h1 className="display text-[2.1rem] sm:text-[3.1rem]">
             <EvidenceMark metricId="M4" title={metricCopy("M4").title}>
@@ -62,6 +86,7 @@ export default async function Landing() {
           <Link href="/protected/new" className={`${btn} border border-ink/30 hover:border-ink`}>
             Create protected job
           </Link>
+        </div>
         </div>
       </section>
 
