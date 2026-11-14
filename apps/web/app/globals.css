@@ -235,3 +235,180 @@
     animation: none;
   }
 }
+
+/*
+ * Scroll motion (components/scroll-reveal.tsx tags the elements).
+ * Each move only describes the hidden state in custom properties; the keyframes go from there to the element's own
+ * styles on the way in and back on the way out. --rv-d is 1 when the element crosses the bottom edge of the viewport
+ * and -1 for the top edge, so things rise from below when scrolling down and drop in from above when scrolling up.
+ * Reveals that cut an element open use a mask, never clip-path: IntersectionObserver counts clip-path, so a clipped
+ * element would look off screen to it and never come back.
+ */
+[data-rv] {
+  --rv-d: 1;
+  --rv-t: none;
+  --rv-f: none;
+  --rv-ms: 100% 100%;
+  --rv-mp: 0% 0%;
+  --rv-dur: 0.9s;
+  --rv-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-rv-s="hide"] {
+  opacity: 0;
+}
+[data-rv-s="in"] {
+  animation: rv-in var(--rv-dur) var(--rv-ease) var(--rv-delay, 0ms) backwards;
+}
+[data-rv-s="out"] {
+  animation: rv-out 0.55s cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
+}
+@keyframes rv-in {
+  from {
+    opacity: 0;
+    transform: var(--rv-t);
+    filter: var(--rv-f);
+  }
+}
+@keyframes rv-out {
+  to {
+    opacity: 0;
+    transform: var(--rv-t);
+    filter: var(--rv-f);
+  }
+}
+/* the masked moves: the mask exists only while they run, so shadows are never cut at rest */
+[data-rv="wipe"][data-rv-s="in"],
+[data-rv="curtain"][data-rv-s="in"] {
+  animation-name: rv-in-mask;
+}
+[data-rv="wipe"][data-rv-s="out"],
+[data-rv="curtain"][data-rv-s="out"] {
+  animation-name: rv-out-mask;
+}
+@keyframes rv-in-mask {
+  from {
+    opacity: 0;
+    transform: var(--rv-t);
+    mask-image: linear-gradient(#000, #000);
+    mask-repeat: no-repeat;
+    mask-position: var(--rv-mp);
+    mask-size: var(--rv-ms);
+  }
+  to {
+    mask-image: linear-gradient(#000, #000);
+    mask-repeat: no-repeat;
+    mask-position: var(--rv-mp);
+    mask-size: 100% 100%;
+  }
+}
+@keyframes rv-out-mask {
+  from {
+    mask-image: linear-gradient(#000, #000);
+    mask-repeat: no-repeat;
+    mask-position: var(--rv-mp);
+    mask-size: 100% 100%;
+  }
+  to {
+    opacity: 0;
+    transform: var(--rv-t);
+    mask-image: linear-gradient(#000, #000);
+    mask-repeat: no-repeat;
+    mask-position: var(--rv-mp);
+    mask-size: var(--rv-ms);
+  }
+}
+
+/* cards: from below */
+[data-rv="up"] {
+  --rv-t: translate3d(0, calc(var(--rv-d) * 80px), 0);
+}
+[data-rv="tilt"] {
+  --rv-t: perspective(1200px) translate3d(0, calc(var(--rv-d) * 56px), 0) rotateX(calc(var(--rv-d) * 18deg));
+  --rv-dur: 1.05s;
+  transform-origin: 50% 100%;
+}
+[data-rv="scale"] {
+  --rv-t: translate3d(0, calc(var(--rv-d) * 48px), 0) scale(0.88);
+}
+[data-rv="swing"] {
+  --rv-t: translate3d(0, calc(var(--rv-d) * 70px), 0) rotate(calc(var(--rv-d) * -3deg));
+  transform-origin: 0% 100%;
+}
+[data-rv="pop"] {
+  --rv-t: translate3d(0, calc(var(--rv-d) * 24px), 0) scale(0.7);
+  --rv-dur: 0.75s;
+  --rv-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* pictures and drawings: zoom out of a frame, or open like a curtain from the edge they come in by */
+[data-rv="zoom"] {
+  --rv-t: scale(1.18);
+  --rv-f: blur(8px);
+  --rv-dur: 1.1s;
+}
+[data-rv="curtain"] {
+  --rv-t: translate3d(0, calc(var(--rv-d) * 36px), 0);
+  --rv-ms: 100% 0%;
+  --rv-mp: 50% calc(50% + var(--rv-d) * 50%);
+  --rv-dur: 1.1s;
+}
+
+/* text: from the sides */
+[data-rv="left"] {
+  --rv-t: translate3d(-72px, 0, 0);
+}
+[data-rv="right"] {
+  --rv-t: translate3d(72px, 0, 0);
+}
+[data-rv="blur"] {
+  --rv-t: translate3d(0, calc(var(--rv-d) * 26px), 0);
+  --rv-f: blur(10px);
+}
+[data-rv="wipe"] {
+  --rv-t: translate3d(-40px, 0, 0);
+  --rv-ms: 0% 100%;
+  --rv-mp: 0% 0%;
+  --rv-dur: 1.2s;
+}
+[data-rv="tip"] {
+  --rv-t: translate3d(-24px, 0, 0) rotate(-10deg) scale(0.6);
+  --rv-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: 0% 100%;
+}
+[data-rv="track"][data-rv-s="in"] {
+  animation-name: rv-track-in;
+}
+[data-rv="track"][data-rv-s="out"] {
+  animation-name: rv-track-out;
+}
+@keyframes rv-track-in {
+  from {
+    opacity: 0;
+    letter-spacing: 0.7em;
+    filter: blur(3px);
+  }
+}
+@keyframes rv-track-out {
+  to {
+    opacity: 0;
+    letter-spacing: 0.7em;
+    filter: blur(3px);
+  }
+}
+
+/* rows: a short cascade from one side */
+[data-rv="row"] {
+  --rv-t: translate3d(-44px, 0, 0);
+  --rv-dur: 0.7s;
+}
+[data-rv="row-r"] {
+  --rv-t: translate3d(44px, 0, 0);
+  --rv-dur: 0.7s;
+}
+
+@media (prefers-reduced-motion: reduce), print {
+  [data-rv-s] {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}

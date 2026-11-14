@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AssayLogo } from "@/components/logo";
 import { Nav } from "@/components/nav";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { ScrollThumb } from "@/components/scroll-thumb";
 import { WalletProvider } from "@/components/wallet";
 import { api } from "@/lib/api";
@@ -112,6 +113,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           </div>
         </footer>
         <ScrollThumb />
+        <ScrollReveal />
       </body>
     </html>
   );
