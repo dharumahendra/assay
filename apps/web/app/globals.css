@@ -340,6 +340,13 @@
   --rv-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* the last things on the page settle in place instead (pushing them down would grow the scroll area) */
+[data-rv="settle"] {
+  --rv-t: scale(0.94);
+  --rv-f: blur(6px);
+  transform-origin: 50% 100%;
+}
+
 /* pictures and drawings: zoom out of a frame, or open like a curtain from the edge they come in by */
 [data-rv="zoom"] {
   --rv-t: scale(1.18);
