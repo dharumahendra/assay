@@ -39,7 +39,7 @@ ENV NODE_ENV=production \
     DB_PATH=/data/juri.db \
     BLOB_DIR=/data/blobs \
     LOG_FORMAT=json
-VOLUME ["/data"]
+# mount a volume at /data (docker run -v / compose / Railway Volumes); no VOLUME line: Railway rejects it
 EXPOSE 8787
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD curl -fsS "http://localhost:${PORT}/api/health" || exit 1
 # scripts/dev.mjs --no-web: API + jury runner with prefixed logs; exits (→ container restart) when the API dies
