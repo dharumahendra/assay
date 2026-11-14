@@ -7,7 +7,8 @@
 
 FROM node:20-bookworm-slim AS deps
 WORKDIR /app
-RUN corepack enable
+# better-sqlite3 compiles from source when no prebuilt binary matches; the toolchain stays in this stage only
+RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 # manifests first so the install layer is cached across source changes
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY packages/shared/package.json packages/shared/
